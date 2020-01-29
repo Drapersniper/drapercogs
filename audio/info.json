@@ -1,0 +1,13 @@
+{
+    "author": ["Draper"],
+    "install_msg": "This is an experimental version of the Core Audio cog... Do not use without talking to Draper first.",
+    "name": "Audio",
+    "disabled": false,
+    "short": "Experimental version of Audio.",
+    "description":"Experimental version of Audio.",
+    "tags": [
+        "experimental"
+    ],
+    "requirements": [],
+    "hidden": false
+}

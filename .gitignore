@@ -188,7 +188,6 @@ cache
 >>>>>>> refs/remotes/origin/master
 redbot/.project
 redbot/.pydevproject
-locales/
 .API
 /build/
 redbot/.settings/
