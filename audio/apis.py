@@ -663,18 +663,18 @@ class MusicCache:
                         "last_fetched": time_now,
                     }
                 )
+
                 val = None
                 llresponse = None
                 if youtube_cache:
-                    update = True
-                    with contextlib.suppress(SQLError):
-                        (val, update) = await self.database.fetch_one(
+                    try:
+                        (val, last_updated) = await self.database.fetch_one(
                             "youtube", "youtube_url", {"track": track_info}
                         )
-                    if update:
-                        val = None
+                    except Exception as exc:
+                        debug_exc_log(log, exc, f"Failed to fetch {track_info} from YouTube table")
                 should_query_global = (
-                    globaldb_toggle and not update and query_global and val is None
+                        globaldb_toggle and query_global and val is None
                 )
                 if should_query_global:
                     llresponse = await self.audio_api.get_spotify(track_name, artist_name)
