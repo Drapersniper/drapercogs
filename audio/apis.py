@@ -20,7 +20,7 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator, cog_i18n
 
 from . import audio_dataclasses
-from .databases import CacheGetAllLavalink, CacheInterface, SQLError
+from .databases import CacheGetAllLavalink, CacheInterface, QueueInterface, SQLError
 from .debug import is_debug, debug_exc_log
 from .errors import DatabaseError, SpotifyFetchError, TrackEnqueueError, YouTubeApiError
 from .playlists import get_playlist
@@ -40,20 +40,24 @@ if TYPE_CHECKING:
     _database: CacheInterface
     _bot: Red
     _config: Config
+    _persist_queue: QueueInterface
 else:
     _database = None
     _bot = None
     _config = None
+    _persist_queue = None
 
 
 def _pass_config_to_apis(config: Config, bot: Red):
-    global _database, _config, _bot
+    global _database, _config, _bot, _persist_queue
     if _config is None:
         _config = config
     if _bot is None:
         _bot = bot
     if _database is None:
         _database = CacheInterface()
+    if _persist_queue is None:
+        _persist_queue = QueueInterface()
 
 
 class AudioDBAPI:
@@ -336,6 +340,7 @@ class MusicCache:
         self.audio_api: AudioDBAPI = AudioDBAPI(bot, session)
         self._session: aiohttp.ClientSession = session
         self.database = _database
+        self.persist_queue = _persist_queue
 
         self._tasks: MutableMapping = {}
         self._lock: asyncio.Lock = asyncio.Lock()
@@ -663,7 +668,6 @@ class MusicCache:
                         "last_fetched": time_now,
                     }
                 )
-
                 val = None
                 llresponse = None
                 if youtube_cache:
@@ -679,6 +683,8 @@ class MusicCache:
                 if should_query_global:
                     llresponse = await self.audio_api.get_spotify(track_name, artist_name)
                     if llresponse:
+                        if llresponse.get("loadType") == "V2_COMPACT":
+                            llresponse["loadType"] = "V2_COMPAT"
                         llresponse = LoadResult(llresponse)
                     val = llresponse or None
                 if val is None:
@@ -688,7 +694,6 @@ class MusicCache:
                 if youtube_cache and val and llresponse is None:
                     task = ("update", ("youtube", {"track": track_info}))
                     self.append_task(ctx, *task)
-
                 if llresponse:
                     track_object = llresponse.tracks
                 elif val:
@@ -760,6 +765,13 @@ class MusicCache:
                     if guild_data["maxlength"] > 0:
                         if track_limit(single_track, guild_data["maxlength"]):
                             enqueued_tracks += 1
+                            single_track.extras.update(
+                                {
+                                    "enqueue_time": int(time.time()),
+                                    "vc": player.channel.id,
+                                    "requester": ctx.author.id,
+                                }
+                            )
                             player.add(ctx.author, single_track)
                             self.bot.dispatch(
                                 "red_audio_track_enqueue",
@@ -769,6 +781,13 @@ class MusicCache:
                             )
                     else:
                         enqueued_tracks += 1
+                        single_track.extras.update(
+                            {
+                                "enqueue_time": int(time.time()),
+                                "vc": player.channel.id,
+                                "requester": ctx.author.id,
+                            }
+                        )
                         player.add(ctx.author, single_track)
                         self.bot.dispatch(
                             "red_audio_track_enqueue",
@@ -920,6 +939,8 @@ class MusicCache:
             valid_global_entry = False
             with contextlib.suppress(Exception):
                 global_entry = await self.audio_api.get_call(query=_raw_query)
+                if global_entry.get("loadType") == "V2_COMPACT":
+                    global_entry["loadType"] = "V2_COMPAT"
                 results = LoadResult(global_entry)
                 if results.load_type in [
                     LoadType.PLAYLIST_LOADED,
@@ -936,7 +957,7 @@ class MusicCache:
             pass
         elif lazy is True:
             called_api = False
-        elif val and not forced:
+        elif val and not forced and isinstance(val, dict):
             data = val
             data["query"] = query
             if data.get("loadType") == "V2_COMPACT":
@@ -991,7 +1012,7 @@ class MusicCache:
                             [
                                 {
                                     "query": query,
-                                    "data": json.dumps(results._raw),
+                                    "data": data,
                                     "last_updated": time_now,
                                     "last_fetched": time_now,
                                 }
@@ -1144,6 +1165,13 @@ class MusicCache:
                 valid = True
 
             track.extras["autoplay"] = True
+            track.extras.update(
+                {
+                    "enqueue_time": int(time.time()),
+                    "vc": player.channel.id,
+                    "requester": player.channel.guild.me.id,
+                }
+            )
             player.add(player.channel.guild.me, track)
             self.bot.dispatch(
                 "red_audio_track_auto_play", player.channel.guild, track, player.channel.guild.me
@@ -1160,6 +1188,8 @@ class MusicCache:
             query = entry.query
             data = entry.data
             _raw_query = audio_dataclasses.Query.process_input(query)
+            if data.get("loadType") == "V2_COMPACT":
+                data["loadType"] = "V2_COMPAT"
             results = LoadResult(data)
             await asyncio.sleep(0)
             with contextlib.suppress(Exception):

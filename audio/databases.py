@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, TYPE_CHECKING, Tuple, Union, MutableMapping, Mapping
 
 import apsw
+import lavalink
 
 from redbot.core import Config
 from redbot.core.bot import Red
@@ -18,7 +19,7 @@ from redbot.core.utils.dbtools import APSWConnectionWrapper
 from .debug import is_debug, debug_exc_log
 from .errors import InvalidTableError
 from .sql_statements import *
-from .utils import PlaylistScope
+from .utils import PlaylistScope, track_to_json
 
 log = logging.getLogger("red.cogs.Audio.database")
 
@@ -80,6 +81,20 @@ class PlaylistFetchResult:
     def __post_init__(self):
         if isinstance(self.tracks, str):
             self.tracks = json.loads(self.tracks)
+
+
+@dataclass
+class QueueFetchResult:
+    guild_id: int
+    room_id: int
+    track: dict = field(default_factory=lambda: {})
+    track_object: lavalink.Track = None
+
+    def __post_init__(self):
+        if isinstance(self.track, str):
+            self.track = json.loads(self.track)
+        if self.track:
+            self.track_object = lavalink.Track(self.track)
 
 
 @dataclass
@@ -445,5 +460,82 @@ class PlaylistInterface:
                     "author_id": int(author_id),
                     "playlist_url": playlist_url,
                     "tracks": json.dumps(tracks),
+                },
+            )
+
+
+class QueueInterface:
+    def __init__(self):
+        self.cursor = database_connection.cursor()
+        self.database = database_connection
+        self.cursor.execute(PRAGMA_SET_temp_store)
+        self.cursor.execute(PRAGMA_SET_journal_mode)
+        self.cursor.execute(PRAGMA_SET_read_uncommitted)
+        self.cursor.execute(PERSIST_QUEUE_CREATE_TABLE)
+        self.cursor.execute(PERSIST_QUEUE_CREATE_INDEX)
+
+    @staticmethod
+    def close():
+        with contextlib.suppress(Exception):
+            database_connection.close()
+
+    async def fetch(self) -> List[QueueFetchResult]:
+        output = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            for future in concurrent.futures.as_completed(
+                    [
+                        executor.submit(
+                            self.database.cursor().execute,
+                            PERSIST_QUEUE_FETCH_ALL,
+                        )
+                    ]
+            ):
+                try:
+                    row_result = future.result()
+                except Exception as exc:
+                    debug_exc_log(log, exc, "Failed to completed fetch from database")
+
+            for index, row in enumerate(row_result, start=1):
+                if index % 50 == 0:
+                    await asyncio.sleep(0.01)
+                output.append(QueueFetchResult(*row))
+                await asyncio.sleep(0)
+        return output
+
+    def played(self, guild_id: int, track_id: str):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            executor.submit(
+                self.cursor.execute,
+                PERSIST_QUEUE_PLAYED,
+                {"guild_id": guild_id, "track_id": track_id},
+            )
+
+    def delete_scheduled(self):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            executor.submit(self.cursor.execute, PERSIST_QUEUE_DELETE_SCHEDULED)
+
+    def drop(self, guild_id: int):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            executor.submit(
+                self.cursor.execute, PERSIST_QUEUE_BULK_PLAYED, ({"guild_id": guild_id})
+            )
+
+    def enqueued(self, guild_id: int, room_id: int, track: lavalink.Track):
+        enqueue_time = track.extras.get("enqueue_time", 0)
+        if enqueue_time == 0:
+            track.extras["enqueue_time"] = int(time.time())
+        track_identifier = track.track_identifier
+        track = track_to_json(track)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            executor.submit(
+                self.cursor.execute,
+                PERSIST_QUEUE_UPSERT,
+                {
+                    "guild_id": int(guild_id),
+                    "room_id": int(room_id),
+                    "played": False,
+                    "time": enqueue_time,
+                    "track": json.dumps(track),
+                    "track_id": track_identifier,
                 },
             )
