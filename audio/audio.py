@@ -115,7 +115,7 @@ class Audio(commands.Cog):
             schema_version=1,
             cache_level=0,
             cache_age=365,
-            global_db_enabled=False,
+            global_db_enabled=True,
             global_db_get_timeout=5,  # Here as a placeholder in case we want to enable the command
             status=False,
             use_external_lavalink=False,
@@ -130,7 +130,7 @@ class Audio(commands.Cog):
             auto_play=False,
             autoplaylist=dict(enabled=False, id=None, name=None, scope=None),
             disconnect=False,
-            persist_queue=False,
+            persist_queue=True,
             dj_enabled=False,
             dj_role=None,
             daily_playlists=False,
