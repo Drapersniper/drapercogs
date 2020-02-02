@@ -1042,7 +1042,7 @@ class MusicCache:
                         return_exceptions=True,
                     )
                     await asyncio.gather(
-                        *[self.update_global(**a) for a in tasks["global"]], return_exceptions=True
+                        *[self.update_global(**a) for a in tasks["global"]],
                     )
                 if IS_DEBUG:
                     log.debug(f"Completed database writes for {lock_id} " f"({lock_author})")
@@ -1059,13 +1059,13 @@ class MusicCache:
                 self._tasks = {}
 
                 await asyncio.gather(
-                    *[self.database.insert(*a) for a in tasks["insert"]], return_exceptions=True
+                    *[self.database.insert(*a) for a in tasks["insert"]],
                 )
                 await asyncio.gather(
-                    *[self.database.update(*a) for a in tasks["update"]], return_exceptions=True
+                    *[self.database.update(*a) for a in tasks["update"]],
                 )
                 await asyncio.gather(
-                    *[self.update_global(**a) for a in tasks["global"]], return_exceptions=True
+                    *[self.update_global(**a) for a in tasks["global"]],
                 )
             if IS_DEBUG:
                 log.debug("Completed pending writes to database have finished")
@@ -1198,7 +1198,7 @@ class MusicCache:
                     global_task = dict(llresponse=results, query=_raw_query)
                     tasks.append(global_task)
                     await asyncio.sleep(0)
-                if i % 1000 == 0:
+                if i % 100 == 0:
                     if IS_DEBUG:
                         log.debug("Running pending writes to database")
                     await asyncio.gather(
