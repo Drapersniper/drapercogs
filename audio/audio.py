@@ -5871,13 +5871,6 @@ class Audio(commands.Cog):
                 return await self._embed_msg(ctx, title=_("No file detected, try again later."))
         else:
             file_message = ctx.message
-
-        try:
-            file_message = await ctx.bot.wait_for(
-                "message", timeout=30.0, check=MessagePredicate.same_context(ctx)
-            )
-        except asyncio.TimeoutError:
-            return await self._embed_msg(ctx, title=_("No file detected, try again later."))
         try:
             file_url = file_message.attachments[0].url
         except IndexError:
