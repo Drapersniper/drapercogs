@@ -4515,7 +4515,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
-
+        scope = scope or PlaylistScope.GUILD.value
         temp_playlist = FakePlaylist(author.id, scope)
         scope_name = humanize_scope(
             scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
@@ -5084,7 +5084,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
-
+        scope = scope or PlaylistScope.GUILD.value
         try:
             playlists = await get_all_playlist(scope, self.bot, guild, author, specified_user)
         except MissingGuild:
@@ -5210,6 +5210,7 @@ class Audio(commands.Cog):
             if scope_data is None:
                 scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
             scope, author, guild, specified_user = scope_data
+            scope = scope or PlaylistScope.GUILD.value
             scope_name = humanize_scope(
                 scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
             )
@@ -5424,6 +5425,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
+        scope = scope or PlaylistScope.GUILD.value
         scope_name = humanize_scope(
             scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
         )
@@ -5847,6 +5849,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
+        scope = scope or PlaylistScope.GUILD.value
         temp_playlist = FakePlaylist(author.id, scope)
         if not await self.can_manage_playlist(scope, temp_playlist, ctx, author, guild):
             return
