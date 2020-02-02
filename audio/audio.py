@@ -6142,16 +6142,16 @@ class Audio(commands.Cog):
                         ),
                     )
 
-                track = result.tracks
+                track = result.tracks[0]
             except Exception as err:
                 debug_exc_log(log, err, f"Failed to get track for {song_url}")
                 continue
             try:
-                track_obj = track_creator(player, other_track=track[0])
+                track_obj = track_creator(player, other_track=track)
                 track_list.append(track_obj)
                 successful_count += 1
             except Exception as err:
-                debug_exc_log(log, err, f"Failed to create track for {track[0]}")
+                debug_exc_log(log, err, f"Failed to create track for {track}")
                 continue
             if (track_count % 2 == 0) or (track_count == len(uploaded_track_list)):
                 await notifier.notify_user(
