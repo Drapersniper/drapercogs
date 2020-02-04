@@ -237,7 +237,7 @@ def get_track_description(track) -> Optional[str]:
                 return escape(query.to_string_user())
         else:
             if track.author.lower() not in track.title.lower():
-                title = f"{track.title} {track.author}"
+                title = f"{track.title} - {track.author}"
             else:
                 title = track.title
             return f'**{escape(f"[{title}]({track.uri}) ")}**'
@@ -255,7 +255,7 @@ def get_track_description_unformatted(track) -> Optional[str]:
                 return escape(query.to_string_user())
         else:
             if track.author.lower() not in track.title.lower():
-                title = f"{track.title} {track.author}"
+                title = f"{track.title} - {track.author}"
             else:
                 title = track.title
             return escape(f"{title}")
