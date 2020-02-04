@@ -1138,9 +1138,9 @@ class MusicCache:
             if cache_enabled:
                 tracks = await self.get_random_from_db()
             if not tracks:
-                ctx = namedtuple("Context", "message")
+                ctx = namedtuple("Context", "message, guild")
                 (results, called_api) = await self.lavalink_query(
-                    ctx(player.channel.guild),
+                    ctx(player.channel.guild, player.channel.guild),
                     player,
                     audio_dataclasses.Query.process_input(_TOP_100_US),
                 )
