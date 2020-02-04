@@ -370,7 +370,7 @@ class MusicCache:
             query = f"https://api.spotify.com/v1/playlists/{key}/tracks"
         return query, params
 
-    def _get_spotify_track_info(self, track_data: MutableMapping, ctx:commands.Context) -> Tuple[str, ...]:
+    async def _get_spotify_track_info(self, track_data: MutableMapping, ctx:commands.Context) -> Tuple[str, ...]:
         artist_name = track_data["artists"][0]["name"]
         track_name = track_data["name"]
         prefer_lyrics = self._prefer_lyrics_cache.setdefault(
@@ -413,7 +413,7 @@ class MusicCache:
                 track_name,
                 _id,
                 _type,
-            ) = self._get_spotify_track_info(track, ctx)
+            ) = await self._get_spotify_track_info(track, ctx)
 
             database_entries.append(
                 {
@@ -660,7 +660,7 @@ class MusicCache:
                     track_name,
                     _id,
                     _type,
-                ) = self._get_spotify_track_info(track, ctx)
+                ) = await self._get_spotify_track_info(track, ctx)
 
                 database_entries.append(
                     {
