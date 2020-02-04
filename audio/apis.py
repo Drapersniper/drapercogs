@@ -344,6 +344,7 @@ class MusicCache:
 
         self._tasks: MutableMapping = {}
         self._lock: asyncio.Lock = asyncio.Lock()
+        self._prefer_lyrics_cache: MutableMapping[int, Optional[bool]] = {}
         self.config: Optional[Config] = None
 
     async def initialize(self, config: Config):
@@ -369,10 +370,14 @@ class MusicCache:
             query = f"https://api.spotify.com/v1/playlists/{key}/tracks"
         return query, params
 
-    @staticmethod
-    def _get_spotify_track_info(track_data: MutableMapping) -> Tuple[str, ...]:
+    def _get_spotify_track_info(self, track_data: MutableMapping, ctx:commands.Context) -> Tuple[str, ...]:
         artist_name = track_data["artists"][0]["name"]
         track_name = track_data["name"]
+        prefer_lyrics = self._prefer_lyrics_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).prefer_lyrics()
+        )
+        if prefer_lyrics:
+            track_name = f"{track_name} - lyrics"
         track_info = f"{track_name} {artist_name}"
         song_url = track_data.get("external_urls", {}).get("spotify")
         uri = track_data["uri"]
@@ -408,7 +413,7 @@ class MusicCache:
                 track_name,
                 _id,
                 _type,
-            ) = self._get_spotify_track_info(track)
+            ) = self._get_spotify_track_info(track, ctx)
 
             database_entries.append(
                 {
@@ -571,6 +576,7 @@ class MusicCache:
         List[str]
             List of Youtube URLs.
         """
+
         current_cache_level = CacheLevel(await self.config.cache_level())
         cache_enabled = CacheLevel.set_spotify().is_subset(current_cache_level)
         if query_type == "track" and cache_enabled:
@@ -653,7 +659,7 @@ class MusicCache:
                     track_name,
                     _id,
                     _type,
-                ) = self._get_spotify_track_info(track)
+                ) = self._get_spotify_track_info(track, ctx)
 
                 database_entries.append(
                     {
@@ -903,12 +909,18 @@ class MusicCache:
         current_cache_level = CacheLevel(await self.config.cache_level())
         cache_enabled = CacheLevel.set_lavalink().is_subset(current_cache_level)
         val = None
-        _raw_query = audio_dataclasses.Query.process_input(query)
         query = str(_raw_query)
         valid_global_entry = False
         results = None
         globaldb_toggle = await _config.global_db_enabled()
         called_api = False
+        prefer_lyrics = self._prefer_lyrics_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).prefer_lyrics()
+        )
+        if prefer_lyrics:
+            query = f"{query} - lyrics"
+        _raw_query = audio_dataclasses.Query.process_input(query)
+
 
         if cache_enabled and not forced and not _raw_query.is_local:
             update = True

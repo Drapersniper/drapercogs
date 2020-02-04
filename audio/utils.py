@@ -236,7 +236,11 @@ def get_track_description(track) -> Optional[str]:
             else:
                 return escape(query.to_string_user())
         else:
-            return f'**{escape(f"[{track.title}]({track.uri}) ")}**'
+            if track.author.lower() not in track.title.lower():
+                title = f"{track.title} {track.author}"
+            else:
+                title = track.title
+            return f'**{escape(f"[{title}]({track.uri}) ")}**'
     elif hasattr(track, "to_string_user") and track.is_local:
         return escape(track.to_string_user() + " ")
 

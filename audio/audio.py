@@ -104,6 +104,7 @@ class Audio(commands.Cog):
         self._daily_playlist_cache: MutableMapping[int, bool] = {}
         self._dj_status_cache: MutableMapping[int, Optional[bool]] = {}
         self._dj_role_cache: MutableMapping[int, Optional[int]] = {}
+        self._prefer_lyrics_cache: MutableMapping[int, Optional[bool]] = {}
         self._persist_queue_cache: MutableMapping[int, bool] = {}
         self.session: aiohttp.ClientSession = aiohttp.ClientSession()
         self._connect_task: Optional[asyncio.Task] = None
@@ -133,6 +134,7 @@ class Audio(commands.Cog):
             persist_queue=True,
             dj_enabled=False,
             dj_role=None,
+            prefer_lyrics=True,
             daily_playlists=False,
             emptydc_enabled=False,
             emptydc_timer=0,
