@@ -622,6 +622,7 @@ class MusicCache:
         has_not_allowed = False
         await self.audio_api._get_api_key()
         globaldb_toggle = await _config.global_db_enabled()
+        global_entry = globaldb_toggle and query_global
         try:
             current_cache_level = CacheLevel(await self.config.cache_level())
             guild_data = await self.config.guild(ctx.guild).all()
@@ -741,7 +742,7 @@ class MusicCache:
                         seconds=seconds,
                     )
 
-                if consecutive_fails >= 10:
+                if (consecutive_fails >= 10 and global_entry is False) or (consecutive_fails >= 100 and global_entry is True):
                     error_embed = discord.Embed(
                         colour=await ctx.embed_colour(),
                         title=_("Failing to get tracks, skipping remaining."),
@@ -1053,7 +1054,7 @@ class MusicCache:
                         return_exceptions=True,
                     )
                     await asyncio.gather(
-                        *[self.update_global(**a) for a in tasks["global"]], return_exceptions=True
+                        *[self.update_global(**a) for a in tasks["global"]],
                     )
                 if IS_DEBUG:
                     log.debug(f"Completed database writes for {lock_id} " f"({lock_author})")
@@ -1070,13 +1071,13 @@ class MusicCache:
                 self._tasks = {}
 
                 await asyncio.gather(
-                    *[self.database.insert(*a) for a in tasks["insert"]], return_exceptions=True
+                    *[self.database.insert(*a) for a in tasks["insert"]],
                 )
                 await asyncio.gather(
-                    *[self.database.update(*a) for a in tasks["update"]], return_exceptions=True
+                    *[self.database.update(*a) for a in tasks["update"]],
                 )
                 await asyncio.gather(
-                    *[self.update_global(**a) for a in tasks["global"]], return_exceptions=True
+                    *[self.update_global(**a) for a in tasks["global"]],
                 )
             if IS_DEBUG:
                 log.debug("Completed pending writes to database have finished")
@@ -1209,7 +1210,7 @@ class MusicCache:
                     global_task = dict(llresponse=results, query=_raw_query)
                     tasks.append(global_task)
                     await asyncio.sleep(0)
-                if i % 1000 == 0:
+                if i % 100 == 0:
                     if IS_DEBUG:
                         log.debug("Running pending writes to database")
                     await asyncio.gather(

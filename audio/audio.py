@@ -4517,7 +4517,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
-
+        scope = scope or PlaylistScope.GUILD.value
         temp_playlist = FakePlaylist(author.id, scope)
         scope_name = humanize_scope(
             scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
@@ -5086,7 +5086,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
-
+        scope = scope or PlaylistScope.GUILD.value
         try:
             playlists = await get_all_playlist(scope, self.bot, guild, author, specified_user)
         except MissingGuild:
@@ -5212,6 +5212,7 @@ class Audio(commands.Cog):
             if scope_data is None:
                 scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
             scope, author, guild, specified_user = scope_data
+            scope = scope or PlaylistScope.GUILD.value
             scope_name = humanize_scope(
                 scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
             )
@@ -5426,6 +5427,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
+        scope = scope or PlaylistScope.GUILD.value
         scope_name = humanize_scope(
             scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
         )
@@ -5849,6 +5851,7 @@ class Audio(commands.Cog):
         if scope_data is None:
             scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
+        scope = scope or PlaylistScope.GUILD.value
         temp_playlist = FakePlaylist(author.id, scope)
         if not await self.can_manage_playlist(scope, temp_playlist, ctx, author, guild):
             return
@@ -5873,13 +5876,6 @@ class Audio(commands.Cog):
                 return await self._embed_msg(ctx, title=_("No file detected, try again later."))
         else:
             file_message = ctx.message
-
-        try:
-            file_message = await ctx.bot.wait_for(
-                "message", timeout=30.0, check=MessagePredicate.same_context(ctx)
-            )
-        except asyncio.TimeoutError:
-            return await self._embed_msg(ctx, title=_("No file detected, try again later."))
         try:
             file_url = file_message.attachments[0].url
         except IndexError:
@@ -6151,16 +6147,16 @@ class Audio(commands.Cog):
                         ),
                     )
 
-                track = result.tracks
+                track = result.tracks[0]
             except Exception as err:
                 debug_exc_log(log, err, f"Failed to get track for {song_url}")
                 continue
             try:
-                track_obj = track_creator(player, other_track=track[0])
+                track_obj = track_creator(player, other_track=track)
                 track_list.append(track_obj)
                 successful_count += 1
             except Exception as err:
-                debug_exc_log(log, err, f"Failed to create track for {track[0]}")
+                debug_exc_log(log, err, f"Failed to create track for {track}")
                 continue
             if (track_count % 2 == 0) or (track_count == len(uploaded_track_list)):
                 await notifier.notify_user(
