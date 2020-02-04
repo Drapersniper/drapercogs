@@ -910,7 +910,6 @@ class MusicCache:
         current_cache_level = CacheLevel(await self.config.cache_level())
         cache_enabled = CacheLevel.set_lavalink().is_subset(current_cache_level)
         val = None
-        query = str(_raw_query)
         valid_global_entry = False
         results = None
         globaldb_toggle = await _config.global_db_enabled()
@@ -918,10 +917,11 @@ class MusicCache:
         prefer_lyrics = self._prefer_lyrics_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).prefer_lyrics()
         )
-        if prefer_lyrics:
+        _raw_query = audio_dataclasses.Query.process_input(query)
+        if prefer_lyrics and _raw_query.is_youtube:
             query = f"{query} - lyrics"
         _raw_query = audio_dataclasses.Query.process_input(query)
-
+        query = str(_raw_query)
 
         if cache_enabled and not forced and not _raw_query.is_local:
             update = True
