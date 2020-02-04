@@ -254,7 +254,11 @@ def get_track_description_unformatted(track) -> Optional[str]:
             else:
                 return escape(query.to_string_user())
         else:
-            return escape(f"{track.title}")
+            if track.author.lower() not in track.title.lower():
+                title = f"{track.title} {track.author}"
+            else:
+                title = track.title
+            return escape(f"{title}")
     elif hasattr(track, "to_string_user") and track.is_local:
         return escape(track.to_string_user() + " ")
 
