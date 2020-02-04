@@ -918,7 +918,7 @@ class MusicCache:
             ctx.guild.id, await self.config.guild(ctx.guild).prefer_lyrics()
         )
         _raw_query = audio_dataclasses.Query.process_input(query)
-        if prefer_lyrics and _raw_query.is_youtube:
+        if prefer_lyrics and _raw_query.is_youtube and _raw_query.is_search:
             query = f"{query} - lyrics"
         _raw_query = audio_dataclasses.Query.process_input(query)
         query = str(_raw_query)
