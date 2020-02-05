@@ -5097,6 +5097,13 @@ class Audio(commands.Cog):
             user_matches = await get_all_playlist(PlaylistScope.USER.value, self.bot, guild, author, specified_user)
             playlists = [*global_matches, *guild_matches, *user_matches]
             name = None
+            if not playlists:
+                ctx.command.reset_cooldown(ctx)
+                return await self._embed_msg(
+                    ctx,
+                    title=_("Playlist Not Found"),
+                    description=_("No saved playlists available in this server.").format(scope=name),
+                )
         else:
             try:
                 playlists = await get_all_playlist(scope, self.bot, guild, author, specified_user)
