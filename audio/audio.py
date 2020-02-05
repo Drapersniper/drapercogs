@@ -474,7 +474,7 @@ class Audio(commands.Cog):
         status = await self.config.status()
 
         await self.error_reset(player)
-
+        
         if event_type == lavalink.LavalinkEvents.TRACK_START:
             self.skip_votes[guild] = []
             playing_song = player.fetch("playing_song")
@@ -484,6 +484,8 @@ class Audio(commands.Cog):
             player.store("playing_song", current_track)
             player.store("requester", current_requester)
             self.bot.dispatch("red_audio_track_start", guild, current_track, current_requester)
+            if guild_id and current_track:
+                self.music_cache.persist_queue.played(guild_id=guild_id, track_id=current_track.track_identifier)
         if event_type == lavalink.LavalinkEvents.TRACK_END:
             prev_song = player.fetch("prev_song")
             prev_requester = player.fetch("prev_requester")
@@ -492,6 +494,8 @@ class Audio(commands.Cog):
             prev_song = player.fetch("prev_song")
             prev_requester = player.fetch("prev_requester")
             self.bot.dispatch("red_audio_queue_end", guild, prev_song, prev_requester)
+            if guild_id:
+                self.music_cache.persist_queue.drop(guild_id)
             if autoplay and not player.queue and player.fetch("playing_song") is not None:
                 try:
                     await self.music_cache.autoplay(player)
@@ -2077,6 +2081,7 @@ class Audio(commands.Cog):
                     await self.config.custom("EQUALIZER", ctx.guild.id).eq_bands.set(eq.bands)
                 await player.stop()
                 await player.disconnect()
+                self.music_cache.persist_queue.drop(ctx.guild.id)
 
     @commands.group(invoke_without_command=True)
     @commands.guild_only()
@@ -7962,6 +7967,7 @@ class Audio(commands.Cog):
             player.store("requester", None)
             await player.stop()
             await self._embed_msg(ctx, title=_("Stopping..."))
+            self.music_cache.persist_queue.drop(ctx.guild.id)
 
     @commands.command()
     @commands.guild_only()
@@ -8322,6 +8328,7 @@ class Audio(commands.Cog):
                             player = lavalink.get_player(sid)
                             await player.stop()
                             await player.disconnect()
+                            self.music_cache.persist_queue.drop(sid)
                         except Exception as err:
                             debug_exc_log(log, err, "Exception raised in Audio's emptydc_timer.")
                             if "No such player for that guild" in str(err):
