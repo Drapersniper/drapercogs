@@ -8637,7 +8637,7 @@ class Audio(commands.Cog):
                 if player is None:
                     while tries < 121 and vc is not None:
                         try:
-                            vc = guild.get_channel(track_data[0].room_id)
+                            vc = guild.get_channel(track_data[-1].room_id)
                             await lavalink.connect(vc)
                             player = lavalink.get_player(guild.id)
                             player.store("connect", datetime.datetime.utcnow())
