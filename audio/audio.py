@@ -5089,42 +5089,48 @@ class Audio(commands.Cog):
         ​ ​ ​ ​ `[p]playlist list --scope User`
         """
         if scope_data is None:
-            scope_data = [PlaylistScope.GUILD.value, ctx.author, ctx.guild, False]
+            scope_data = [None, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
-        scope = scope or PlaylistScope.GUILD.value
-        try:
-            playlists = await get_all_playlist(scope, self.bot, guild, author, specified_user)
-        except MissingGuild:
-            ctx.command.reset_cooldown(ctx)
-            return await self._embed_msg(
-                ctx,
-                title=_("Missing Arguments"),
-                description=_("You need to specify the Guild ID for the guild to lookup."),
-            )
-
-        if scope == PlaylistScope.GUILD.value:
-            name = f"{guild.name}"
-        elif scope == PlaylistScope.USER.value:
-            name = f"{author}"
+        if scope is None:
+            global_matches = await get_all_playlist(PlaylistScope.GLOBAL.value, self.bot, guild, author, specified_user)
+            guild_matches = await get_all_playlist(PlaylistScope.GUILD.value, self.bot, guild, author, specified_user)
+            user_matches = await get_all_playlist(PlaylistScope.USER.value, self.bot, guild, author, specified_user)
+            playlists = [*global_matches, *guild_matches, *user_matches]
+            name = None
         else:
-            name = "Global"
+            try:
+                playlists = await get_all_playlist(scope, self.bot, guild, author, specified_user)
+            except MissingGuild:
+                ctx.command.reset_cooldown(ctx)
+                return await self._embed_msg(
+                    ctx,
+                    title=_("Missing Arguments"),
+                    description=_("You need to specify the Guild ID for the guild to lookup."),
+                )
 
-        if not playlists and specified_user:
-            ctx.command.reset_cooldown(ctx)
-            return await self._embed_msg(
-                ctx,
-                title=_("Playlist Not Found"),
-                description=_("No saved playlists for {scope} created by {author}.").format(
-                    scope=name, author=author
-                ),
-            )
-        elif not playlists:
-            ctx.command.reset_cooldown(ctx)
-            return await self._embed_msg(
-                ctx,
-                title=_("Playlist Not Found"),
-                description=_("No saved playlists for {scope}.").format(scope=name),
-            )
+            if scope == PlaylistScope.GUILD.value:
+                name = f"{guild.name}"
+            elif scope == PlaylistScope.USER.value:
+                name = f"{author}"
+            else:
+                name = "Global"
+
+            if not playlists and specified_user:
+                ctx.command.reset_cooldown(ctx)
+                return await self._embed_msg(
+                    ctx,
+                    title=_("Playlist Not Found"),
+                    description=_("No saved playlists for {scope} created by {author}.").format(
+                        scope=name, author=author
+                    ),
+                )
+            elif not playlists:
+                ctx.command.reset_cooldown(ctx)
+                return await self._embed_msg(
+                    ctx,
+                    title=_("Playlist Not Found"),
+                    description=_("No saved playlists for {scope}.").format(scope=name),
+                )
 
         playlist_list = []
         space = "\N{EN SPACE}"
@@ -5135,11 +5141,12 @@ class Audio(commands.Cog):
                         bold(playlist.name),
                         _("ID: {id}").format(id=playlist.id),
                         _("Tracks: {num}").format(num=len(playlist.tracks)),
-                        _("Author: {name}\n").format(
+                        _("Author: {name}").format(
                             name=self.bot.get_user(playlist.author)
                             or playlist.author
                             or _("Unknown")
                         ),
+                        _("Scope: {scope}\n").format(scope=humanize_scope(playlist.scope))
                     )
                 )
             )
@@ -5166,11 +5173,18 @@ class Audio(commands.Cog):
             item_idx = i + 1
             plist += "`{}.` {}".format(item_idx, playlist_info)
             await asyncio.sleep(0)
-        embed = discord.Embed(
-            colour=await ctx.embed_colour(),
-            title=_("Playlists for {scope}:").format(scope=scope),
-            description=plist,
-        )
+        if scope is None:
+            embed = discord.Embed(
+                colour=await ctx.embed_colour(),
+                title=_("Playlists you can access in this server:"),
+                description=plist,
+            )
+        else:
+            embed = discord.Embed(
+                colour=await ctx.embed_colour(),
+                title=_("Playlists for {scope}:").format(scope=scope),
+                description=plist,
+            )
         embed.set_footer(
             text=_("Page {page_num}/{total_pages} | {num} playlists.").format(
                 page_num=page_num, total_pages=plist_num_pages, num=len(abc_names)
