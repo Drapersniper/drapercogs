@@ -4061,7 +4061,7 @@ class Audio(commands.Cog):
             if specified_user:
                 correct_scope_matches_global = [
                     p
-                    for p in matches.get(PlaylistScope.USGLOBALER.value)
+                    for p in matches.get(PlaylistScope.GLOBAL.value)
                     if p.author == user_to_query
                 ]
             else:
