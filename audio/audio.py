@@ -603,7 +603,7 @@ class Audio(commands.Cog):
                 message_channel = self.bot.get_channel(message_channel)
                 if early_exit:
                     embed = discord.Embed(
-                        colour=(await self.bot.get_embed_color(message_channel)),
+                        colour=await self.bot.get_embed_color(message_channel),
                         title=_("Multiple errors detected"),
                         description=_(
                             "Closing the audio player "
@@ -617,10 +617,12 @@ class Audio(commands.Cog):
                     description = description or ""
                     if event_type == lavalink.LavalinkEvents.TRACK_STUCK:
                         embed = discord.Embed(
-                            title=_("Track Stuck"), description="{}".format(description)
+                            title=_("Track Stuck"), description="{}".format(description),
+                            colour=await self.bot.get_embed_color(message_channel),
                         )
                     else:
                         embed = discord.Embed(
+                            colour=await self.bot.get_embed_color(message_channel),
                             title=_("Track Error"),
                             description="{}\n{}".format(extra.replace("\n", ""), description),
                         )
