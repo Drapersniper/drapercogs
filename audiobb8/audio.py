@@ -29,7 +29,7 @@ from redbot.core import Config, bank, checks, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
-from redbot.core.utils.chat_formatting import bold, box, humanize_number, inline, pagify
+from redbot.core.utils.chat_formatting import bold, box, humanize_number, pagify
 from redbot.core.utils.menus import (
     DEFAULT_CONTROLS,
     close_menu,
@@ -474,7 +474,7 @@ class Audio(commands.Cog):
         status = await self.config.status()
 
         await self.error_reset(player)
-        
+
         if event_type == lavalink.LavalinkEvents.TRACK_START:
             self.skip_votes[guild] = []
             playing_song = player.fetch("playing_song")
@@ -8727,10 +8727,13 @@ class Audio(commands.Cog):
         ):
             self._play_lock(ctx, False)
             await self.music_cache.run_tasks(ctx)
-            message = "Error in command '{}'. Check your console or logs for details.".format(
-                ctx.command.qualified_name
+            message = "```py" + "\n"
+            message += "Error in command '{}'\nType: {}\nThe Bot owner has received your error.".format(
+                ctx.command.qualified_name, error.original
             )
-            await ctx.send(inline(message))
+            message += "```" + "\n"
+            message += "Use the ``b!support`` command \nThen join the support server and the owner of the bot or a mod will help you when they are available"
+            await ctx.send(message)
             exception_log = "Exception in command '{}'\n" "".format(ctx.command.qualified_name)
             exception_log += "".join(
                 traceback.format_exception(type(error), error, error.__traceback__)
