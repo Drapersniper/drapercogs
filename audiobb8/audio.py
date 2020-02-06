@@ -106,6 +106,7 @@ class Audio(commands.Cog):
         self._dj_role_cache: MutableMapping[int, Optional[int]] = {}
         self._prefer_lyrics_cache: MutableMapping[int, Optional[bool]] = {}
         self._persist_queue_cache: MutableMapping[int, bool] = {}
+        self._daily_global_playlist_cache: MutableMapping[int, bool] = {}
         self.session: aiohttp.ClientSession = aiohttp.ClientSession()
         self._connect_task: Optional[asyncio.Task] = None
         self._disconnect_task: Optional[asyncio.Task] = None

@@ -103,7 +103,6 @@ class Audio(commands.Cog):
         self.play_lock: MutableMapping[int, bool] = {}
         self._daily_playlist_cache: MutableMapping[int, bool] = {}
         self._daily_global_playlist_cache: MutableMapping[int, bool] = {}
-
         self._dj_status_cache: MutableMapping[int, Optional[bool]] = {}
         self._dj_role_cache: MutableMapping[int, Optional[int]] = {}
         self._prefer_lyrics_cache: MutableMapping[int, Optional[bool]] = {}
