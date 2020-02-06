@@ -70,7 +70,7 @@ from .utils import *
 
 _ = Translator("Audio", __file__)
 red_extras = version_info.to_json()
-red_extras.update({"major": 1, "minor": 2, "micro": 0, "dev_release": "dev99"})
+red_extras.update({"major": 1, "minor": 2, "micro": 0, "dev_release": "99"})
 __version__ = VersionInfo.from_json(red_extras)
 
 __author__ = ["aikaterna", "Draper"]
