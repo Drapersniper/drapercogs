@@ -195,6 +195,12 @@ class Audio(commands.Cog):
             raise RuntimeError(
                 "Not running audio command due to invalid machine architecture for Lavalink."
             )
+        with contextlib.suppress(Exception):
+            player = lavalink.get_player(ctx.guild.id)
+            notify_channel = player.fetch("channel")
+            if not notify_channel:
+                player.store("channel", ctx.channel.id)
+
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()
         )
@@ -8699,6 +8705,7 @@ class Audio(commands.Cog):
                             await lavalink.connect(vc)
                             player = lavalink.get_player(guild.id)
                             player.store("connect", datetime.datetime.utcnow())
+                            player.store("guild", guild_id)
                             break
                         except IndexError:
                             await asyncio.sleep(5)
