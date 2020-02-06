@@ -646,10 +646,11 @@ class MusicCache:
                 await notifier.update_embed(embed3)
 
                 return track_list
+            database_entries = []
             time_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+
             youtube_cache = CacheLevel.set_youtube().is_subset(current_cache_level)
             spotify_cache = CacheLevel.set_spotify().is_subset(current_cache_level)
-            lavalink_cache = CacheLevel.set_lavalink().is_subset(current_cache_level)
             for track_count, track in enumerate(tracks_from_spotify):
                 (
                     song_url,
@@ -660,8 +661,7 @@ class MusicCache:
                     _id,
                     _type,
                 ) = await self._get_spotify_track_info(track, ctx)
-                database_entries = []
-                valid_global_entry = False
+
                 database_entries.append(
                     {
                         "id": _id,
@@ -675,9 +675,6 @@ class MusicCache:
                         "last_fetched": time_now,
                     }
                 )
-                if spotify_cache:
-                    task = ("insert", ("spotify", database_entries))
-                    self.append_task(ctx, *task)
                 val = None
                 llresponse = None
                 if youtube_cache:
@@ -696,7 +693,6 @@ class MusicCache:
                         if llresponse.get("loadType") == "V2_COMPACT":
                             llresponse["loadType"] = "V2_COMPAT"
                         llresponse = LoadResult(llresponse)
-                        valid_global_entry = True
                     val = llresponse or None
                 if val is None:
                     val = await self._youtube_first_time_query(
@@ -709,7 +705,7 @@ class MusicCache:
                     track_object = llresponse.tracks
                 elif val:
                     try:
-                        (llresponse, called_api) = await self.lavalink_query(
+                        (result, called_api) = await self.lavalink_query(
                             ctx,
                             player,
                             audio_dataclasses.Query.process_input(val),
@@ -731,46 +727,9 @@ class MusicCache:
                         )
                         await notifier.update_embed(error_embed)
                         break
-                    track_object = llresponse.tracks
+                    track_object = result.tracks
                 else:
                     track_object = []
-
-                if llresponse and llresponse._raw and isinstance(llresponse._raw, dict):
-                    update_global = globaldb_toggle and not valid_global_entry and _WRITE_GLOBAL_API_ACCESS
-                    to_post = audio_dataclasses.Query.process_input(track_info)
-                    if (
-                            lavalink_cache
-                            and llresponse.load_type
-                            and not llresponse.has_error
-                            and not to_post.is_local
-                            and llresponse.tracks
-                    ):
-                        task = (
-                            "insert",
-                            (
-                                "lavalink",
-                                [
-                                    {
-                                        "query": str(to_post),
-                                        "data": llresponse._raw,
-                                        "last_updated": time_now,
-                                        "last_fetched": time_now,
-                                    }
-                                ],
-                            ),
-                        )
-                        self.append_task(ctx, *task)
-                    if (
-                            update_global
-                            and not to_post.is_local
-                            and not llresponse.has_error
-                            and len(llresponse.tracks) >= 1
-                    ):
-                        to_post = audio_dataclasses.Query.process_input(track_info)
-
-                        global_task = ("global", dict(llresponse=llresponse, query=to_post))
-                        self.append_task(ctx, *global_task)
-
                 if (track_count % 2 == 0) or (track_count == total_tracks):
                     key = "lavalink"
                     seconds = "???"
@@ -882,6 +841,10 @@ class MusicCache:
 
                 await notifier.update_embed(embed)
             lock(ctx, False)
+
+            if spotify_cache:
+                task = ("insert", ("spotify", database_entries))
+                self.append_task(ctx, *task)
         except Exception as e:
             lock(ctx, False)
             raise e
@@ -1084,9 +1047,11 @@ class MusicCache:
                     del self._tasks[ctx.message.id]
                     await asyncio.gather(
                         *[self.database.insert(*a) for a in tasks["insert"]],
+                        return_exceptions=True,
                     )
                     await asyncio.gather(
                         *[self.database.update(*a) for a in tasks["update"]],
+                        return_exceptions=True,
                     )
                     await asyncio.gather(
                         *[self.update_global(**a) for a in tasks["global"]],
@@ -1118,24 +1083,10 @@ class MusicCache:
                 log.debug("Completed pending writes to database have finished")
 
     def append_task(self, ctx: commands.Context, event: str, task: tuple, _id=None):
-        # lock_id = _id or ctx.message.id
-        # if lock_id not in self._tasks:
-        #     self._tasks[lock_id] = {"update": [], "insert": [], "global": []}
-        # self._tasks[lock_id][event].append(task)
-        async with self._lock:
-            with contextlib.suppress(Exception):
-                if event == "insert":
-                    await asyncio.gather(
-                        *[self.database.insert(*task)],
-                    )
-                elif event == "update":
-                    await asyncio.gather(
-                        *[self.database.update(*task)],
-                    )
-                elif event == "global":
-                    await asyncio.gather(
-                        *[self.update_global(**task)],
-                    )
+        lock_id = _id or ctx.message.id
+        if lock_id not in self._tasks:
+            self._tasks[lock_id] = {"update": [], "insert": [], "global": []}
+        self._tasks[lock_id][event].append(task)
 
     async def get_random_from_db(self):
         tracks = []
