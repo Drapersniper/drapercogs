@@ -4746,6 +4746,7 @@ class Audio(commands.Cog):
 
         final_count = len(tracklist)
         if original_count - final_count != 0:
+            await playlist.edit({"tracks": tracklist})
             await self._embed_msg(
                 ctx,
                 title=_("Playlist Modified"),
