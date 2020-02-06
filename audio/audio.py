@@ -8548,14 +8548,13 @@ class Audio(commands.Cog):
         daily_cache = self._daily_playlist_cache.setdefault(
             guild.id, await self.config.guild(guild).daily_playlists()
         )
-        scope = PlaylistScope.GUILD.value
         today = datetime.date.today()
         midnight = datetime.datetime.combine(today, datetime.datetime.min.time())
         track_identifier = track.track_identifier
+        today_id = int(time.mktime(today.timetuple()))
+        track = track_to_json(track)
         if daily_cache:
             name = f"Daily playlist - {today}"
-            today_id = int(time.mktime(today.timetuple()))
-            track = track_to_json(track)
             try:
                 playlist = await get_playlist(
                     playlist_number=today_id,
@@ -8573,7 +8572,7 @@ class Audio(commands.Cog):
             else:
                 playlist = Playlist(
                     bot=self.bot,
-                    scope=scope,
+                    scope=PlaylistScope.GUILD.value,
                     author=self.bot.user.id,
                     playlist_id=today_id,
                     name=name,
@@ -8582,14 +8581,47 @@ class Audio(commands.Cog):
                     guild=guild,
                 )
                 await playlist.save()
+        global_name = f"Global Daily playlist - {today}"
+        try:
+            playlist = await get_playlist(
+                playlist_number=today_id,
+                scope=PlaylistScope.GLOBAL.value,
+                bot=self.bot,
+                guild=guild,
+                author=self.bot.user,
+            )
+        except RuntimeError:
+            playlist = None
+        if playlist:
+            tracks = playlist.tracks
+            tracks.append(track)
+            await playlist.edit({"tracks": tracks})
+        else:
+            playlist = Playlist(
+                bot=self.bot,
+                scope=PlaylistScope.GLOBAL.value,
+                author=self.bot.user.id,
+                playlist_id=today_id,
+                name=global_name,
+                playlist_url=None,
+                tracks=[track],
+                guild=guild,
+            )
+            await playlist.save()
         too_old = midnight - datetime.timedelta(days=8)
         too_old_id = int(time.mktime(too_old.timetuple()))
         try:
             await delete_playlist(
-                scope=scope, playlist_id=too_old_id, guild=guild, author=self.bot.user
+                scope=PlaylistScope.GUILD.value, playlist_id=too_old_id, guild=guild, author=self.bot.user
             )
         except Exception as err:
             debug_exc_log(log, err, f"Failed to delete daily playlist ID: {too_old_id}")
+        try:
+            await delete_playlist(
+                scope=PlaylistScope.GLOBAL.value, playlist_id=too_old_id, guild=guild, author=self.bot.user
+            )
+        except Exception as err:
+            debug_exc_log(log, err, f"Failed to delete global daily playlist ID: {too_old_id}")
         self.music_cache.persist_queue.played(guild_id=guild.id, track_id=track_identifier)
 
     @commands.Cog.listener()
