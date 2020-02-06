@@ -740,6 +740,7 @@ class Audio(commands.Cog):
         )
 
     @commands.is_owner()
+    @audioset.command(name="globaldailyqueue")
     async def _audioset_global_historical_queue(self, ctx: commands.Context):
         """Toggle global daily queues.
 
