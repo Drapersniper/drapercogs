@@ -116,6 +116,7 @@ class Audio(commands.Cog):
             schema_version=1,
             cache_level=0,
             cache_age=365,
+            daily_playlists=False,
             global_db_enabled=True,
             global_db_get_timeout=5,  # Here as a placeholder in case we want to enable the command
             status=False,
@@ -209,6 +210,9 @@ class Audio(commands.Cog):
         )
         daily_cache = self._daily_playlist_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).daily_playlists()
+        )
+        global_daily_playlists = self._daily_global_playlist_cache.setdefault(
+            self.bot.user.id, await self.config.daily_playlists()
         )
         if dj_enabled:
             dj_role = self._dj_role_cache.setdefault(
@@ -727,6 +731,26 @@ class Audio(commands.Cog):
             ctx,
             title=_("Setting Changed"),
             description=_("Daily queues: {true_or_false}.").format(
+                true_or_false=_("Enabled") if not daily_playlists else _("Disabled")
+            ),
+        )
+
+    @commands.is_owner()
+    @audioset.command(name="globaldailyqueue")
+    async def _audioset_global_historical_queue(self, ctx: commands.Context):
+        """Toggle global daily queues.
+
+        Global daily queues creates a playlist for all tracks played today.
+        """
+        daily_playlists = self._daily_global_playlist_cache.setdefault(
+            self.bot.user.id, await self.config.daily_playlists()
+        )
+        await self.config.daily_playlists.set(not daily_playlists)
+        self._daily_global_playlist_cache[self.bot.user.id] = not daily_playlists
+        await self._embed_msg(
+            ctx,
+            title=_("Setting Changed"),
+            description=_("Global daily queues: {true_or_false}.").format(
                 true_or_false=_("Enabled") if not daily_playlists else _("Disabled")
             ),
         )
@@ -8555,6 +8579,9 @@ class Audio(commands.Cog):
         daily_cache = self._daily_playlist_cache.setdefault(
             guild.id, await self.config.guild(guild).daily_playlists()
         )
+        global_daily_playlists = self._daily_global_playlist_cache.setdefault(
+            self.bot.user.id, await self.config.daily_playlists()
+        )
         today = datetime.date.today()
         midnight = datetime.datetime.combine(today, datetime.datetime.min.time())
         track_identifier = track.track_identifier
@@ -8588,33 +8615,34 @@ class Audio(commands.Cog):
                     guild=guild,
                 )
                 await playlist.save()
-        global_name = f"Global Daily playlist - {today}"
-        try:
-            playlist = await get_playlist(
-                playlist_number=today_id,
-                scope=PlaylistScope.GLOBAL.value,
-                bot=self.bot,
-                guild=guild,
-                author=self.bot.user,
-            )
-        except RuntimeError:
-            playlist = None
-        if playlist:
-            tracks = playlist.tracks
-            tracks.append(track)
-            await playlist.edit({"tracks": tracks})
-        else:
-            playlist = Playlist(
-                bot=self.bot,
-                scope=PlaylistScope.GLOBAL.value,
-                author=self.bot.user.id,
-                playlist_id=today_id,
-                name=global_name,
-                playlist_url=None,
-                tracks=[track],
-                guild=guild,
-            )
-            await playlist.save()
+        if global_daily_playlists:
+            global_name = f"Global Daily playlist - {today}"
+            try:
+                playlist = await get_playlist(
+                    playlist_number=today_id,
+                    scope=PlaylistScope.GLOBAL.value,
+                    bot=self.bot,
+                    guild=guild,
+                    author=self.bot.user,
+                )
+            except RuntimeError:
+                playlist = None
+            if playlist:
+                tracks = playlist.tracks
+                tracks.append(track)
+                await playlist.edit({"tracks": tracks})
+            else:
+                playlist = Playlist(
+                    bot=self.bot,
+                    scope=PlaylistScope.GLOBAL.value,
+                    author=self.bot.user.id,
+                    playlist_id=today_id,
+                    name=global_name,
+                    playlist_url=None,
+                    tracks=[track],
+                    guild=guild,
+                )
+                await playlist.save()
         too_old = midnight - datetime.timedelta(days=8)
         too_old_id = int(time.mktime(too_old.timetuple()))
         try:
