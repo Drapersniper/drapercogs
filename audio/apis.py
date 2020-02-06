@@ -444,7 +444,7 @@ class MusicCache:
                     )
                 if youtube_cache and val:
                     task = ("update", ("youtube", {"track": track_info}))
-                    self.append_task(ctx, *task)
+                    await self.append_task(ctx, *task)
 
                 if val:
                     youtube_urls.append(val)
@@ -456,7 +456,7 @@ class MusicCache:
                 await notifier.notify_user(current=track_count, total=total_tracks, key="youtube")
         if CacheLevel.set_spotify().is_subset(current_cache_level):
             task = ("insert", ("spotify", database_entries))
-            self.append_task(ctx, *task)
+            await self.append_task(ctx, *task)
         return youtube_urls
 
     async def _youtube_first_time_query(
@@ -482,7 +482,7 @@ class MusicCache:
                     ],
                 ),
             )
-            self.append_task(ctx, *task)
+            await self.append_task(ctx, *task)
         return track_url
 
     async def _spotify_fetch_tracks(
@@ -603,7 +603,7 @@ class MusicCache:
         else:
             if query_type == "track" and cache_enabled:
                 task = ("update", ("spotify", {"uri": f"spotify:track:{uri}"}))
-                self.append_task(ctx, *task)
+                await self.append_task(ctx, *task)
             youtube_urls.append(val)
         return youtube_urls
 
@@ -677,7 +677,7 @@ class MusicCache:
                 )
                 if spotify_cache:
                     task = ("insert", ("spotify", database_entries))
-                    self.append_task(ctx, *task)
+                    await self.append_task(ctx, *task)
                 val = None
                 llresponse = None
                 if youtube_cache:
@@ -704,7 +704,7 @@ class MusicCache:
                     )
                 if youtube_cache and val and llresponse is None:
                     task = ("update", ("youtube", {"track": track_info}))
-                    self.append_task(ctx, *task)
+                    await self.append_task(ctx, *task)
                 if llresponse:
                     track_object = llresponse.tracks
                 elif val:
@@ -759,7 +759,7 @@ class MusicCache:
                                 ],
                             ),
                         )
-                        self.append_task(ctx, *task)
+                        await self.append_task(ctx, *task)
                     if (
                             update_global
                             and not to_post.is_local
@@ -769,7 +769,7 @@ class MusicCache:
                         to_post = audio_dataclasses.Query.process_input(track_info)
 
                         global_task = ("global", dict(llresponse=llresponse, query=to_post))
-                        self.append_task(ctx, *global_task)
+                        await self.append_task(ctx, *global_task)
 
                 if (track_count % 2 == 0) or (track_count == total_tracks):
                     key = "lavalink"
@@ -908,7 +908,7 @@ class MusicCache:
         else:
             if cache_enabled:
                 task = ("update", ("youtube", {"track": track_info}))
-                self.append_task(ctx, *task)
+                await self.append_task(ctx, *task)
             youtube_url = val
         return youtube_url
 
@@ -970,7 +970,7 @@ class MusicCache:
                 if IS_DEBUG:
                     log.debug(f"Querying Local Database for {query}")
                 task = ("update", ("lavalink", {"query": query}))
-                self.append_task(ctx, *task)
+                await self.append_task(ctx, *task)
             else:
                 val = None
             if val and not forced and isinstance(val, dict):
@@ -1043,7 +1043,7 @@ class MusicCache:
                 and len(results.tracks) >= 1
             ):
                 global_task = ("global", dict(llresponse=results, query=_raw_query))
-                self.append_task(ctx, *global_task)
+                await self.append_task(ctx, *global_task)
         if (
             cache_enabled
             and results.load_type
@@ -1069,7 +1069,7 @@ class MusicCache:
                             ],
                         ),
                     )
-                    self.append_task(ctx, *task)
+                    await self.append_task(ctx, *task)
         return results, called_api
 
     async def run_tasks(self, ctx: Optional[commands.Context] = None, _id=None):
@@ -1117,7 +1117,7 @@ class MusicCache:
             if IS_DEBUG:
                 log.debug("Completed pending writes to database have finished")
 
-    def append_task(self, ctx: commands.Context, event: str, task: tuple, _id=None):
+    async def append_task(self, ctx: commands.Context, event: str, task: tuple, _id=None):
         # lock_id = _id or ctx.message.id
         # if lock_id not in self._tasks:
         #     self._tasks[lock_id] = {"update": [], "insert": [], "global": []}
