@@ -8577,6 +8577,8 @@ class Audio(commands.Cog):
     async def on_red_audio_track_start(
             self, guild: discord.Guild, track: lavalink.Track, requester: discord.Member
     ):
+        if not (track and guild):
+            return
         daily_cache = self._daily_playlist_cache.setdefault(
             guild.id, await self.config.guild(guild).daily_playlists()
         )
