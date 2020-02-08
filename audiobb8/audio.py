@@ -1988,6 +1988,9 @@ class Audio(commands.Cog):
         msg = ""
         for p in lavalink.all_players():
             connect_start = p.fetch("connect")
+            if not connect_start:
+                await p.disconnect()
+                continue
             connect_dur = dynamic_time(
                 int((datetime.datetime.utcnow() - connect_start).total_seconds())
             )
