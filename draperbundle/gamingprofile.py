@@ -40,7 +40,7 @@ class GamingProfile(commands.Cog):
         self._cache = {}
         self._task = self.bot.loop.create_task(self._save_to_config())
 
-    @commands.group(name="profile")
+    @commands.group(name="gprofile")
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
     async def _profile(self, ctx: commands.Context):
         """Managers a user profile"""
