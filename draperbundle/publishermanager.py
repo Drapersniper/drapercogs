@@ -21,7 +21,7 @@ class PublisherManager(commands.Cog):
         self.config = ConfigHolder.PublisherManager
         self.task = self.bot.loop.create_task(self.update_game_database())
 
-    def __unload(self):
+    def cog_unload(self):
         if self.task:
             self.task.cancel()
 

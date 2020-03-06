@@ -23,7 +23,7 @@ class DynamicChannels(commands.Cog):
         self.config = ConfigHolder.DynamicChannels
         self.task = self.bot.loop.create_task(self.clean_up_dynamic_channels())
 
-    def __unload(self):
+    def cog_unload(self):
         if self.task:
             self.task.cancel()
 
