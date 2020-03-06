@@ -271,11 +271,12 @@ class MemberStatus(commands.Cog):
                             and not any(g.lower() in game.lower() for g in game_name)
                         ):
                             continue
-                        if not music and not movie:
+                        if looking_for in [discord.ActivityType.playing, discord.ActivityType.streaming]:
                             publisher = (
                                 await ConfigHolder.PublisherManager.publisher.get_raw()
-                            ).get(game)
-                        elif movie:
+                            )
+                            publisher = publisher.get(game)
+                        elif looking_for == discord.ActivityType.watching:
                             publisher = "movie"
                         else:
                             publisher = "spotify"

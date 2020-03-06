@@ -691,62 +691,6 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
     return data
 
 
-async def get_players_per_activity(
-    ctx: commands.Context, stream: bool = False, music: bool = False, game_name: List[str] = None
-):
-    if stream:
-        looking_for = discord.ActivityType.streaming
-        name_property = "details"
-    elif game_name:
-        looking_for = discord.ActivityType.playing
-        name_property = "name"
-    elif music:
-        looking_for = discord.ActivityType.listening
-        name_property = "title"
-    else:
-        looking_for = discord.ActivityType.playing
-        name_property = "name"
-
-    member_data_new = {}
-    role_value = 0
-    for member in ctx.guild.members:
-        if member.activities:
-            interested_in = [
-                activity for activity in member.activities if activity.type == looking_for
-            ]
-            if interested_in and not member.bot:
-                game = getattr(interested_in[0], name_property, None)
-                if game:
-                    if (
-                        game_name
-                        and game not in game_name
-                        and not any(g.lower() in game.lower() for g in game_name)
-                    ):
-                        continue
-                    if not music:
-                        publisher = (await ConfigHolder.PublisherManager.publisher.get_raw()).get(
-                            game
-                        )
-                    else:
-                        publisher = "spotify"
-                    accounts = (await ConfigHolder.AccountManager.user(member).get_raw()).get(
-                        "account", {}
-                    )
-                    account = accounts.get(publisher)
-                    if not account:
-                        account = None
-
-                    name = member.display_name
-                    mention = member.mention
-                    top_role = member.top_role
-                    role_value = top_role.position * -1
-                    if game in member_data_new:
-                        member_data_new[game].append((mention, name, role_value, account))
-                    else:
-                        member_data_new[game] = [(mention, name, role_value, account)]
-    return member_data_new
-
-
 def get_member_named(guild, name):
     result = None
     members = guild.members
