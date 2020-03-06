@@ -815,7 +815,7 @@ def get_date_time(s: Union[int, str, datetime] = None):
 
 
 async def update_member_atomically(
-    ctx: Context,
+    ctx: commands.Context,
     give: List[discord.Role] = None,
     remove: List[discord.Role] = None,
     nick: str = None,
