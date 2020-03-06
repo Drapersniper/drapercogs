@@ -24,14 +24,24 @@ class MemberStatus(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    @commands.admin_or_permissions(manage_channels=True, manage_guild=True)
+    @commands.bot_has_permissions(embed_links=True)
+    async def linkchannel(self, ctx: commands.Context, channel: discord.TextChannel, *, game: str = None):
+        """Link a channel to a game - Requires exact game name"""
+        await self.config.channel(channel).game.set(game)
+        await ctx.tick()
+
+    @commands.command()
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     async def splaying(self, ctx: commands.Context, *, game: str = None):
         """Shows who's playing what games."""
-
-        global _  # MyPy was complaining this was a unresolved reference until global was called
         game_name = _("what")
         ending = _(" any games.")
         game_list = []
+        if game is None:
+            game = await self.config.channel(ctx.channel).game()
+
         if game:
             game_name = game
             game_list = [game]
@@ -84,7 +94,6 @@ class MemberStatus(commands.Cog):
     async def swatching(self, ctx: commands.Context):
         """Shows who's watching what."""
 
-        global _  # MyPy was complaining this was a unresolved reference until global was called
         watching_data = await self.get_players_per_activity(ctx=ctx, movie=True)
         embed_colour = await ctx.embed_colour()
         if watching_data:
@@ -130,7 +139,6 @@ class MemberStatus(commands.Cog):
     async def slistening(self, ctx: commands.Context):
         """Shows who's listening what."""
 
-        global _  # MyPy was complaining this was a unresolved reference until global was called
         listening_data = await self.get_players_per_activity(ctx=ctx, music=True)
         embed_colour = await ctx.embed_colour()
         if listening_data:
@@ -176,10 +184,11 @@ class MemberStatus(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def sstreaming(self, ctx: commands.Context, *, game=None):
         """Shows who's streaming what games."""
-        global _  # MyPy was complaining this was a unresolved reference until global was called
         game_name = _("what")
         ending = "."
         game_list = []
+        if game is None:
+            game = await self.config.channel(ctx.channel).game()
         if game:
             game_name = game
             game_list = [game]
@@ -271,7 +280,7 @@ class MemberStatus(commands.Cog):
                         else:
                             publisher = "spotify"
                         accounts = (
-                            await ConfigHolder.AccountManager.member(member).get_raw()
+                            await ConfigHolder.AccountManager.user(member).get_raw()
                         ).get("account", {})
                         account = accounts.get(publisher)
                         if not account:

@@ -87,7 +87,7 @@ def list_filter(_list: list, what_to_remove: Union[str, int, bool] = None):
 async def has_a_profile(member: discord.Member):
     if not member:
         return False
-    if await ConfigHolder.GamingProfile.member(member).country():
+    if await ConfigHolder.GamingProfile.user(member).country():
         return True
     return False
 
@@ -465,7 +465,7 @@ async def get_all_user_profiles(
 
 
 async def get_user_inactivity(member, pm=False, inactivity=False, timespan=None):
-    data = await ConfigHolder.GamingProfile.member(member).all()
+    data = await ConfigHolder.GamingProfile.user(member).all()
     data_list = []
     role_value = 0
     time_now = datetime.now(tz=timezone.utc)
@@ -729,7 +729,7 @@ async def get_players_per_activity(
                         )
                     else:
                         publisher = "spotify"
-                    accounts = (await ConfigHolder.AccountManager.member(member).get_raw()).get(
+                    accounts = (await ConfigHolder.AccountManager.user(member).get_raw()).get(
                         "account", {}
                     )
                     account = accounts.get(publisher)
