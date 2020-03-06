@@ -815,53 +815,50 @@ def get_date_time(s: Union[int, str, datetime] = None):
 
 
 async def update_member_atomically(
-    member: discord.Member,
+    ctx: Context,
     give: List[discord.Role] = None,
     remove: List[discord.Role] = None,
     nick: str = None,
+    member: discord.Member = None,
 ):
-    """
-    Give and remove roles and change nick as a single op with some slight sanity
-    wrapping
-    """
-    me = member.guild.me
-    has_perm = me.guild_permissions.manage_roles
-    if not has_perm or member == me:
+    if not ctx.guild:
+        return None
+    member = member or ctx.author
+    me = ctx.guild.me
+    if member == me:
         return
-    give = give or []
-    remove = remove or []
-    current_roles = member.roles if member.roles else []
-    roles = [r for r in member.roles if r and r not in remove]
-    roles.extend([r for r in give if r and r not in roles])
-    roles = list(set(roles))
-    roles = [r for r in roles if r < me.top_role]
-    new_roles = list(set([r for r in roles if r not in current_roles]))
-    if sorted(roles) == sorted(member.roles) and not nick:
-        logger.info(
-            f"{member} New roles are equivalent to old roles and doesn't need a name change"
-        )
+    permissions = member.guild.me.permissions_in(ctx.channel)
+    can_modify_nick = permissions.manage_nicknames
+    can_modify_role = permissions.manage_roles
+    if can_modify_role:
+        give = give or []
+        remove = remove or []
+        roles = [r for r in member.roles if r and r not in remove]
+        roles.extend([r for r in give if r and r not in roles])
+        roles = list(set(roles))
+        roles = [r for r in roles if r < me.top_role]
+        roles_changed = sorted(roles) != sorted(member.roles)
+    else:
+        roles = []
+        roles_changed = False
+
+    if me.top_role < member.top_role and nick:
         return
-    elif sorted(roles) == sorted(member.roles) and nick:
-        logger.info(f"{member} New roles are equivalent to old roles, Only renaming")
-        try:
-            await member.edit(nick=nick)
-            if nick and member.display_name.strip() != nick.strip():
-                logger.info(f"Old Name: {member.display_name}: New Name: {nick}")
-        except discord.errors.Forbidden:
-            logger.error(f"Unable to rename {member}")
-    elif sorted(roles) != sorted(member.roles) and not nick:
-        logger.info(f"{member} doesn't need a name change sending role change")
-        await member.edit(roles=roles)
-    elif sorted(roles) != sorted(member.roles) and nick:
-        logger.info(f"{member} Needs both a role update and a name change")
-        try:
-            await member.edit(roles=roles, nick=nick)
-            if nick and member.display_name.strip() != nick.strip():
-                logger.info(f"Old Name: {member.display_name}: New Name: {nick}")
-        except discord.errors.Forbidden:
-            logger.error(f"Unable to rename {member}, trying to edit roles")
-            logger.info(f"{member} sending role edit")
-            await member.edit(roles=roles)
+    if not roles_changed and not nick:
+        return
+    if member.guild.owner == member:
+        return
+    if can_modify_nick and nick and not roles_changed:
+        return await member.edit(nick=nick)
+    if can_modify_role and roles_changed and not nick:
+        return await member.edit(roles=roles)
+    if roles_changed and nick:
+        if can_modify_role and can_modify_nick:
+            return await member.edit(roles=roles, nick=nick)
+        elif can_modify_role:
+            return await member.edit(roles=roles)
+        else:
+            return await member.edit(nick=nick)
 
 
 _header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}

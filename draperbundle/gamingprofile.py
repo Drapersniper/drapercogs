@@ -135,7 +135,7 @@ class GamingProfile(commands.Cog):
                         role_to_remove += roles
                         role_to_remove.append(doesnt_have_profile_role)
 
-                await update_member_atomically(author, give=role_to_add, remove=role_to_remove)
+                await update_member_atomically(ctx=ctx, member=author, give=role_to_add, remove=role_to_remove)
 
     @_profile.command(name="update")
     async def _profile_update(self, ctx: commands.Context):
@@ -181,7 +181,7 @@ class GamingProfile(commands.Cog):
                 ]
                 if roles:
                     role_to_remove += roles
-            await update_member_atomically(author, give=role_to_add, remove=role_to_remove)
+            await update_member_atomically(ctx=ctx, member=author, give=role_to_add, remove=role_to_remove)
 
         await ctx.author.send("I have updated your profile")
 
