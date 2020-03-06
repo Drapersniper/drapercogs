@@ -251,7 +251,7 @@ class MemberStatus(commands.Cog):
         for member in ctx.guild.members:
             if member.activities:
                 interested_in = [
-                    activity for activity in member.activities if activity.type == looking_for
+                    activity for activity in member.activities if activity and activity.type == looking_for
                 ]
                 if interested_in and not member.bot:
                     game = getattr(interested_in[0], name_property, None)
