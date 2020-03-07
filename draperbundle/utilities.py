@@ -644,7 +644,7 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
 
 async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: dict):
     def check(m):
-        return m.author == author and isinstance(m.channel, discord.DMChannel)
+        return m.author == author and isinstance(m.channel, discord.DMChannel) and len(msg.content) < 33
 
     def remove_old(prompt_data: dict, key_to_remove: str):
         newdict = prompt_data
@@ -679,12 +679,19 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
                 None,
             )
             if name and command:
-                await author.send(f"What is your username for {name}?")
+                await author.send(f"What is your username for {name}? (32 characters or less)")
                 msg = await bot.wait_for("message", check=check)
+                if msg and msg.content.lower() in ["stop", "finish"]:
+                    await author.send(f"Thanks for adding your accounts.")
+                    break
+                elif msg and msg.content.lower() in ["skip", "cancel"]:
+                    await author.send(f"Skipping {name} account.")
+                    continue
                 if msg and not len(msg.content.lower()) <= 3:
                     username = msg.content.strip()
                     data.update({command: username.strip()})
         elif msg and prompt_data.get(msg.content, "").lower() == "finish":
+            await author.send(f"Thanks for adding your accounts.")
             break
         else:
             key = 999

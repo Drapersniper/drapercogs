@@ -14,7 +14,7 @@ from redbot.core.utils.chat_formatting import box
 
 from .config_holder import ConfigHolder
 
-logger = logging.getLogger("red.drapercogs.dynamic_channels")
+log = logging.getLogger("red.drapercogs.dynamic_channels")
 
 
 class DynamicChannels(commands.Cog):
@@ -128,13 +128,13 @@ class DynamicChannels(commands.Cog):
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).dynamic_channels()
         ):
-            logger.info(
+            log.debug(
                 f"Dynamic Channel ({channel.id}) has been deleted checking if it exist in database"
             )
             channel_group = self.config.guild(channel.guild)
             async with channel_group.user_created_voice_channels() as channel_data:
                 if f"{channel.id}" in channel_data:
-                    logger.info(f"Dynamic Channel ({channel.id}) has been deleted from database")
+                    log.debug(f"Dynamic Channel ({channel.id}) has been deleted from database")
                     del channel_data[f"{channel.id}"]
 
     @commands.Cog.listener()
@@ -144,7 +144,7 @@ class DynamicChannels(commands.Cog):
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).dynamic_channels()
         ):
-            logger.info(f"Dynamic Channel ({channel.id}) has been created adding to database")
+            log.debug(f"Dynamic Channel ({channel.id}) has been created adding to database")
             channel_group = self.config.guild(channel.guild)
             async with channel_group.user_created_voice_channels() as channel_data:
                 channel_data.update({channel.id: channel.name})
@@ -153,13 +153,13 @@ class DynamicChannels(commands.Cog):
     async def on_voice_state_update(
         self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
     ):
-        logger.info(f"on_voice_state_update has been triggered by {member}")
+        log.debug(f"on_voice_state_update has been triggered by {member}")
         guild = after.guild or before.guild
         has_perm = guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
         if member.bot:
-            logger.info(f"{member} is a bot ignoring on_voice_state_update for Dynamic Channels")
+            log.debug(f"{member} is a bot ignoring on_voice_state_update for Dynamic Channels")
             return
         delete = {}
         whitelist = await self.config.guild(member.guild).dynamic_channels.get_raw()
@@ -172,7 +172,7 @@ class DynamicChannels(commands.Cog):
                 and after.channel.category == category
                 and f"{after.channel.category.id}" in whitelist
             ):
-                logger.info(f"User joined {after.channel.name}")
+                log.debug(f"User joined {after.channel.name}")
                 voice_channels = category.voice_channels
                 voice_channels_empty = [
                     channel for channel in voice_channels if sum(1 for _ in channel.members) < 1
@@ -194,7 +194,7 @@ class DynamicChannels(commands.Cog):
                         room_size = 0
 
                     if not type_room:
-                        logger.info(f"We need extra dynamic rooms in {category.name}")
+                        log.debug(f"We need extra dynamic rooms in {category.name}")
                         created_channel = await member.guild.create_voice_channel(
                             user_limit=room_size,
                             name=room_name.format(number=len(channel_count) + 1),
@@ -202,7 +202,7 @@ class DynamicChannels(commands.Cog):
                             category=category,
                             bitrate=member.guild.bitrate_limit,
                         )
-                        logger.info(
+                        log.debug(
                             f"New dynamic channel has been created: {created_channel.name}"
                         )
                         guild_group = self.config.guild(member.guild)
@@ -242,7 +242,7 @@ class DynamicChannels(commands.Cog):
                         room_size = 0
 
                     if not type_room:
-                        logger.info(f"We need extra dynamic rooms in {category.name}")
+                        log.debug(f"We need extra dynamic rooms in {category.name}")
                         created_channel = await member.guild.create_voice_channel(
                             user_limit=room_size,
                             name=room_name.format(number=len(channel_count) + 1),
@@ -250,7 +250,7 @@ class DynamicChannels(commands.Cog):
                             category=category,
                             bitrate=member.guild.bitrate_limit,
                         )
-                        logger.info(
+                        log.debug(
                             f"New dynamic channel has been created: {created_channel.name}"
                         )
                         guild_group = self.config.guild(member.guild)
@@ -263,7 +263,7 @@ class DynamicChannels(commands.Cog):
                                 delete.update({channel.id: (channel, position)})
 
         if delete and len(delete) > 1:
-            logger.info(f"Some dynamic channels need to be deleted")
+            log.debug(f"Some dynamic channels need to be deleted")
             delete = OrderedDict(sorted(delete.items(), key=lambda x: x[1][1]))
             _ = delete.popitem(last=False)
             guild_group = self.config.guild(member.guild)
@@ -271,12 +271,10 @@ class DynamicChannels(commands.Cog):
                 for _, channel_data in delete.items():
                     channel, _ = channel_data
                     await asyncio.sleep(2)
-                    logger.info(f"{channel.name} will be deleted")
-                    try:
+                    log.debug(f"{channel.name} will be deleted")
+                    with contextlib.suppress(discord.NotFound):
                         await channel.delete(reason="Deleting channel due to it being empty")
-                        logger.info(f"{channel.name} has been deleted")
-                    except discord.errors.NotFound:
-                        logger.info(f"{channel.name} couldn't be found")
+                        log.debug(f"{channel.name} has been deleted")
                     if f"{channel.id}" in user_voice:
                         del user_voice[f"{channel.id}"]
 
@@ -286,7 +284,6 @@ class DynamicChannels(commands.Cog):
             guilds = self.bot.guilds
             timer = 7200
             while guilds and True:
-                logger.info(f"clean_up_dynamic_channels scheduled run started")
                 guilds = self.bot.guilds
                 for guild in guilds:
                     keep_id = {}
@@ -294,19 +291,12 @@ class DynamicChannels(commands.Cog):
                     for channel_id in list(data.items()):
                         channel = guild.get_channel(channel_id)
                         if channel:
-                            logger.info(f"Checking if {channel.name} is empty")
                             if sum(1 for _ in channel.members) < 1:
-                                logger.info(f"{channel.name} is empty queueing it for deletion")
                                 await asyncio.sleep(5)
                                 await channel.delete(
                                     reason="User created channel was empty during cleanup cycle"
                                 )
-                                logger.info(f"{channel.name} has been deleted")
                             else:
-                                logger.info(f"{channel.name} is not empty")
                                 keep_id.update({channel_id: channel_id})
                     await self.config.guild(guild).user_created_voice_channels.set(keep_id)
-                logger.info(
-                    f"clean_up_dynamic_channels scheduled has finished sleeping for {timer}s"
-                )
                 await asyncio.sleep(timer)
