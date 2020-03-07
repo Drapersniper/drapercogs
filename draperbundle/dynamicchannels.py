@@ -282,7 +282,7 @@ class DynamicChannels(commands.Cog):
         with contextlib.suppress(asyncio.CancelledError):
             await self.bot.wait_until_ready()
             guilds = self.bot.guilds
-            timer = 7200
+            timer = 60
             while guilds and True:
                 guilds = self.bot.guilds
                 for guild in guilds:
