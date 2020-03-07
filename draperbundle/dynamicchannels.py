@@ -4,12 +4,14 @@ import contextlib
 import json
 import logging
 from collections import OrderedDict
+from datetime import timedelta
 from operator import itemgetter
-from typing import Union, Optional
+from typing import Union, Optional, Dict
 
 import discord
 from redbot.core import commands, checks
 from redbot.core.bot import Red
+from redbot.core.utils.antispam import AntiSpam
 from redbot.core.utils.chat_formatting import box
 
 from .config_holder import ConfigHolder
@@ -22,6 +24,7 @@ class DynamicChannels(commands.Cog):
         self.bot = bot
         self.config = ConfigHolder.DynamicChannels
         self.task = self.bot.loop.create_task(self.clean_up_dynamic_channels())
+        self.antispam: Dict[int, Dict[int, AntiSpam]] = {}
 
     def cog_unload(self):
         if self.task:
@@ -145,6 +148,7 @@ class DynamicChannels(commands.Cog):
     async def on_guild_channel_delete(
         self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
     ):
+
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).dynamic_channels()
         ):
@@ -181,6 +185,18 @@ class DynamicChannels(commands.Cog):
             return
         if member.id in await self.config.guild(member.guild).blacklist():
             return
+        if guild.id not in self.antispam:
+            self.antispam[guild.id] = {}
+
+        if member.id not in self.antispam[guild.id]:
+            self.antispam[guild.id][member.id] = AntiSpam(
+                [(timedelta(seconds=60), 2)]
+            )
+        if self.antispam[guild.id][member.id].spammy:
+            return
+
+        self.antispam[guild.id][member.id].stamp()
+
         delete = {}
         whitelist = await self.config.guild(member.guild).dynamic_channels.get_raw()
         guild_channels = member.guild.by_category()

@@ -3,12 +3,14 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import Union
+from datetime import timedelta
+from typing import Union, Dict
 
 import discord
 
 from redbot.core import commands, checks
 from redbot.core.bot import Red
+from redbot.core.utils.antispam import AntiSpam
 from redbot.core.utils.chat_formatting import box
 
 from .config_holder import ConfigHolder
@@ -59,6 +61,7 @@ class CustomChannels(commands.Cog):
         self.bot = bot
         self.config = ConfigHolder.CustomChannels
         self.task = self.bot.loop.create_task(self.clean_up_custom_channels())
+        self.antispam: Dict[int, Dict[int, AntiSpam]] = {}
 
     def cog_unload(self):
         if self.task:
@@ -183,6 +186,19 @@ class CustomChannels(commands.Cog):
         has_perm = guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
+
+        if guild.id not in self.antispam:
+            self.antispam[guild.id] = {}
+
+        if member.id not in self.antispam[guild.id]:
+            self.antispam[guild.id][member.id] = AntiSpam(
+                [(timedelta(seconds=600), 1)]
+            )
+        if self.antispam[guild.id][member.id].spammy:
+            return
+
+        self.antispam[guild.id][member.id].stamp()
+
         if member.id in self.config.guild(member.guild).blacklist():
             return
         whitelist = await self.config.guild(member.guild).category_with_button()
