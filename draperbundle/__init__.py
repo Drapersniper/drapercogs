@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .playerstats import PlayerStats
 from .publishermanager import PublisherManager
 from .pcspecs import PCSpecs
 from .status import MemberStatus
@@ -14,3 +15,4 @@ def setup(bot):
     bot.add_cog(MemberStatus(bot))
     bot.add_cog(PCSpecs(bot))
     bot.add_cog(PublisherManager(bot))
+    bot.add_cog(PlayerStats(bot))
