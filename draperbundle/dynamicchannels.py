@@ -192,10 +192,6 @@ class DynamicChannels(commands.Cog):
             self.antispam[guild.id][member.id] = AntiSpam(
                 [(timedelta(seconds=60), 2)]
             )
-        if self.antispam[guild.id][member.id].spammy:
-            return
-
-        self.antispam[guild.id][member.id].stamp()
 
         delete = {}
         whitelist = await self.config.guild(member.guild).dynamic_channels.get_raw()
@@ -230,7 +226,8 @@ class DynamicChannels(commands.Cog):
                     if room_size < 2:
                         room_size = 0
 
-                    if not type_room:
+                    if not type_room and not self.antispam[guild.id][member.id].spammy:
+                        self.antispam[guild.id][member.id].stamp()
                         created_channel = await member.guild.create_voice_channel(
                             user_limit=room_size,
                             name=room_name.format(number=len(channel_count) + 1),
@@ -274,7 +271,8 @@ class DynamicChannels(commands.Cog):
                     if room_size < 3:
                         room_size = 0
 
-                    if not type_room:
+                    if not type_room and not self.antispam[guild.id][member.id].spammy:
+                        self.antispam[guild.id][member.id].stamp()
                         log.debug(f"We need extra dynamic rooms in {category.name}")
                         created_channel = await member.guild.create_voice_channel(
                             user_limit=room_size,
