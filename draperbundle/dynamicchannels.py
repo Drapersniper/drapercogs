@@ -154,7 +154,7 @@ class DynamicChannels(commands.Cog):
         self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
     ):
         log.debug(f"on_voice_state_update has been triggered by {member}")
-        guild = after.guild or before.guild
+        guild = member.guild
         has_perm = guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
