@@ -128,7 +128,7 @@ class CustomChannels(commands.Cog):
         guild_data = self.config.guild(ctx.guild)
         async with guild_data.category_with_button() as whitelist:
             if category_id in whitelist:
-                del whitelist[str(category_id.id)]
+                del whitelist[str(category_id)]
                 await ctx.send(f"Removed {category_id} from the whitelist")
             else:
                 await ctx.send(f"Error: {category_id} is not a whitelisted category")
@@ -194,10 +194,6 @@ class CustomChannels(commands.Cog):
             self.antispam[guild.id][member.id] = AntiSpam(
                 [(timedelta(seconds=600), 1)]
             )
-        if self.antispam[guild.id][member.id].spammy:
-            return
-
-        self.antispam[guild.id][member.id].stamp()
 
         if member.id in self.config.guild(member.guild).blacklist():
             return
@@ -205,11 +201,13 @@ class CustomChannels(commands.Cog):
         user_created_channels = await self.config.guild(member.guild).user_created_voice_channels()
         if (
             after
+            and not self.antispam[guild.id][member.id].spammy
             and after.channel
             and after.channel.category
             and f"{after.channel.category.id}" in whitelist
             and after.channel.id == whitelist[f"{after.channel.category.id}"]
         ):
+            self.antispam[guild.id][member.id].stamp()
             logger.info(f"User joined {after.channel.name} creating a new room")
             max_position = max([channel.position for channel in after.channel.category.channels])
             overwrites = await self._get_overrides(after.channel or before.channel, member)
