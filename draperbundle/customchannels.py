@@ -195,7 +195,7 @@ class CustomChannels(commands.Cog):
                 [(timedelta(seconds=600), 1)]
             )
 
-        if member.id in self.config.guild(member.guild).blacklist():
+        if member.id in await self.config.guild(member.guild).blacklist():
             return
         whitelist = await self.config.guild(member.guild).category_with_button()
         user_created_channels = await self.config.guild(member.guild).user_created_voice_channels()
