@@ -229,11 +229,12 @@ default_guild_CustomChannels = dict(
     custom_channels={},
     user_created_voice_channels_bypass_roles=[],
     user_created_voice_channels={},
+    blacklist=[]
 )
 default_member_CustomChannels = dict(currentRooms={})
 
 default_guild_DynamicChannels = dict(
-    dynamic_channels={}, custom_channels={}, user_created_voice_channels={}
+    dynamic_channels={}, custom_channels={}, user_created_voice_channels={}, blacklist=[]
 )
 default_guild_RandomQuotes = {
     "enabled": False,

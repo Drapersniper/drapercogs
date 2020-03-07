@@ -70,6 +70,26 @@ class CustomChannels(commands.Cog):
     async def _button(self, ctx: commands.Context):
         """Configure button voice channel."""
 
+    @commands.group(name="blacklistadd")
+    async def _button_blacklist(self, ctx: commands.Context, *users: discord.Member):
+        """Disallow a user from using the custom channels."""
+
+        async with self.config.guild(ctx.guild).blacklist() as blacklist:
+            blacklisted_users = blacklist["blacklist"]
+            blacklisted_users.expand([u.id for u in users])
+            blacklist["blacklist"] = list(set(blacklisted_users))
+        await ctx.tick()
+
+    @commands.group(name="blacklistremove")
+    async def _button_blacklist(self, ctx: commands.Context, *users: discord.Member):
+        """Remove users from the blacklist a user from using the custom channels."""
+
+        async with self.config.guild(ctx.guild).blacklist() as blacklist:
+            blacklisted_users = blacklist["blacklist"]
+            blacklisted_users = [u for u in blacklisted_users if u not in [m.id for m in users]]
+            blacklist["blacklist"] = list(set(blacklisted_users))
+        await ctx.tick()
+
     @_button.command(name="add")
     async def _button_add(self, ctx, category_id: str, room_id: int):
         """Whitelist a category and Channel to become a button."""
@@ -162,6 +182,8 @@ class CustomChannels(commands.Cog):
         guild = member.guild
         has_perm = guild.me.guild_permissions.manage_channels
         if not has_perm:
+            return
+        if member.id in self.config.guild(member.guild).blacklist():
             return
         whitelist = await self.config.guild(member.guild).category_with_button()
         user_created_channels = await self.config.guild(member.guild).user_created_voice_channels()
