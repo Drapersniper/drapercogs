@@ -44,7 +44,7 @@ class PlayerStats(commands.Cog):
             data = await _parse_stats_battlefield_v(origin)
             overview = data.get("overview", {})
             gamemode = data.get("gamemode")
-            player_class = overview.get("Lifetime")
+            player_class = overview.get("Lifetime", {})
             classes = data.get("class")
             icon_url = data.get("display_url")
             rank_url = player_class.get("Rank", {}).get("meta", {}).get("rank_url")
