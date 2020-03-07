@@ -644,7 +644,11 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
 
 async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: dict):
     def check(m):
-        return m.author == author and isinstance(m.channel, discord.DMChannel) and len(msg.content) < 33
+        return (
+            m.author == author
+            and isinstance(m.channel, discord.DMChannel)
+            and len(msg.content) < 33
+        )
 
     def remove_old(prompt_data: dict, key_to_remove: str):
         newdict = prompt_data
@@ -766,19 +770,26 @@ def get_date_time(s: Union[int, str, datetime] = None):
 
 
 async def update_member_atomically(
-    ctx: commands.Context,
+    ctx: Union[commands.Context, discord.Member],
     give: List[discord.Role] = None,
     remove: List[discord.Role] = None,
     nick: str = None,
     member: discord.Member = None,
+    member_update=False,
 ):
     if not ctx.guild:
         return None
-    member = member or ctx.author
     me = ctx.guild.me
+    if member_update:
+        assert isinstance(ctx, discord.Member)
+        member = member
+        permissions = me.guild_permissions
+    else:
+        assert isinstance(ctx, commands.Context)
+        member = member or ctx.author
+        permissions = me.permissions_in(ctx.channel)
     if member == me:
         return
-    permissions = member.guild.me.permissions_in(ctx.channel)
     can_modify_nick = permissions.manage_nicknames
     can_modify_role = permissions.manage_roles
     if can_modify_role:

@@ -26,7 +26,9 @@ class MemberStatus(commands.Cog):
     @commands.guild_only()
     @commands.admin_or_permissions(manage_channels=True, manage_guild=True)
     @commands.bot_has_permissions(embed_links=True)
-    async def linkchannel(self, ctx: commands.Context, channel: discord.TextChannel, *, game: str = None):
+    async def linkchannel(
+        self, ctx: commands.Context, channel: discord.TextChannel, *, game: str = None
+    ):
         """Link a channel to a game - Requires exact game name"""
         await self.config.channel(channel).game.set(game)
         await ctx.tick()
@@ -260,7 +262,9 @@ class MemberStatus(commands.Cog):
         for member in ctx.guild.members:
             if member.activities:
                 interested_in = [
-                    activity for activity in member.activities if activity and activity.type == looking_for
+                    activity
+                    for activity in member.activities
+                    if activity and activity.type == looking_for
                 ]
                 if interested_in and not member.bot:
                     game = getattr(interested_in[0], name_property, None)
@@ -271,18 +275,19 @@ class MemberStatus(commands.Cog):
                             and not any(g.lower() in game.lower() for g in game_name)
                         ):
                             continue
-                        if looking_for in [discord.ActivityType.playing, discord.ActivityType.streaming]:
-                            publisher = (
-                                await ConfigHolder.PublisherManager.publisher.get_raw()
-                            )
+                        if looking_for in [
+                            discord.ActivityType.playing,
+                            discord.ActivityType.streaming,
+                        ]:
+                            publisher = await ConfigHolder.PublisherManager.publisher.get_raw()
                             publisher = publisher.get(game)
                         elif looking_for == discord.ActivityType.watching:
                             publisher = "movie"
                         else:
                             publisher = "spotify"
-                        accounts = (
-                            await ConfigHolder.AccountManager.user(member).get_raw()
-                        ).get("account", {})
+                        accounts = (await ConfigHolder.AccountManager.user(member).get_raw()).get(
+                            "account", {}
+                        )
                         account = accounts.get(publisher)
                         if not account:
                             account = None

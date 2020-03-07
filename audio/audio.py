@@ -496,7 +496,9 @@ class Audio(commands.Cog):
                 player.store("requester", current_requester)
                 self.bot.dispatch("red_audio_track_start", guild, current_track, current_requester)
                 if guild_id and current_track:
-                    self.music_cache.persist_queue.played(guild_id=guild_id, track_id=current_track.track_identifier)
+                    self.music_cache.persist_queue.played(
+                        guild_id=guild_id, track_id=current_track.track_identifier
+                    )
             if event_type == lavalink.LavalinkEvents.TRACK_END:
                 prev_song = player.fetch("prev_song")
                 prev_requester = player.fetch("prev_requester")
@@ -532,7 +534,10 @@ class Audio(commands.Cog):
                         and current_extras.get("autoplay")
                         and (
                             prev_song is None
-                            or (hasattr(prev_song, "extras") and not prev_song.extras.get("autoplay"))
+                            or (
+                                hasattr(prev_song, "extras")
+                                and not prev_song.extras.get("autoplay")
+                            )
                         )
                     ):
                         await self._embed_msg(notify_channel, title=_("Auto Play Started."))
@@ -628,7 +633,8 @@ class Audio(commands.Cog):
                         description = description or ""
                         if event_type == lavalink.LavalinkEvents.TRACK_STUCK:
                             embed = discord.Embed(
-                                title=_("Track Stuck"), description="{}".format(description),
+                                title=_("Track Stuck"),
+                                description="{}".format(description),
                                 colour=await self.bot.get_embed_color(message_channel),
                             )
                         else:
@@ -683,7 +689,9 @@ class Audio(commands.Cog):
         await self._data_check(guild.me)
 
         ctx = namedtuple("Context", "message guild")
-        (results, called_api) = await self.music_cache.lavalink_query(ctx(guild, guild), player, query)
+        (results, called_api) = await self.music_cache.lavalink_query(
+            ctx(guild, guild), player, query
+        )
 
         if not results.tracks:
             if IS_DEBUG:
@@ -1710,7 +1718,6 @@ class Audio(commands.Cog):
             status=song_status,
             bumpped_shuffle=bumpped_shuffle,
             persist_queue=persist_queue,
-
         )
         if thumbnail:
             msg += _("Thumbnails:       [{0}]\n").format(
@@ -4095,9 +4102,7 @@ class Audio(commands.Cog):
         ):
             if specified_user:
                 correct_scope_matches_global = [
-                    p
-                    for p in matches.get(PlaylistScope.GLOBAL.value)
-                    if p.author == user_to_query
+                    p for p in matches.get(PlaylistScope.GLOBAL.value) if p.author == user_to_query
                 ]
             else:
                 correct_scope_matches_global = [p for p in matches.get(PlaylistScope.GLOBAL.value)]
@@ -5128,9 +5133,15 @@ class Audio(commands.Cog):
             scope_data = [None, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
         if scope is None:
-            global_matches = await get_all_playlist(PlaylistScope.GLOBAL.value, self.bot, guild, author, specified_user)
-            guild_matches = await get_all_playlist(PlaylistScope.GUILD.value, self.bot, guild, author, specified_user)
-            user_matches = await get_all_playlist(PlaylistScope.USER.value, self.bot, guild, author, specified_user)
+            global_matches = await get_all_playlist(
+                PlaylistScope.GLOBAL.value, self.bot, guild, author, specified_user
+            )
+            guild_matches = await get_all_playlist(
+                PlaylistScope.GUILD.value, self.bot, guild, author, specified_user
+            )
+            user_matches = await get_all_playlist(
+                PlaylistScope.USER.value, self.bot, guild, author, specified_user
+            )
             playlists = [*global_matches, *guild_matches, *user_matches]
             name = None
             if not playlists:
@@ -5138,7 +5149,9 @@ class Audio(commands.Cog):
                 return await self._embed_msg(
                     ctx,
                     title=_("Playlist Not Found"),
-                    description=_("No saved playlists available in this server.").format(scope=name),
+                    description=_("No saved playlists available in this server.").format(
+                        scope=name
+                    ),
                 )
         else:
             try:
@@ -5189,7 +5202,7 @@ class Audio(commands.Cog):
                             or playlist.author
                             or _("Unknown")
                         ),
-                        _("Scope: {scope}\n").format(scope=humanize_scope(playlist.scope))
+                        _("Scope: {scope}\n").format(scope=humanize_scope(playlist.scope)),
                     )
                 )
             )
@@ -6817,9 +6830,7 @@ class Audio(commands.Cog):
                     description=_("You need the DJ role to clear the queue."),
                 )
         for track in player.queue:
-            self.music_cache.persist_queue.played(
-                    ctx.guild.id, track.extras.get("enqueue_time")
-                )
+            self.music_cache.persist_queue.played(ctx.guild.id, track.extras.get("enqueue_time"))
             await asyncio.sleep(0)
         player.queue.clear()
         await self._embed_msg(
@@ -8652,13 +8663,19 @@ class Audio(commands.Cog):
         too_old_id = int(time.mktime(too_old.timetuple()))
         try:
             await delete_playlist(
-                scope=PlaylistScope.GUILD.value, playlist_id=too_old_id, guild=guild, author=self.bot.user
+                scope=PlaylistScope.GUILD.value,
+                playlist_id=too_old_id,
+                guild=guild,
+                author=self.bot.user,
             )
         except Exception as err:
             debug_exc_log(log, err, f"Failed to delete daily playlist ID: {too_old_id}")
         try:
             await delete_playlist(
-                scope=PlaylistScope.GLOBAL.value, playlist_id=too_old_id, guild=guild, author=self.bot.user
+                scope=PlaylistScope.GLOBAL.value,
+                playlist_id=too_old_id,
+                guild=guild,
+                author=self.bot.user,
             )
         except Exception as err:
             debug_exc_log(log, err, f"Failed to delete global daily playlist ID: {too_old_id}")

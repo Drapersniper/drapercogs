@@ -191,9 +191,7 @@ class CustomChannels(commands.Cog):
             self.antispam[guild.id] = {}
 
         if member.id not in self.antispam[guild.id]:
-            self.antispam[guild.id][member.id] = AntiSpam(
-                [(timedelta(seconds=600), 1)]
-            )
+            self.antispam[guild.id][member.id] = AntiSpam([(timedelta(seconds=600), 1)])
 
         if member.id in await self.config.guild(member.guild).blacklist():
             return

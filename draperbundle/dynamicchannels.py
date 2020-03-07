@@ -96,7 +96,9 @@ class DynamicChannels(commands.Cog):
         valid_categories = {
             f"{category.id}": category.name for category in ctx.guild.categories if category
         }
-        whitelisted_cat = await ConfigHolder.DynamicChannels.guild(ctx.guild).dynamic_channels.get_raw()
+        whitelisted_cat = await ConfigHolder.DynamicChannels.guild(
+            ctx.guild
+        ).dynamic_channels.get_raw()
         if valid_categories and category_id not in valid_categories:
             await ctx.send(
                 f"ERROR: {category_id} is not a valid category ID for "
@@ -107,9 +109,7 @@ class DynamicChannels(commands.Cog):
         elif not valid_categories:
             await ctx.send(f"ERROR: No valid categories in {ctx.guild.name}")
             return
-        elif category_id not in (
-               whitelisted_cat
-        ):
+        elif category_id not in (whitelisted_cat):
             await ctx.send(
                 f"ERROR: Category {category_id} is not been whitelisted as a "
                 f"special category {ctx.guild.name}, use `{ctx.prefix}dynamicset add`"
@@ -189,9 +189,7 @@ class DynamicChannels(commands.Cog):
             self.antispam[guild.id] = {}
 
         if member.id not in self.antispam[guild.id]:
-            self.antispam[guild.id][member.id] = AntiSpam(
-                [(timedelta(seconds=60), 2)]
-            )
+            self.antispam[guild.id][member.id] = AntiSpam([(timedelta(seconds=60), 2)])
 
         delete = {}
         whitelist = await self.config.guild(member.guild).dynamic_channels.get_raw()
@@ -281,9 +279,7 @@ class DynamicChannels(commands.Cog):
                             category=category,
                             bitrate=member.guild.bitrate_limit,
                         )
-                        log.debug(
-                            f"New dynamic channel has been created: {created_channel.name}"
-                        )
+                        log.debug(f"New dynamic channel has been created: {created_channel.name}")
                         guild_group = self.config.guild(member.guild)
                         async with guild_group.user_created_voice_channels() as user_voice:
                             user_voice.update({created_channel.id: created_channel.id})

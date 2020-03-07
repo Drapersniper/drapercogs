@@ -26,9 +26,10 @@ from .utilities import (
     get_supported_platforms,
     get_role_named,
     get_member_activity,
+    has_a_profile,
 )
 
-logger = logging.getLogger("red.drapercogs.profile")
+log = logging.getLogger("red.drapercogs.profile")
 
 
 class GamingProfile(commands.Cog):
@@ -52,16 +53,18 @@ class GamingProfile(commands.Cog):
         """Set up the environment needed by creating the required roles."""
         countries = list(CONTINENT_DATA.values())
         roles = countries + ["No Profile", "Has Profile"]
+        existing_roles = [r.name for r in ctx.guild.roles]
         for role in roles:
-            await ctx.guild.create_role(
-                name=role, mentionable=False, hoist=False, reason="Profile Setup"
-            )
+            if role not in existing_roles:
+                await ctx.guild.create_role(
+                    name=role, mentionable=False, hoist=False, reason="Profile Setup"
+                )
+        await ctx.tick()
 
     @_profile.command(name="create", aliases=["make"])
     async def _profile_create(self, ctx: commands.Context):
         """Creates and sets up or updates an existing profile"""
         author = ctx.author
-        guild = ctx.guild
         discord_user_name = str(author)
         user_data = {
             "country": None,
@@ -88,24 +91,12 @@ class GamingProfile(commands.Cog):
         if msg and msg.content.lower() in ["y", "yes"]:
             role_to_add = []
             role_to_remove = []
-            user_data = await update_profile(self.bot, user_data, author)
+            new_user_data = await update_profile(self.bot, user_data, author)
             accounts = await account_adder(self.bot, author)
-            logger.info(f"profile_create: {author.display_name} Accounts:{accounts}")
-            await self.profileConfig.user(author).discord_user_id.set(
-                user_data.get("discord_user_id")
-            )
-            await self.profileConfig.user(author).discord_user_name.set(
-                user_data.get("discord_user_name")
-            )
-            await self.profileConfig.user(author).discord_true_name.set(
-                user_data.get("discord_true_name")
-            )
-            await self.profileConfig.user(author).country.set(user_data.get("country"))
-            await self.profileConfig.user(author).zone.set(user_data.get("zone"))
-            await self.profileConfig.user(author).timezone.set(user_data.get("timezone"))
-            await self.profileConfig.user(author).language.set(user_data.get("language"))
-            if user_data.get("subzone"):
-                await self.profileConfig.user(author).subzone.set(user_data.get("subzone"))
+            log.debug(f"profile_create: {author.display_name} Accounts:{accounts}")
+            async with self.profileConfig.user(author).all() as user_data:
+                user_data.update(new_user_data)
+
             if accounts:
                 accounts_group = self.config.user(author)
                 async with accounts_group.account() as services:
@@ -135,7 +126,9 @@ class GamingProfile(commands.Cog):
                         role_to_remove += roles
                         role_to_remove.append(doesnt_have_profile_role)
 
-                await update_member_atomically(ctx=ctx, member=author, give=role_to_add, remove=role_to_remove)
+                await update_member_atomically(
+                    ctx=ctx, member=author, give=role_to_add, remove=role_to_remove
+                )
 
     @_profile.command(name="update")
     async def _profile_update(self, ctx: commands.Context):
@@ -151,14 +144,10 @@ class GamingProfile(commands.Cog):
         except discord.Forbidden:
             return await ctx.author.send("I can't PM you", send_first=f"{ctx.author.mention}")
         user = await update_profile(self.bot, user, author)
-        await self.profileConfig.user(author).country.set(user.get("country"))
-        await self.profileConfig.user(author).zone.set(user.get("zone"))
-        await self.profileConfig.user(author).timezone.set(user.get("timezone"))
-        await self.profileConfig.user(author).language.set(user.get("language"))
-        if user.get("subzone"):
-            await self.profileConfig.user(author).subzone.set(user.get("subzone"))
+        async with self.profileConfig.user(author).all() as user_data:
+            user_data.update(user)
         accounts = await account_adder(self.bot, author)
-        logger.info(f"profile_update: {author.display_name} Accounts:{accounts}")
+        log.debug(f"profile_update: {author.display_name} Accounts:{accounts}")
         if accounts:
             accounts_group = self.config.user(author)
             async with accounts_group.account() as services:
@@ -181,7 +170,9 @@ class GamingProfile(commands.Cog):
                 ]
                 if roles:
                     role_to_remove += roles
-            await update_member_atomically(ctx=ctx, member=author, give=role_to_add, remove=role_to_remove)
+            await update_member_atomically(
+                ctx=ctx, member=author, give=role_to_add, remove=role_to_remove
+            )
 
         await ctx.author.send("I have updated your profile")
 
@@ -292,6 +283,45 @@ class GamingProfile(commands.Cog):
             await ctx.author.send(f"To created a new one please run `{ctx.prefix}profile create`")
         else:
             await ctx.author.send("Your profile hasn't been touched")
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before: discord.Member, after: discord.Member):
+        guild = after.guild
+        role_to_remove = []
+        role_to_add = []
+
+        if guild:
+            continent_role = await self.profileConfig.user(after).zone()
+            role_names = [role.name for role in after.roles]
+            if continent_role and continent_role not in role_names:
+                role = discord.utils.get(after.guild.roles, name=continent_role)
+                if role:
+                    role_to_add.append(role)
+            zone_roles_user_has = [x for x in list(CONTINENT_DATA.values()) if x in role_names]
+            if len(zone_roles_user_has) > 1 or not continent_role:
+                roles = [
+                    discord.utils.get(after.guild.roles, name=role_name)
+                    for role_name in zone_roles_user_has
+                    if discord.utils.get(after.guild.roles, name=role_name).name != continent_role
+                ]
+                if roles:
+                    role_to_remove += roles
+            doesnt_have_profile_role = get_role_named(after.guild, "No Profile")
+            has_profile_role = get_role_named(after.guild, "Has Profile")
+            if await has_a_profile(after):
+                role_to_add.append(has_profile_role)
+                role_to_remove.append(doesnt_have_profile_role)
+            else:
+                role_to_add.append(doesnt_have_profile_role)
+                role_to_remove.append(has_profile_role)
+
+            await update_member_atomically(
+                ctx=after,
+                member=after,
+                give=role_to_add,
+                remove=role_to_remove,
+                member_update=True,
+            )
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message):
@@ -420,7 +450,7 @@ class GamingProfile(commands.Cog):
             accounts = await account_adder(self.bot, ctx.author)
         except discord.Forbidden:
             return await ctx.send(f"I can't PM you, {ctx.author.mention}")
-        logger.info(f"account_add: {ctx.author.display_name} Accounts:{accounts}")
+        log.debug(f"account_add: {ctx.author.display_name} Accounts:{accounts}")
 
         if accounts:
             accounts_group = self.config.user(ctx.author)
