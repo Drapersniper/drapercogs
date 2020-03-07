@@ -33,7 +33,7 @@ class DynamicChannels(commands.Cog):
     async def _button(self, ctx: commands.Context):
         """Configure dynamic voice channels."""
 
-    @commands.group(name="blacklistadd")
+    @_button.command(name="blacklistadd")
     async def _button_blacklist(self, ctx: commands.Context, *users: discord.Member):
         """Disallow a user from using the custom channels."""
 
@@ -43,7 +43,7 @@ class DynamicChannels(commands.Cog):
             blacklist["blacklist"] = list(set(blacklisted_users))
         await ctx.tick()
 
-    @commands.group(name="blacklistremove")
+    @_button.command(name="blacklistremove")
     async def _button_blacklist(self, ctx: commands.Context, *users: discord.Member):
         """Remove users from the blacklist a user from using the custom channels."""
 
