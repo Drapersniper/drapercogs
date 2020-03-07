@@ -647,7 +647,7 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
         return (
             m.author == author
             and isinstance(m.channel, discord.DMChannel)
-            and len(msg.content) < 33
+            and len(m.content) < 33
         )
 
     def remove_old(prompt_data: dict, key_to_remove: str):
