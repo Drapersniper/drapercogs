@@ -8,7 +8,7 @@ from .dynamicchannels import DynamicChannels
 
 
 def setup(bot):
-    # bot.add_cog(DynamicChannels(bot))
+    bot.add_cog(DynamicChannels(bot))
     bot.add_cog(CustomChannels(bot))
     bot.add_cog(GamingProfile(bot))
     bot.add_cog(MemberStatus(bot))
