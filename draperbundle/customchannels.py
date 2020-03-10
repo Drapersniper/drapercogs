@@ -3,12 +3,14 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import Union
+from datetime import timedelta
+from typing import Union, Dict
 
 import discord
 
 from redbot.core import commands, checks
 from redbot.core.bot import Red
+from redbot.core.utils.antispam import AntiSpam
 from redbot.core.utils.chat_formatting import box
 
 from .config_holder import ConfigHolder
@@ -59,6 +61,7 @@ class CustomChannels(commands.Cog):
         self.bot = bot
         self.config = ConfigHolder.CustomChannels
         self.task = self.bot.loop.create_task(self.clean_up_custom_channels())
+        self.antispam: Dict[int, Dict[int, AntiSpam]] = {}
 
     def cog_unload(self):
         if self.task:
@@ -69,6 +72,26 @@ class CustomChannels(commands.Cog):
     @commands.group(name="buttonset")
     async def _button(self, ctx: commands.Context):
         """Configure button voice channel."""
+
+    @_button.command(name="blacklistadd")
+    async def _button_blacklist(self, ctx: commands.Context, *users: discord.Member):
+        """Disallow a user from using the custom channels."""
+
+        async with self.config.guild(ctx.guild).blacklist() as blacklist:
+            blacklisted_users = blacklist["blacklist"]
+            blacklisted_users.expand([u.id for u in users])
+            blacklist["blacklist"] = list(set(blacklisted_users))
+        await ctx.tick()
+
+    @_button.command(name="blacklistremove")
+    async def _button_blacklist(self, ctx: commands.Context, *users: discord.Member):
+        """Remove users from the blacklist a user from using the custom channels."""
+
+        async with self.config.guild(ctx.guild).blacklist() as blacklist:
+            blacklisted_users = blacklist["blacklist"]
+            blacklisted_users = [u for u in blacklisted_users if u not in [m.id for m in users]]
+            blacklist["blacklist"] = list(set(blacklisted_users))
+        await ctx.tick()
 
     @_button.command(name="add")
     async def _button_add(self, ctx, category_id: str, room_id: int):
@@ -105,7 +128,7 @@ class CustomChannels(commands.Cog):
         guild_data = self.config.guild(ctx.guild)
         async with guild_data.category_with_button() as whitelist:
             if category_id in whitelist:
-                del whitelist[str(category_id.id)]
+                del whitelist[str(category_id)]
                 await ctx.send(f"Removed {category_id} from the whitelist")
             else:
                 await ctx.send(f"Error: {category_id} is not a whitelisted category")
@@ -163,15 +186,26 @@ class CustomChannels(commands.Cog):
         has_perm = guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
+
+        if guild.id not in self.antispam:
+            self.antispam[guild.id] = {}
+
+        if member.id not in self.antispam[guild.id]:
+            self.antispam[guild.id][member.id] = AntiSpam([(timedelta(seconds=600), 1)])
+
+        if member.id in await self.config.guild(member.guild).blacklist():
+            return
         whitelist = await self.config.guild(member.guild).category_with_button()
         user_created_channels = await self.config.guild(member.guild).user_created_voice_channels()
         if (
             after
+            and not self.antispam[guild.id][member.id].spammy
             and after.channel
             and after.channel.category
             and f"{after.channel.category.id}" in whitelist
             and after.channel.id == whitelist[f"{after.channel.category.id}"]
         ):
+            self.antispam[guild.id][member.id].stamp()
             logger.info(f"User joined {after.channel.name} creating a new room")
             max_position = max([channel.position for channel in after.channel.category.channels])
             overwrites = await self._get_overrides(after.channel or before.channel, member)

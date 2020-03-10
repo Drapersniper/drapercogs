@@ -229,11 +229,12 @@ default_guild_CustomChannels = dict(
     custom_channels={},
     user_created_voice_channels_bypass_roles=[],
     user_created_voice_channels={},
+    blacklist=[],
 )
 default_member_CustomChannels = dict(currentRooms={})
 
 default_guild_DynamicChannels = dict(
-    dynamic_channels={}, custom_channels={}, user_created_voice_channels={}
+    dynamic_channels={}, custom_channels={}, user_created_voice_channels={}, blacklist=[]
 )
 default_guild_RandomQuotes = {
     "enabled": False,
@@ -245,7 +246,7 @@ default_guild_RandomQuotes = {
 }
 default_channel_RandomQuotes = {"quotes": {}, "permaQuotes": {}}
 default_guild_GamingProfile = {"no_profile_role": None, "profile_role": None}
-
+default_channel_status = {"game": None}
 
 ConfigHolder.AccountManager.register_user(**default_member_AccountManager)
 ConfigHolder.GamingProfile.register_user(**default_member_GamingProfile)
@@ -253,6 +254,7 @@ ConfigHolder.GamingProfile.register_guild(**default_guild_GamingProfile)
 ConfigHolder.PCSpecs.register_user(**default_member_PCSpecs)
 ConfigHolder.PublisherManager.register_global(**default_custom_PublisherManager)
 ConfigHolder.PlayerStatus.register_guild(**default_guild_StatusManager)
+ConfigHolder.PlayerStatus.register_channel(**default_channel_status)
 ConfigHolder.LogoData.register_global(**default_custom_Logos)
 ConfigHolder.CustomChannels.register_guild(**default_guild_CustomChannels)
 ConfigHolder.CustomChannels.register_member(**default_member_CustomChannels)

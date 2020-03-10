@@ -87,7 +87,7 @@ def list_filter(_list: list, what_to_remove: Union[str, int, bool] = None):
 async def has_a_profile(member: discord.Member):
     if not member:
         return False
-    if await ConfigHolder.GamingProfile.member(member).country():
+    if await ConfigHolder.GamingProfile.user(member).country():
         return True
     return False
 
@@ -465,7 +465,7 @@ async def get_all_user_profiles(
 
 
 async def get_user_inactivity(member, pm=False, inactivity=False, timespan=None):
-    data = await ConfigHolder.GamingProfile.member(member).all()
+    data = await ConfigHolder.GamingProfile.user(member).all()
     data_list = []
     role_value = 0
     time_now = datetime.now(tz=timezone.utc)
@@ -644,7 +644,11 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
 
 async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: dict):
     def check(m):
-        return m.author == author and isinstance(m.channel, discord.DMChannel)
+        return (
+            m.author == author
+            and isinstance(m.channel, discord.DMChannel)
+            and len(m.content) < 33
+        )
 
     def remove_old(prompt_data: dict, key_to_remove: str):
         newdict = prompt_data
@@ -679,72 +683,23 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
                 None,
             )
             if name and command:
-                await author.send(f"What is your username for {name}?")
+                await author.send(f"What is your username for {name}? (32 characters or less)")
                 msg = await bot.wait_for("message", check=check)
+                if msg and msg.content.lower() in ["stop", "finish"]:
+                    await author.send(f"Thanks for adding your accounts.")
+                    break
+                elif msg and msg.content.lower() in ["skip", "cancel"]:
+                    await author.send(f"Skipping {name} account.")
+                    continue
                 if msg and not len(msg.content.lower()) <= 3:
                     username = msg.content.strip()
                     data.update({command: username.strip()})
         elif msg and prompt_data.get(msg.content, "").lower() == "finish":
+            await author.send(f"Thanks for adding your accounts.")
             break
         else:
             key = 999
     return data
-
-
-async def get_players_per_activity(
-    ctx: commands.Context, stream: bool = False, music: bool = False, game_name: List[str] = None
-):
-    if stream:
-        looking_for = discord.ActivityType.streaming
-        name_property = "details"
-    elif game_name:
-        looking_for = discord.ActivityType.playing
-        name_property = "name"
-    elif music:
-        looking_for = discord.ActivityType.listening
-        name_property = "title"
-    else:
-        looking_for = discord.ActivityType.playing
-        name_property = "name"
-
-    member_data_new = {}
-    role_value = 0
-    for member in ctx.guild.members:
-        if member.activities:
-            interested_in = [
-                activity for activity in member.activities if activity.type == looking_for
-            ]
-            if interested_in and not member.bot:
-                game = getattr(interested_in[0], name_property, None)
-                if game:
-                    if (
-                        game_name
-                        and game not in game_name
-                        and not any(g.lower() in game.lower() for g in game_name)
-                    ):
-                        continue
-                    if not music:
-                        publisher = (await ConfigHolder.PublisherManager.publisher.get_raw()).get(
-                            game
-                        )
-                    else:
-                        publisher = "spotify"
-                    accounts = (await ConfigHolder.AccountManager.member(member).get_raw()).get(
-                        "account", {}
-                    )
-                    account = accounts.get(publisher)
-                    if not account:
-                        account = None
-
-                    name = member.display_name
-                    mention = member.mention
-                    top_role = member.top_role
-                    role_value = top_role.position * -1
-                    if game in member_data_new:
-                        member_data_new[game].append((mention, name, role_value, account))
-                    else:
-                        member_data_new[game] = [(mention, name, role_value, account)]
-    return member_data_new
 
 
 def get_member_named(guild, name):
@@ -815,53 +770,57 @@ def get_date_time(s: Union[int, str, datetime] = None):
 
 
 async def update_member_atomically(
-    member: discord.Member,
+    ctx: Union[commands.Context, discord.Member],
     give: List[discord.Role] = None,
     remove: List[discord.Role] = None,
     nick: str = None,
+    member: discord.Member = None,
+    member_update=False,
 ):
-    """
-    Give and remove roles and change nick as a single op with some slight sanity
-    wrapping
-    """
-    me = member.guild.me
-    has_perm = me.guild_permissions.manage_roles
-    if not has_perm or member == me:
+    if not ctx.guild:
+        return None
+    me = ctx.guild.me
+    if member_update:
+        assert isinstance(ctx, discord.Member)
+        member = member
+        permissions = me.guild_permissions
+    else:
+        assert isinstance(ctx, commands.Context)
+        member = member or ctx.author
+        permissions = me.permissions_in(ctx.channel)
+    if member == me:
         return
-    give = give or []
-    remove = remove or []
-    current_roles = member.roles if member.roles else []
-    roles = [r for r in member.roles if r and r not in remove]
-    roles.extend([r for r in give if r and r not in roles])
-    roles = list(set(roles))
-    roles = [r for r in roles if r < me.top_role]
-    new_roles = list(set([r for r in roles if r not in current_roles]))
-    if sorted(roles) == sorted(member.roles) and not nick:
-        logger.info(
-            f"{member} New roles are equivalent to old roles and doesn't need a name change"
-        )
+    can_modify_nick = permissions.manage_nicknames
+    can_modify_role = permissions.manage_roles
+    if can_modify_role:
+        give = give or []
+        remove = remove or []
+        roles = [r for r in member.roles if r and r not in remove]
+        roles.extend([r for r in give if r and r not in roles])
+        roles = list(set(roles))
+        roles = [r for r in roles if r < me.top_role]
+        roles_changed = sorted(roles) != sorted(member.roles)
+    else:
+        roles = []
+        roles_changed = False
+
+    if me.top_role < member.top_role and nick:
         return
-    elif sorted(roles) == sorted(member.roles) and nick:
-        logger.info(f"{member} New roles are equivalent to old roles, Only renaming")
-        try:
-            await member.edit(nick=nick)
-            if nick and member.display_name.strip() != nick.strip():
-                logger.info(f"Old Name: {member.display_name}: New Name: {nick}")
-        except discord.errors.Forbidden:
-            logger.error(f"Unable to rename {member}")
-    elif sorted(roles) != sorted(member.roles) and not nick:
-        logger.info(f"{member} doesn't need a name change sending role change")
-        await member.edit(roles=roles)
-    elif sorted(roles) != sorted(member.roles) and nick:
-        logger.info(f"{member} Needs both a role update and a name change")
-        try:
-            await member.edit(roles=roles, nick=nick)
-            if nick and member.display_name.strip() != nick.strip():
-                logger.info(f"Old Name: {member.display_name}: New Name: {nick}")
-        except discord.errors.Forbidden:
-            logger.error(f"Unable to rename {member}, trying to edit roles")
-            logger.info(f"{member} sending role edit")
-            await member.edit(roles=roles)
+    if not roles_changed and not nick:
+        return
+    if member.guild.owner == member:
+        return
+    if can_modify_nick and nick and not roles_changed:
+        return await member.edit(nick=nick)
+    if can_modify_role and roles_changed and not nick:
+        return await member.edit(roles=roles)
+    if roles_changed and nick:
+        if can_modify_role and can_modify_nick:
+            return await member.edit(roles=roles, nick=nick)
+        elif can_modify_role:
+            return await member.edit(roles=roles)
+        else:
+            return await member.edit(nick=nick)
 
 
 _header = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
