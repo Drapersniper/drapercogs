@@ -112,6 +112,8 @@ class PublisherManager(commands.Cog):
 
         config_data = await self.config.publisher()
         existing_data = [key for key, _ in config_data.items() if checker in key.lower()]
+        if not existing_data:
+            return await ctx.send("I've never seen anyone playing this game")
         await self.parse_playing(ctx, existing_data)
 
     @_parse.command(name="incomplete")
