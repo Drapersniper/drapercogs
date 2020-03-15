@@ -136,7 +136,7 @@ class Audio(commands.Cog):
             persist_queue=True,
             dj_enabled=False,
             dj_role=None,
-            prefer_lyrics=True,
+            prefer_lyrics=False,
             daily_playlists=False,
             emptydc_enabled=False,
             emptydc_timer=0,
@@ -720,6 +720,21 @@ class Audio(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def audioset(self, ctx: commands.Context):
         """Music configuration options."""
+
+    @audioset.command(name="lyrics")
+    @commands.guild_only()
+    @checks.mod_or_permissions(administrator=True)
+    async def command_audioset_lryics(self, ctx: commands.Context):
+        """Prioritise tracks with lyrics."""
+        prefer_lyrics = await self.config.guild(ctx.guild).prefer_lyrics()
+        await self.config.guild(ctx.guild).prefer_lyrics.set(not prefer_lyrics)
+        await self.send_embed_msg(
+            ctx,
+            title=_("Setting Changed"),
+            description=_("Prefer tracks with lryics: {true_or_false}.").format(
+                true_or_false=_("Enabled") if not prefer_lyrics else _("Disabled")
+            ),
+        )
 
     @audioset.command(name="dailyqueue")
     @checks.admin()
