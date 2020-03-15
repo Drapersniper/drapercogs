@@ -733,7 +733,7 @@ class Audio(commands.Cog):
         """Prioritise tracks with lyrics."""
         prefer_lyrics = await self.config.guild(ctx.guild).prefer_lyrics()
         await self.config.guild(ctx.guild).prefer_lyrics.set(not prefer_lyrics)
-        await self.send_embed_msg(
+        await self._embed_msg(
             ctx,
             title=_("Setting Changed"),
             description=_("Prefer tracks with lryics: {true_or_false}.").format(
