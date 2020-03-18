@@ -1,0 +1,12 @@
+{
+    "author": ["Drapersniper"],
+    "install_msg": "A cog to check permissions JIT",
+    "name": "Permissions Checker",
+    "disabled": false,
+    "description": "A cog to check permissions JIT.",
+    "tags": [
+        "dev",
+        "permissions"
+    ],
+    "hidden": false
+}
