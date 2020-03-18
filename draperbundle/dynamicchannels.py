@@ -32,6 +32,7 @@ class DynamicChannels(commands.Cog):
 
     @checks.admin_or_permissions()
     @commands.guild_only()
+    @commands.bot_has_permissions(manage_channels=True, manage_roles=True)
     @commands.group(name="dynamicset")
     async def _button(self, ctx: commands.Context):
         """Configure dynamic voice channels."""
