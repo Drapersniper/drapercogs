@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import ast
+import asyncio
 import concurrent.futures
 import logging
 import operator as op
@@ -191,7 +192,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
 
     try:
         msg = await bot.wait_for("message", check=check, timeout=120)
-    except concurrent.futures._base.TimeoutError:
+    except (concurrent.futures._base.TimeoutError, asyncio.exceptions.TimeoutError):
         msg = None
     if msg and msg.content.lower() in validcountry_keys:
         user_data["country"] = msg.content.title()
