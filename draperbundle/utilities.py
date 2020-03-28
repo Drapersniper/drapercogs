@@ -798,10 +798,15 @@ async def update_member_atomically(
         roles = [r for r in member.roles if r and r not in remove]
         roles.extend([r for r in give if r and r not in roles])
         roles = list(set(roles))
-        roles = [r for r in roles if r < me.top_role]
+        low_roles_add = [r for r in roles if r < me.top_role if r not in member.roles]
+        low_roles_remove = [r for r in remove if r < me.top_role if r in member.roles]
+        high_roles = [r for r in roles if r >= me.top_role]
         roles_changed = sorted(roles) != sorted(member.roles)
     else:
         roles = []
+        high_roles = []
+        low_roles_add = []
+        low_roles_remove = []
         roles_changed = False
 
     if me.top_role < member.top_role and nick:
@@ -813,12 +818,31 @@ async def update_member_atomically(
     if can_modify_nick and nick and not roles_changed:
         return await member.edit(nick=nick)
     if can_modify_role and roles_changed and not nick:
-        return await member.edit(roles=roles)
+        if not high_roles:
+            return await member.edit(roles=roles)
+        if low_roles_add:
+            await member.add_roles(*low_roles_add)
+        if low_roles_remove:
+            await member.remove_roles(*low_roles_remove)
+        return
     if roles_changed and nick:
         if can_modify_role and can_modify_nick:
-            return await member.edit(roles=roles, nick=nick)
+            if not high_roles:
+                return await member.edit(roles=roles, nick=nick)
+            if low_roles_add:
+                await member.add_roles(*low_roles_add)
+            if low_roles_remove:
+                await member.remove_roles(*low_roles_remove)
+            await member.edit(nick=nick)
+            return
         elif can_modify_role:
-            return await member.edit(roles=roles)
+            if not high_roles:
+                return await member.edit(roles=roles)
+            if low_roles_add:
+                await member.add_roles(*low_roles_add)
+            if low_roles_remove:
+                await member.remove_roles(*low_roles_remove)
+            return
         else:
             return await member.edit(nick=nick)
 

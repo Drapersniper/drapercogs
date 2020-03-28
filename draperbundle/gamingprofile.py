@@ -290,7 +290,7 @@ class GamingProfile(commands.Cog):
         role_to_remove = []
         role_to_add = []
 
-        if guild:
+        if guild and guild.me.guild_permissions.manage_roles:
             continent_role = await self.profileConfig.user(after).zone()
             role_names = [role.name for role in after.roles]
             if continent_role and continent_role not in role_names:
@@ -309,19 +309,23 @@ class GamingProfile(commands.Cog):
             doesnt_have_profile_role = get_role_named(after.guild, "No Profile")
             has_profile_role = get_role_named(after.guild, "Has Profile")
             if await has_a_profile(after):
-                role_to_add.append(has_profile_role)
-                role_to_remove.append(doesnt_have_profile_role)
+                if has_profile_role:
+                    role_to_add.append(has_profile_role)
+                if doesnt_have_profile_role:
+                    role_to_remove.append(doesnt_have_profile_role)
             else:
-                role_to_add.append(doesnt_have_profile_role)
-                role_to_remove.append(has_profile_role)
-
-            await update_member_atomically(
-                ctx=after,
-                member=after,
-                give=role_to_add,
-                remove=role_to_remove,
-                member_update=True,
-            )
+                if doesnt_have_profile_role:
+                    role_to_add.append(doesnt_have_profile_role)
+                if has_profile_role:
+                    role_to_remove.append(has_profile_role)
+            if role_to_add or role_to_remove:
+                await update_member_atomically(
+                    ctx=after,
+                    member=after,
+                    give=role_to_add,
+                    remove=role_to_remove,
+                    member_update=True,
+                )
 
     @commands.Cog.listener()
     async def on_message_without_command(self, message):
