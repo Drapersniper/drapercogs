@@ -166,9 +166,9 @@ def eval_(node):
 async def get_supported_platforms(lists: bool = True, supported: bool = False):
     platforms = (await ConfigHolder.PublisherManager.get_raw()).get("services", {})
     if supported:
-        return [(value.get("identifier")) for _, value in platforms.items()]
-    if lists:
-        return [(value.get("identifier"), value.get("name")) for _, value in platforms.items()]
+        platforms = [(value.get("identifier")) for _, value in platforms.items()]
+    elif lists:
+        platforms = [(value.get("identifier"), value.get("name")) for _, value in platforms.items()]
     return platforms
 
 
@@ -664,9 +664,8 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
             prompt_data.update({str(original_len): "finish"})
         prompt_data = remove_old(prompt_data, key)
         embed = discord.Embed(title="Pick a number that matches the service you want to add")
-
         for key, value in prompt_data.items():
-            embed.add_field(name=value.title(), value=key)
+            embed.add_field(name=value, value=key)
         await author.send(embed=embed)
         if "finish" in prompt_data.values() or "Finish" in prompt_data.values():
             valid_keys = map(str, list(prompt_data.keys())[:-1])

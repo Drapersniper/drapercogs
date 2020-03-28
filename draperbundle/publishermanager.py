@@ -134,7 +134,7 @@ class PublisherManager(commands.Cog):
                         title=f"Pick a number that matches the service you want to add to {game}"
                     )
                     for key, value in prompt_data.items():
-                        embed.add_field(name=value.title(), value=key)
+                        embed.add_field(name=value, value=key)
                     await sender(embed=embed)
 
                     valid_keys = map(str, list(prompt_data.keys())[:-2])
