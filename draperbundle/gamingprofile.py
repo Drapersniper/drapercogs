@@ -358,6 +358,7 @@ class GamingProfile(commands.Cog):
             "seen",
             "trial",
             "nickname_extas",
+            "identifier"
         )
         data = await self.profileConfig.user(member).get_raw()
         last_seen = None
