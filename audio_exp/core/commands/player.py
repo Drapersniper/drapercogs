@@ -46,7 +46,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
                 desc = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=msg, description=desc)
             try:
@@ -129,7 +129,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
         if not query.single_track:
             return await self.send_embed_msg(
                 ctx,
-                title=_("Unable to bump track"),
+                title=_("Unable To Bump Track"),
                 description=_("Only single tracks work with bump play."),
             )
         guild_data = await self.config.guild(ctx.guild).all()
@@ -150,7 +150,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
                 desc = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=msg, description=desc)
             try:
@@ -398,7 +398,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
                 desc = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=msg, description=desc)
             try:
@@ -514,7 +514,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
                 desc = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=msg, description=desc)
             try:
@@ -628,7 +628,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
                 desc = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=msg, description=desc)
             try:

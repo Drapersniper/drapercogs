@@ -97,7 +97,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ctx,
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
-                footer=None if not await ctx.bot.is_owner(ctx.author) else _("Check your logs."),
+                footer=None if not await self.bot.is_owner(ctx.author) else _("Check your logs."),
             )
         if scope_data is None:
             scope_data = [None, ctx.author, ctx.guild, False]
@@ -254,7 +254,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
 
@@ -279,8 +279,6 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
             to_guild,
             specified_to_user,
         ) = scope_data
-
-        from_scope = from_scope or PlaylistScope.GUILD.value
         to_scope = to_scope or PlaylistScope.GUILD.value
         try:
             from_playlist, playlist_arg, from_scope = await self.get_playlist_match(
@@ -381,7 +379,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -459,7 +457,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -547,7 +545,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         async with ctx.typing():
@@ -682,7 +680,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -812,7 +810,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -935,7 +933,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -1091,7 +1089,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         async with ctx.typing():
@@ -1204,7 +1202,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -1314,7 +1312,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -1434,13 +1432,12 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
             scope_data = [None, ctx.author, ctx.guild, False]
         scope, author, guild, specified_user = scope_data
-        scope = scope or PlaylistScope.GUILD.value
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()
         )
@@ -1478,7 +1475,6 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
         maxlength = await self.config.guild(ctx.guild).maxlength()
         author_obj = self.bot.get_user(ctx.author.id)
         track_len = 0
-        playlist = None
         try:
             player = lavalink.get_player(ctx.guild.id)
             tracks = playlist.tracks_obj
@@ -1613,7 +1609,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -1773,7 +1769,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -1797,7 +1793,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ),
             )
             try:
-                file_message = await ctx.bot.wait_for(
+                file_message = await self.bot.wait_for(
                     "message", timeout=30.0, check=MessagePredicate.same_context(ctx)
                 )
             except asyncio.TimeoutError:
@@ -1921,7 +1917,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:

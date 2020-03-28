@@ -12,7 +12,6 @@ from redbot.core.utils.chat_formatting import box, humanize_number
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 
-from ...apis.playlist_interface import get_playlist
 from ...audio_dataclasses import LocalPath
 from ...converters import ScopeParser
 from ...errors import MissingGuild, TooManyMatches
@@ -495,7 +494,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Playlists Are Not Available"),
                 description=_("The playlist section of Audio is currently unavailable"),
                 footer=discord.Embed.Empty
-                if not await ctx.bot.is_owner(ctx.author)
+                if not await self.bot.is_owner(ctx.author)
                 else _("Check your logs."),
             )
         if scope_data is None:
@@ -561,7 +560,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         return await self.send_embed_msg(
             ctx,
             title=_("Setting Changed"),
-            description=_("Set auto-play playlist to default value."),
+            description=_("Set auto-play playlist to play recently played tracks."),
         )
 
     @command_audioset.command(name="globaldailyqueue")
@@ -651,7 +650,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
             try:
                 pred = MessagePredicate.valid_role(ctx)
-                await ctx.bot.wait_for("message", timeout=15.0, check=pred)
+                await self.bot.wait_for("message", timeout=15.0, check=pred)
                 await ctx.invoke(self.command_audioset_role, role_name=pred.result)
             except asyncio.TimeoutError:
                 return await self.send_embed_msg(
@@ -796,7 +795,6 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             "This setting is only for bot owners to set a localtracks folder location "
             "In the example below, the full path for 'ParentDirectory' "
             "must be passed to this command.\n"
-            "The path must not contain spaces.\n"
             "```\n"
             "ParentDirectory\n"
             "  |__ localtracks  (folder)\n"
@@ -815,7 +813,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         start_adding_reactions(info, ReactionPredicate.YES_OR_NO_EMOJIS)
         pred = ReactionPredicate.yes_or_no(info, ctx.author)
-        await ctx.bot.wait_for("reaction_add", check=pred)
+        await self.bot.wait_for("reaction_add", check=pred)
 
         if not pred.result:
             with contextlib.suppress(discord.HTTPException):
@@ -931,11 +929,11 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             description=_("DJ role set to: {role.name}.").format(role=dj_role_obj),
         )
 
-    @command_audioset.command(name="settings")
+    @command_audioset.command(name="settings", aliases=["info"])
     @commands.guild_only()
     async def command_audioset_settings(self, ctx: commands.Context):
         """Show the current settings."""
-        is_owner = await ctx.bot.is_owner(ctx.author)
+        is_owner = await self.bot.is_owner(ctx.author)
         global_data = await self.config.all()
         data = await self.config.guild(ctx.guild).all()
         dj_role_obj = ctx.guild.get_role(data["dj_role"])
@@ -1174,7 +1172,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.guild_only()
     @checks.mod_or_permissions(administrator=True)
     async def command_audioset_vote(self, ctx: commands.Context, country: str):
-        """Set the country code for searches."""
+        """Set the country code for Spotify searches."""
         if len(country) != 2:
             return await self.send_embed_msg(
                 ctx,

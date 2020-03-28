@@ -90,10 +90,10 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         if dj_enabled and await self._has_dj_role(ctx, member):
             return True
 
-        if await ctx.bot.is_owner(member):
+        if await self.bot.is_owner(member):
             return True
 
-        if await ctx.bot.is_mod(member):
+        if await self.bot.is_mod(member):
             return True
 
         if await self.maybe_move_player(ctx):
@@ -456,7 +456,9 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 )
             else:
                 maxlength_msg = ""
-            playlist_name = escape(playlist_data.name if playlist_data else _("No Title"))
+            playlist_name = escape(
+                playlist_data.name if playlist_data else _("No Title"), formatting=True
+            )
             embed = discord.Embed(
                 description=bold(f"[{playlist_name}]({playlist_url})")
                 if playlist_url
@@ -537,7 +539,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 self.update_player_lock(ctx, False)
                 title = _("Nothing found")
                 desc = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=title, description=desc)
             description = self.get_track_description(single_track, self.local_folder_current_path)

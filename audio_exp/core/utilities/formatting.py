@@ -85,7 +85,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed.")
                 description = EmptyEmbed
-                if await ctx.bot.is_owner(ctx.author):
+                if await self.bot.is_owner(ctx.author):
                     description = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=msg, description=description)
             try:
@@ -252,44 +252,85 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         )
         return embed
 
-    def get_track_description(self, track, local_folder_current_path) -> Optional[str]:
+    def get_track_description(
+        self, track, local_folder_current_path, shorten=False
+    ) -> Optional[str]:
         """Get the user facing formatted track name"""
+        string = None
         if track and getattr(track, "uri", None):
             query = Query.process_input(track.uri, local_folder_current_path)
             if query.is_local or "localtracks/" in track.uri:
-                if hasattr(track, "title") and track.title != "Unknown title":
-                    return f'**{escape(f"{track.author} - {track.title}")}**' + escape(
-                        f"\n{query.to_string_user()} "
-                    )
+                if (
+                    hasattr(track, "title")
+                    and track.title != "Unknown title"
+                    and hasattr(track, "author")
+                    and track.author != "Unknown artist"
+                ):
+                    if shorten:
+                        string = f"{track.author} - {track.title}"
+                        if len(string) > 40:
+                            string = "{}...".format((string[:40]).rstrip(" "))
+                        string = f'**{escape(f"{string}", formatting=True)}**'
+                    else:
+                        string = (
+                            f'**{escape(f"{track.author} - {track.title}", formatting=True)}**'
+                            + escape(f"\n{query.to_string_user()} ", formatting=True)
+                        )
+                elif hasattr(track, "title") and track.title != "Unknown title":
+                    if shorten:
+                        string = f"{track.title}"
+                        if len(string) > 40:
+                            string = "{}...".format((string[:40]).rstrip(" "))
+                        string = f'**{escape(f"{string}", formatting=True)}**'
+                    else:
+                        string = f'**{escape(f"{track.title}", formatting=True)}**' + escape(
+                            f"\n{query.to_string_user()} ", formatting=True
+                        )
                 else:
-                    return escape(query.to_string_user())
+                    string = query.to_string_user()
+                    if shorten and len(string) > 40:
+                        string = "{}...".format((string[:40]).rstrip(" "))
+                    string = f'**{escape(f"{string}", formatting=True)}**'
             else:
                 if track.author.lower() not in track.title.lower():
                     title = f"{track.title} - {track.author}"
                 else:
                     title = track.title
-                return f'**{escape(f"[{title}]({track.uri}) ")}**'
+                string = f"{title}"
+                if shorten and len(string) > 40:
+                    string = "{}...".format((string[:40]).rstrip(" "))
+                string = f"**[{escape(string, formatting=True)}]({track.uri}) **"
         elif hasattr(track, "to_string_user") and track.is_local:
-            return escape(track.to_string_user() + " ")
-        return None
+            string = track.to_string_user() + " "
+            if shorten and len(string) > 40:
+                string = "{}...".format((string[:40]).rstrip(" "))
+            string = f'**{escape(f"{string}", formatting=True)}**'
+        return string
 
     def get_track_description_unformatted(self, track, local_folder_current_path) -> Optional[str]:
         """Get the user facing unformatted track name"""
         if track and hasattr(track, "uri"):
             query = Query.process_input(track.uri, local_folder_current_path)
             if query.is_local or "localtracks/" in track.uri:
-                if hasattr(track, "title") and track.title != "Unknown title":
-                    return escape(f"{track.author} - {track.title}")
+                if (
+                    hasattr(track, "title")
+                    and track.title != "Unknown title"
+                    and hasattr(track, "author")
+                    and track.author != "Unknown artist"
+                ):
+                    return escape(f"{track.author} - {track.title}", formatting=True)
+                elif hasattr(track, "title") and track.title != "Unknown title":
+                    return escape(f"{track.title}", formatting=True)
                 else:
-                    return escape(query.to_string_user())
+                    return escape(query.to_string_user(), formatting=True)
             else:
                 if track.author.lower() not in track.title.lower():
                     title = f"{track.title} - {track.author}"
                 else:
                     title = track.title
-                return escape(f"{title}")
+                return escape(f"{title}", formatting=True)
         elif hasattr(track, "to_string_user") and track.is_local:
-            return escape(track.to_string_user() + " ")
+            return escape(track.to_string_user() + " ", formatting=True)
         return None
 
     def format_playlist_picker_data(self, pid, pname, ptracks, pauthor, scope) -> str:

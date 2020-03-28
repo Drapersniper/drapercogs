@@ -19,7 +19,7 @@ class Audio(
     Cog,
     metaclass=CompositeMetaClass,
 ):
-    """Class joining all Audio subclasses"""
+    """Play audio through voice channels."""
 
     _default_lavalink_settings = {
         "host": "localhost",
@@ -53,9 +53,6 @@ class Audio(
         self.player_automated_timer_task = None
         self.cog_cleaned_up = False
         self.lavalink_connection_aborted = False
-        self.api_interface = None
-        self.lavalink_connect_task = None
-        self.player_automated_timer_task = None
 
         default_global = dict(
             schema_version=1,
