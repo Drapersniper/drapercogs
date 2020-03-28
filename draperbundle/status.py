@@ -184,7 +184,7 @@ class MemberStatus(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    async def sstreaming(self, ctx: commands.Context, *, game=None):
+    async def sstreaming(self, ctx: commands.Context, *, game: str = None):
         """Shows who's streaming what games."""
         game_name = _("what")
         ending = "."

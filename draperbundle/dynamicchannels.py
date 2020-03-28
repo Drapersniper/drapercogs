@@ -58,7 +58,9 @@ class DynamicChannels(commands.Cog):
         await ctx.tick()
 
     @_button.command(name="add")
-    async def _button_add(self, ctx, category_id: str, size: Optional[int] = 0, *, room_name: str):
+    async def _button_add(
+        self, ctx: commands.Context, category_id: str, size: Optional[int] = 0, *, room_name: str
+    ):
         """Whitelist a category to have multiple types of Dynamic voice channels."""
         valid_categories = {
             str(category.id): category.name for category in ctx.guild.categories if category
@@ -137,7 +139,9 @@ class DynamicChannels(commands.Cog):
             )
 
     @_button.command(name="remove")
-    async def multiple_dynamic_channel_whistelist_delete(self, ctx, category_id: str):
+    async def multiple_dynamic_channel_whistelist_delete(
+        self, ctx: commands.Context, category_id: str
+    ):
         """Remove the special category from Dynamic voice channels whitelist"""
         guild_data = ConfigHolder.DynamicChannels.guild(ctx.guild)
         async with guild_data.dynamic_channels() as whitelist:
@@ -319,19 +323,21 @@ class DynamicChannels(commands.Cog):
                 while guilds and True:
                     guilds = self.bot.guilds
                     for guild in guilds:
+                        has_perm = guild.me.guild_permissions.manage_channels
                         keep_id = {}
                         data = await self.config.guild(guild).user_created_voice_channels()
                         for channel_id in list(data.items()):
                             channel = guild.get_channel(channel_id)
                             if channel:
                                 if sum(1 for _ in channel.members) < 1:
-                                    await asyncio.sleep(5)
-                                    await channel.delete(
-                                        reason=(
-                                            "User created channel was "
-                                            "empty during cleanup cycle"
+                                    if has_perm:
+                                        await asyncio.sleep(5)
+                                        await channel.delete(
+                                            reason=(
+                                                "User created channel was "
+                                                "empty during cleanup cycle"
+                                            )
                                         )
-                                    )
                                 else:
                                     keep_id.update({channel_id: channel_id})
                         await self.config.guild(guild).user_created_voice_channels.set(keep_id)

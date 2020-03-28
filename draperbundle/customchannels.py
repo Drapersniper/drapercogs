@@ -95,7 +95,7 @@ class CustomChannels(commands.Cog):
         await ctx.tick()
 
     @_button.command(name="add")
-    async def _button_add(self, ctx, category_id: str, room_id: int):
+    async def _button_add(self, ctx: commands.Context, category_id: str, room_id: int):
         """Whitelist a category and Channel to become a button."""
         dynamic_category_whitelist = await self.config.guild(
             ctx.guild
@@ -124,7 +124,7 @@ class CustomChannels(commands.Cog):
             await ctx.send(f"Added {category_id} to the whitelist\nRooms ID is {room_id}")
 
     @_button.command(name="remove")
-    async def _button_remove(self, ctx, category_id: str):
+    async def _button_remove(self, ctx: commands.Context, category_id: str):
         """Removes category and voice channel button from whitelist."""
         guild_data = self.config.guild(ctx.guild)
         async with guild_data.category_with_button() as whitelist:
@@ -135,17 +135,21 @@ class CustomChannels(commands.Cog):
                 await ctx.send(f"Error: {category_id} is not a whitelisted category")
 
     @_button.group(name="role")
-    async def _button_roles(self, ctx):
+    async def _button_roles(self, ctx: commands.Context):
         """Whitelist roles to have special permission on user created rooms."""
 
     @_button_roles.command(name="manager")
-    async def _button_roles_manager(self, ctx, *roles: commands.Greedy[discord.Role]):
+    async def _button_roles_manager(
+        self, ctx: commands.Context, *roles: commands.Greedy[discord.Role]
+    ):
         """Whitelist roles to have manager permission on user created rooms."""
         roles_ids = [role.id for role in roles]
         await self.config.guild(ctx.guild).user_created_voice_channels_bypass_roles.set(roles_ids)
 
     @_button_roles.command(name="muted")
-    async def _button_roles_manager(self, ctx, *roles: commands.Greedy[discord.Role]):
+    async def _button_roles_manager(
+        self, ctx: commands.Context, *roles: commands.Greedy[discord.Role]
+    ):
         """Whitelist roles to have muted permission on user created rooms."""
         roles_ids = [role.id for role in roles]
         await self.config.guild(ctx.guild).mute_roles.set(roles_ids)
@@ -315,17 +319,19 @@ class CustomChannels(commands.Cog):
                 for guild in guilds:
                     keep_id = {}
                     data = await self.config.guild(guild).user_created_voice_channels()
+                    has_perm = guild.me.guild_permissions.manage_channels
                     for channel_id_str, channel_id in data.items():
                         channel = guild.get_channel(channel_id)
                         if channel:
                             logger.info(f"Checking if {channel.name} is empty")
                             if sum(1 for _ in channel.members) < 1:
                                 logger.info(f"{channel.name} is empty queueing it for deletion")
-                                await asyncio.sleep(5)
-                                await channel.delete(
-                                    reason="User created channel was empty during cleanup cycle"
-                                )
-                                logger.info(f"{channel.name} has been deleted")
+                                if has_perm:
+                                    await asyncio.sleep(5)
+                                    await channel.delete(
+                                        reason="User created channel was empty during cleanup cycle"
+                                    )
+                                    logger.info(f"{channel.name} has been deleted")
                             else:
                                 logger.info(f"{channel.name} is not empty")
                                 keep_id.update({channel_id_str: channel_id})

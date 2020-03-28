@@ -62,7 +62,7 @@ class PublisherManager(commands.Cog):
 
     @commands.is_owner()
     @service.command(name="playing", enabled=True)
-    async def service_playing(self, ctx):
+    async def service_playing(self, ctx: commands.Context):
         """Shows how many games needs to be parsed"""
         await self.update_game_database(manual=True)
         config_data = await self.config.publisher.get_raw()
@@ -76,11 +76,11 @@ class PublisherManager(commands.Cog):
 
     @commands.is_owner()
     @service.group(name="parse")
-    async def _parse(self, ctx):
+    async def _parse(self, ctx: commands.Context):
         """Parses game database"""
 
     @_parse.command(name="completed")
-    async def _parse_completed(self, ctx, value: str):
+    async def _parse_completed(self, ctx: commands.Context, value: str):
         """Reparses completed with the following value
 
         Accepts a Service, True, False, None, all
@@ -104,7 +104,7 @@ class PublisherManager(commands.Cog):
         await self.parse_playing(ctx, existing_data)
 
     @_parse.command(name="game")
-    async def _parse_game(self, ctx, *, game: str):
+    async def _parse_game(self, ctx: commands.Context, *, game: str):
         """Parses a specific game"""
         checker = game.lower()
 
@@ -115,7 +115,7 @@ class PublisherManager(commands.Cog):
         await self.parse_playing(ctx, existing_data)
 
     @_parse.command(name="incomplete")
-    async def incomplete_parse_game(self, ctx):
+    async def incomplete_parse_game(self, ctx: commands.Context):
         """Parses games that haven't been parsed"""
         config_data = await self.config.publisher()
         existing_data = [key for key, value in config_data.items() if value is None]
