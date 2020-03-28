@@ -165,9 +165,9 @@ def eval_(node):
 async def get_supported_platforms(lists: bool = True, supported: bool = False):
     platforms = (await ConfigHolder.PublisherManager.get_raw()).get("services", {})
     if supported:
-        return [(value.get("command")) for _, value in platforms.items()]
+        return [(value.get("identifier")) for _, value in platforms.items()]
     if lists:
-        return [(value.get("command"), value.get("name")) for _, value in platforms.items()]
+        return [(value.get("identifier"), value.get("name")) for _, value in platforms.items()]
     return platforms
 
 
@@ -645,9 +645,7 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
 async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: dict):
     def check(m):
         return (
-            m.author == author
-            and isinstance(m.channel, discord.DMChannel)
-            and len(m.content) < 33
+            m.author == author and isinstance(m.channel, discord.DMChannel) and len(m.content) < 33
         )
 
     def remove_old(prompt_data: dict, key_to_remove: str):

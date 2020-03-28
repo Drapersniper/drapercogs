@@ -66,7 +66,8 @@ class DynamicChannels(commands.Cog):
 
         if valid_categories and category_id not in valid_categories:
             await ctx.send(
-                f"ERROR: {category_id} is not a valid category ID for {ctx.guild.name}, these are the valid ones: "
+                f"ERROR: {category_id} is not a valid category ID for {ctx.guild.name}, "
+                f"these are the valid ones: "
             )
             await ctx.send(box(json.dumps(valid_categories, indent=2), lang="json"))
             return
@@ -86,7 +87,8 @@ class DynamicChannels(commands.Cog):
         async with guild_data.dynamic_channels() as whitelist:
             whitelist.update({category_id: [(room_name, size)]})
             await ctx.send(
-                f"Added {category_id} to the whitelist\nRooms will be called {room_name} and have a size of {size}"
+                f"Added {category_id} to the whitelist\n"
+                f"Rooms will be called {room_name} and have a size of {size}"
             )
 
     @_button.command(name="append")
@@ -113,7 +115,7 @@ class DynamicChannels(commands.Cog):
         elif category_id not in (whitelisted_cat):
             await ctx.send(
                 f"ERROR: Category {category_id} is not been whitelisted as a "
-                f"special category {ctx.guild.name}, use `{ctx.prefix}dynamicset add`"
+                f"special category {ctx.guild.name}, use `{self._button_add.qualified_name}`"
             )
             return
 
@@ -149,6 +151,9 @@ class DynamicChannels(commands.Cog):
     async def on_guild_channel_delete(
         self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
     ):
+        has_perm = channel.guild.me.guild_permissions.manage_channels
+        if not has_perm:
+            return
 
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).dynamic_channels()
@@ -166,6 +171,9 @@ class DynamicChannels(commands.Cog):
     async def on_guild_channel_create(
         self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
     ):
+        has_perm = channel.guild.me.guild_permissions.manage_channels
+        if not has_perm:
+            return
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).dynamic_channels()
         ):
@@ -319,7 +327,10 @@ class DynamicChannels(commands.Cog):
                                 if sum(1 for _ in channel.members) < 1:
                                     await asyncio.sleep(5)
                                     await channel.delete(
-                                        reason="User created channel was empty during cleanup cycle"
+                                        reason=(
+                                            "User created channel was "
+                                            "empty during cleanup cycle"
+                                        )
                                     )
                                 else:
                                     keep_id.update({channel_id: channel_id})

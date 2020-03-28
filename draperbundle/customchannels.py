@@ -154,6 +154,9 @@ class CustomChannels(commands.Cog):
     async def on_guild_channel_delete(
         self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
     ):
+        has_perm = channel.guild.me.guild_permissions.manage_channels
+        if not has_perm:
+            return
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).category_with_button()
         ):
@@ -170,6 +173,9 @@ class CustomChannels(commands.Cog):
     async def on_guild_channel_create(
         self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
     ):
+        has_perm = channel.guild.me.guild_permissions.manage_channels
+        if not has_perm:
+            return
         if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
             await self.config.guild(channel.guild).category_with_button()
         ):

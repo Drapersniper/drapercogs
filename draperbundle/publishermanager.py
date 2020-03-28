@@ -31,11 +31,9 @@ class PublisherManager(commands.Cog):
 
     @commands.is_owner()
     @service.command(name="add", aliases=["+"])
-    async def service_add(
-        self, ctx: commands.Context, identifier: str, command: str, *, name: str
-    ):
+    async def service_add(self, ctx: commands.Context, identifier: str, *, name: str):
         """Add a service to the list of supported services"""
-        new_service = dict(name=name, command=command, identifier=identifier)
+        new_service = dict(name=name, identifier=identifier)
         new_service = {new_service["identifier"]: new_service}
 
         service_group = self.config

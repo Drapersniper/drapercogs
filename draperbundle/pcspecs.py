@@ -102,7 +102,7 @@ class PCSpecs(commands.Cog):
                     rigs_data.update(ring_component)
             await ctx.author.send("I've updated your rig data")
         except discord.Forbidden:
-            return await ctx.send(f"I can't PM you, {ctx.author.mention}")
+            return await ctx.send(f"I can't DM you, {ctx.author.mention}")
 
     @specs.command(name="remove")
     async def _specs_remove(self, ctx: commands.Context, *, component: str):
@@ -120,7 +120,7 @@ class PCSpecs(commands.Cog):
             await self.config.user(member).rig.set(rigs_data)
             completed = 1
         except discord.Forbidden:
-            return await ctx.send(f"I can't PM you, {ctx.author.mention}")
+            return await ctx.send(f"I can't DM you, {ctx.author.mention}")
 
         if completed == 0:
             await ctx.send("The provided component is not valid, no changes made to your rig")

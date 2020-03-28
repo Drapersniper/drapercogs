@@ -5,13 +5,15 @@ import logging
 import time
 from datetime import datetime, timezone
 from operator import itemgetter
-from typing import Union
+from typing import Optional, Union
 
 import aiohttp
 import discord
 from discord.ext.commands.converter import Greedy
 from redbot.core import commands, checks
-from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
+from redbot.core.utils.chat_formatting import pagify
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
+from redbot.core.utils.predicates import ReactionPredicate
 
 from .config_holder import ConfigHolder
 from .constants import CONTINENT_DATA
@@ -62,6 +64,7 @@ class GamingProfile(commands.Cog):
         await ctx.tick()
 
     @_profile.command(name="create", aliases=["make"])
+    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_create(self, ctx: commands.Context):
         """Creates and sets up or updates an existing profile"""
         author = ctx.author
@@ -80,15 +83,13 @@ class GamingProfile(commands.Cog):
             await ctx.author.send(
                 "Creating your profile\nLet's continue here (We don't want to spam the other chat!)"
             )
-            await ctx.author.send("Do you want to setup your profile now? ('y'/'n')")
+            exists_msg = await ctx.author.send("Do you want to setup your profile now?")
+            start_adding_reactions(exists_msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+            pred = ReactionPredicate.yes_or_no(exists_msg, ctx.author)
+            await self.bot.wait_for("reaction_add", check=pred)
         except discord.Forbidden:
-            return await ctx.send(f"I can't PM you, {ctx.author.mention}")
-
-        def check(m):
-            return m.author == author and isinstance(m.channel, discord.DMChannel)
-
-        msg = await self.bot.wait_for("message", check=check)
-        if msg and msg.content.lower() in ["y", "yes"]:
+            return await ctx.send(f"I can't DM you, {ctx.author.mention}")
+        if pred.result:
             role_to_add = []
             role_to_remove = []
             new_user_data = await update_profile(self.bot, user_data, author)
@@ -96,14 +97,13 @@ class GamingProfile(commands.Cog):
             log.debug(f"profile_create: {author.display_name} Accounts:{accounts}")
             async with self.profileConfig.user(author).all() as user_data:
                 user_data.update(new_user_data)
-
             if accounts:
                 accounts_group = self.config.user(author)
                 async with accounts_group.account() as services:
                     for platform, username in accounts.items():
                         account = {platform: username}
                         services.update(account)
-            if getattr(author, "guild", None):
+            if getattr(author, "guild", None) and author.guild.me.guild_permissions.manage_roles:
                 doesnt_have_profile_role = get_role_named(ctx.guild, "No Profile")
                 has_profile_role = get_role_named(ctx.guild, "Has Profile")
                 continent_role = user_data.get("zone")
@@ -122,15 +122,18 @@ class GamingProfile(commands.Cog):
                         if discord.utils.get(author.guild.roles, name=role_name).name
                         != continent_role
                     ]
+                    roles = [r for r in roles if r]
                     if roles:
                         role_to_remove += roles
-                        role_to_remove.append(doesnt_have_profile_role)
+                        if doesnt_have_profile_role:
+                            role_to_remove.append(doesnt_have_profile_role)
 
                 await update_member_atomically(
                     ctx=ctx, member=author, give=role_to_add, remove=role_to_remove
                 )
 
     @_profile.command(name="update")
+    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_update(self, ctx: commands.Context):
         """Updates an existing profile"""
         role_to_add = []
@@ -142,7 +145,7 @@ class GamingProfile(commands.Cog):
                 "Updating your profile\nLet's continue here(We don't want to spam the other chat!)"
             )
         except discord.Forbidden:
-            return await ctx.author.send("I can't PM you", send_first=f"{ctx.author.mention}")
+            return await ctx.author.send("I can't DM you", send_first=f"{ctx.author.mention}")
         user = await update_profile(self.bot, user, author)
         async with self.profileConfig.user(author).all() as user_data:
             user_data.update(user)
@@ -154,7 +157,7 @@ class GamingProfile(commands.Cog):
                 for platform, username in accounts.items():
                     account = {platform: username}
                     services.update(account)
-        if getattr(author, "guild", None):
+        if getattr(author, "guild", None) and author.guild.me.guild_permissions.manage_roles:
             continent_role = user.get("zone")
             role_names = [role.name for role in author.roles]
             if continent_role and continent_role not in role_names:
@@ -168,6 +171,7 @@ class GamingProfile(commands.Cog):
                     for role_name in zone_roles_user_has
                     if discord.utils.get(author.guild.roles, name=role_name).name != continent_role
                 ]
+                roles = [r for r in roles if r]
                 if roles:
                     role_to_remove += roles
             await update_member_atomically(
@@ -176,45 +180,31 @@ class GamingProfile(commands.Cog):
 
         await ctx.author.send("I have updated your profile")
 
-    @_profile.group(name="show", aliases=["display", "get"], invoke_without_command=True)
+    @_profile.command(name="show", aliases=["display", "get"])
+    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
-    async def _profile_show(self, ctx: commands.Context):
+    async def _profile_show(self, ctx: commands.Context, *member: discord.Member):
         """Shows profiles for all members who are specified"""
-        if ctx.invoked_subcommand is None:
-            member = ctx.author
+        members = member or [ctx.author]
+        embed_list = []
+        members = list(set(members))
+        for member in members:
+            if member is None:
+                continue
+            embed = None
             embed = await self.get_member_profile(ctx, member)
-            if embed:
-                await ctx.send(embed=embed)
+            if embed and isinstance(embed, discord.Embed):
+                embed_list.append(embed)
+        if embed_list:
+            await menu(ctx, embed_list, DEFAULT_CONTROLS)
 
-    @_profile_show.command(name="member")
-    async def _profile_show_member(
-        self, ctx: commands.Context, members: Greedy[discord.User] = None
-    ):
-        """Shows a members profile"""
-        if not members:
-            return await ctx.send_help()
-        else:
-            embed_list = []
-            members = list(set(members))
-            for member in members:
-                if member is None:
-                    continue
-                embed = None
-                embed = await self.get_member_profile(ctx, member)
-                if embed and isinstance(embed, discord.Embed):
-                    embed_list.append(embed)
-            if embed_list:
-                await menu(ctx, embed_list, DEFAULT_CONTROLS)
-
-    @_profile_show.command(name="service")
-    async def _profile_show_service(self, ctx: commands.Context, *, platform=None):
+    @_profile.command(name="list")
+    @commands.guild_only()
+    async def _profile_list_service(self, ctx: commands.Context, *, platform: str):
         """All members of a specific service"""
-        if not platform:
-            return await ctx.send_help()
         guild = ctx.guild
         is_dm = not guild
         logo = (await ConfigHolder.LogoData.get_raw()).get(platform)
-
         if platform:
             data = await get_all_by_platform(platform=platform, guild=guild, pm=is_dm)
             if data:
@@ -257,30 +247,31 @@ class GamingProfile(commands.Cog):
             else:
                 return await ctx.send(f"No one has an account registered with {platform.title()}")
 
-    @_profile_show.command(name="delete", aliases=["purge", "remove"])
+    @_profile.command(name="delete", aliases=["purge", "remove"])
+    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_delete(self, ctx: commands.Context):
         """Deletes your profile permanently"""
         try:
-            await ctx.author.send(
+            exists_msg = await ctx.author.send(
                 "This cannot be undone and you will have to create a new profile, "
                 "do you want to continue? (y/n)"
             )
+            start_adding_reactions(exists_msg, ReactionPredicate.YES_OR_NO_EMOJIS)
+            pred = ReactionPredicate.yes_or_no(exists_msg, ctx.author)
+            await self.bot.wait_for("reaction_add", check=pred)
         except discord.Forbidden:
-            return await ctx.send(f"I can't PM you, {ctx.author.mention}")
+            return await ctx.send(f"I can't DM you, {ctx.author.mention}")
 
-        def check(m):
-            return m.author == ctx.author and isinstance(m.channel, discord.DMChannel)
-
-        msg = await self.bot.wait_for("message", check=check)
-        if msg and msg.content.lower() in ["y", "yes"]:
+        if pred.result:
             user_group = self.profileConfig.user(ctx.author)
             async with user_group() as user_data:
                 user_data.clear()
             account_group = self.config.user(ctx.author)
             async with account_group() as account_data:
                 account_data.clear()
-
-            await ctx.author.send(f"To created a new one please run `{ctx.prefix}profile create`")
+            await ctx.author.send(
+                f"To created a new one please run `{self._profile_create.qualified_name}`"
+            )
         else:
             await ctx.author.send("Your profile hasn't been touched")
 
@@ -289,7 +280,6 @@ class GamingProfile(commands.Cog):
         guild = after.guild
         role_to_remove = []
         role_to_add = []
-
         if guild and guild.me.guild_permissions.manage_roles:
             continent_role = await self.profileConfig.user(after).zone()
             role_names = [role.name for role in after.roles]
@@ -437,10 +427,13 @@ class GamingProfile(commands.Cog):
             embed.set_author(name=member.display_name, icon_url=avatar)
             return embed
         else:
-            mention = "You don't" if ctx.author == member else f"{member.mention} doesn't"
-            await ctx.send(
-                f"{mention} have a profile with me\nTo create one say `{ctx.prefix}profile create`"
-            )
+            if ctx.author == member:
+                await ctx.send(
+                    "You don't have a profile with me\n"
+                    f"To create one say `{self._profile_create.qualified_name}`"
+                )
+            else:
+                await ctx.send(f"{member.mention} doesn't have a profile with me")
             return None
 
     @_profile.group(name="services", case_insensitive=True)
@@ -448,12 +441,13 @@ class GamingProfile(commands.Cog):
         """Manage your service usernames"""
 
     @_profile_username.command(name="add", aliases=["+"])
+    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_username_add(self, ctx: commands.Context):
         """Adds/updates an account for the specified service"""
         try:
             accounts = await account_adder(self.bot, ctx.author)
         except discord.Forbidden:
-            return await ctx.send(f"I can't PM you, {ctx.author.mention}")
+            return await ctx.send(f"I can't DM you, {ctx.author.mention}")
         log.debug(f"account_add: {ctx.author.display_name} Accounts:{accounts}")
 
         if accounts:
@@ -467,15 +461,13 @@ class GamingProfile(commands.Cog):
             await ctx.author.send("No accounts to add to your profile")
 
     @_profile_username.command(name="remove", aliases=["delete", "purge", "-"])
-    async def account_remove(self, ctx: commands.Context, *args):
+    @commands.max_concurrency(1, per=commands.BucketType.user)
+    async def account_remove(self, ctx: commands.Context, *, platform: str):
         """Removes an account from the specified service"""
         supported_platforms = await get_supported_platforms(supported=True)
-        if len(args) == 1:
-            platform = args[0].lower()
-        else:
-            platform = None
+        platform = platform.lower()
         try:
-            if len(args) == 1 and platform in supported_platforms:
+            if platform in supported_platforms:
                 account_group = self.config.user(ctx.author)
                 async with account_group.account() as services:
                     deleted_data = services.pop(platform)
@@ -485,34 +477,19 @@ class GamingProfile(commands.Cog):
                     )
                 else:
                     await ctx.send(f"You don't have a {platform.title()} username with me")
-            elif len(args) == 1 and platform not in supported_platforms:
-                embedError = discord.Embed(title="Unsupported Platform")
-                embed = discord.Embed(title="Supported Platforms are:")
+            elif platform not in supported_platforms:
                 platforms = await get_supported_platforms()
-                for command, name in platforms:
-                    embed.add_field(name=name, value=f"Command: {command}", inline=False)
-                await ctx.author.send(embed=embedError)
-                await ctx.author.send(embed=embed)
-
-            elif len(args) < 1:
-                embed = discord.Embed(title="Too few arguments passed")
-                embed.add_field(
-                    name="Usage",
-                    value=f"{ctx.prefix}platform add [platform] [username]",
-                    inline=False,
-                )
-                await ctx.author.send(embed=embed)
-
-            else:
-                embed = discord.Embed(title="Too many arguments passed")
-                embed.add_field(
-                    name="Usage",
-                    value=f"{ctx.prefix}platform add [platform] [username] * If your username has spaces make sure to add quotes around it",
-                    inline=False,
-                )
-                await ctx.author.send(embed=embed)
+                pos_len = 3
+                platforms_text = f"{'#':{pos_len}}\n"
+                for number, (command, name) in enumerate(platforms, 1):
+                    line = ("{number}." "    <{name}>\n" " - Command:  < {scope} >\n").format(
+                        number=number, name=name, command=command,
+                    )
+                    platforms_text += line
+                pages = list(pagify(platforms_text, page_length=1800))
+                await menu(ctx.author, pages, DEFAULT_CONTROLS)
         except discord.Forbidden:
-            return await ctx.send(f"I can't PM you, {ctx.author.mention}")
+            return await ctx.send(f"I can't DM you, {ctx.author.mention}")
 
     def cog_unload(self):
         self.bot.loop.create_task(self._clean_up())
