@@ -142,7 +142,7 @@ class GamingProfile(commands.Cog):
         user = {"country": None, "timezone": None, "language": None, "zone": None}
         try:
             await ctx.author.send(
-                "Updating your profile\nLet's continue here(We don't want to spam the other chat!)"
+                "Updating your profile\nLet's continue here (We don't want to spam the other chat!)"
             )
         except discord.Forbidden:
             return await ctx.author.send("I can't DM you", send_first=f"{ctx.author.mention}")
