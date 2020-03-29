@@ -394,7 +394,7 @@ class GamingProfile(commands.Cog):
             description = description.strip()
             if description:
                 description += "\n\n"
-            embed = discord.Embed(title=f"Your Gaming Profile", description=description)
+            embed = discord.Embed(title=f"Gaming Profile", description=description)
             if accounts:
                 platforms = await get_supported_platforms(lists=False)
                 services = ""
