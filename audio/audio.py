@@ -1772,7 +1772,6 @@ class Audio(commands.Cog):
             ).format(pname=pname, pid=pid, pscope=pscope)
 
         if is_owner:
-            global_db = await self.config.global_db_enabled()
             msg += (
                 "\n---"
                 + _("Cache Settings")
@@ -1788,8 +1787,8 @@ class Audio(commands.Cog):
                 spotify_status=_("Enabled") if has_spotify_cache else _("Disabled"),
                 youtube_status=_("Enabled") if has_youtube_cache else _("Disabled"),
                 lavalink_status=_("Enabled") if has_lavalink_cache else _("Disabled"),
-                global_cache=_("Enabled") if global_db else _("Disabled"),
-                num_seconds=dynamic_time(data[])
+                global_cache=_("Enabled") if global_data["global_db_enabled"] else _("Disabled"),
+                num_seconds=dynamic_time(global_data["global_db_get_timeout"])
             )
 
         msg += _(
