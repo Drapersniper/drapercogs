@@ -62,7 +62,7 @@ class PermissionsChecker(commands.Cog):
 
 
     async def bot_check(self, ctx: Context):
-        current_perms = ctx.channel.permissions_for(ctx.author)
+        current_perms = ctx.channel.permissions_for(ctx.me)
         surpass_ignore = (
                 isinstance(ctx.channel, discord.abc.PrivateChannel)
                 or current_perms.manage_guild
