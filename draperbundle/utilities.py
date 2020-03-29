@@ -2,6 +2,7 @@
 import ast
 import asyncio
 import concurrent.futures
+import contextlib
 import logging
 import operator as op
 import random
@@ -17,11 +18,13 @@ import regex
 
 from pytz import UTC
 from redbot.core import commands
-from redbot.core.utils.chat_formatting import humanize_list, pagify
+from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
+from redbot.core.utils.predicates import MessagePredicate
 
 from .country import WorldData
 from .config_holder import ConfigHolder
-from .constants import CONTINENT_DATA, TIMEZONE_REGEX
+from .constants import CONTINENT_DATA
 
 logger = logging.getLogger("red.drapercogs.draperbundle.utils")
 _START = "#"
@@ -168,7 +171,9 @@ async def get_supported_platforms(lists: bool = True, supported: bool = False):
     if supported:
         platforms = [(value.get("identifier")) for _, value in platforms.items()]
     elif lists:
-        platforms = [(value.get("identifier"), value.get("name")) for _, value in platforms.items()]
+        platforms = [
+            (value.get("identifier"), value.get("name")) for _, value in platforms.items()
+        ]
     return platforms
 
 
@@ -184,37 +189,30 @@ async def update_profile(bot, user_data: dict, author: discord.User):
     def check(m):
         return m.author == author and isinstance(m.channel, discord.DMChannel)
 
-    await author.send("What country are you from (e.g. United Kingdom, United states)?")
-    cached_country = ""
+    msg = await author.send("What country are you from (Enter the number next to the country)?")
+    ctx = await bot.get_context(msg)
+    ctx.author = author
     country_data = WorldData.get("country", {})
-    validcountry_keys = list(country_data.keys())
-    validcountries = list(value.get("name") for _, value in country_data.items())
-
-    try:
-        msg = await bot.wait_for("message", check=check, timeout=120)
-    except (concurrent.futures._base.TimeoutError, asyncio.exceptions.TimeoutError):
-        msg = None
-    if msg and msg.content.lower() in validcountry_keys:
-        user_data["country"] = msg.content.title()
-        cached_country = msg.content.lower().strip()
-    elif msg and msg.content.lower() == "cancel":
-        return user_data
-    else:
-        countries = humanize_list(validcountries)
-
-        country_pages = pagify(countries, delims=["\n", ","])
-        await author.send(
-            "Make sure the country is one of the following: (Copy and paste from here)"
-        )
-        for country_page in country_pages:
-            await author.send(country_page.lstrip(","))
-
-        while msg and msg.content.lower() not in validcountry_keys:
-            msg = await bot.wait_for("message", check=check)
-            if msg and msg.content.lower() in validcountry_keys:
-                user_data["country"] = msg.content.title().strip()
-                cached_country = msg.content.lower().strip()
-                break
+    validcountries = sorted(list(value.get("name") for _, value in country_data.items()))
+    desc = ""
+    number_list = []
+    for index, value in enumerate(validcountries, start=1):
+        desc += f"{index}. {value}\n"
+        number_list.append(str(index))
+    pages = [box(page, lang="md") for page in list(pagify(desc, shorten_by=20))]
+    menu_task = asyncio.create_task(menu(ctx, pages, DEFAULT_CONTROLS, timeout=180))
+    country = None
+    pred_check = MessagePredicate.contained_in(
+        number_list, ctx=ctx, user=author, channel=ctx.channel
+    )
+    while not country:
+        with contextlib.suppress(asyncio.TimeoutError):
+            await bot.wait_for("message", timeout=30.0, check=pred_check)
+        country = number_list[pred_check.result] if pred_check else None
+    with contextlib.suppress(Exception):
+        menu_task.cancel()
+    user_data["country"] = validcountries[int(country) - 1]
+    cached_country = user_data["country"].lower().strip()
 
     if cached_country:
         country_data = WorldData.get("country", {})
@@ -225,74 +223,58 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         region = None
         country_timezones = None
 
+    continent_data = sorted(CONTINENT_DATA.values())
+
     if not region:
         await author.send("Which zone are you from?")
         embed = discord.Embed(title="Pick a number that matches your zone")
-
-        for key, value in CONTINENT_DATA.items():
-            embed.add_field(name=value.title(), value=key)
-
+        desc = ""
+        number_list = []
+        for index, value in enumerate(continent_data, start=1):
+            desc += f"{index}. {value.title()}\n"
+            number_list.append(str(index))
+        embed.description = box(desc, lang="md")
         await author.send(embed=embed)
-
-        msg = await bot.wait_for("message", check=check)
-        if msg and msg.content.lower() in ["1", "2", "3", "4", "5", "6"]:
-            user_data["zone"] = CONTINENT_DATA.get(msg.content)
-
-        else:
-            while msg and msg.content.lower() not in ["1", "2", "3", "4", "5", "6"]:
-                msg = await bot.wait_for("message", check=check)
-                if msg and msg.content.lower() in ["1", "2", "3", "4", "5", "6"]:
-                    user_data["zone"] = CONTINENT_DATA.get(msg.content)
-                    break
+        zone = None
+        pred_check = MessagePredicate.contained_in(
+            number_list, ctx=ctx, channel=ctx.channel, user=author
+        )
+        while not zone:
+            with contextlib.suppress(asyncio.TimeoutError):
+                await bot.wait_for("message", timeout=30.0, check=pred_check)
+            zone = number_list[pred_check.result] if pred_check else None
+        user_data["zone"] = continent_data[int(zone) - 1]
     else:
         user_data["zone"] = country_data.get(cached_country, {}).get("region", None)
 
     user_data["language"] = None
 
-    if not country_timezones:
-        await author.send(
-            "What your timezone?(say 'n' to leave it empty) (Use UTC Format <UTC+0> - "
-            "Use https://www.vercalendario.info/en/what/utc-offset-by-country.html for help)"
-        )
-        msg = await bot.wait_for("message", check=check)
-        if msg and msg.content.lower() != "n":
-            match = regex.search(TIMEZONE_REGEX, msg.content)
-            if match:
-                user_data["timezone"] = msg.content.upper().strip()
-            else:
-                await author.send(
-                    "Invalid timezone Use UTC Format <UTC+00:00> - You can check it at"
-                    " https://www.vercalendario.info/en/what/utc-offset-by-country.html "
-                    "(say 'n' to leave it empty)"
-                )
-                while not match:
-                    msg = await bot.wait_for("message", check=check)
-                    if msg and msg.content.lower() != "n":
-                        match = regex.search(TIMEZONE_REGEX, msg.content)
-                        if match:
-                            user_data["timezone"] = msg.content.upper().strip()
-                            break
-                    elif msg and msg.content.lower() == "n":
-                        break
-    elif len(country_timezones) > 1:
-        country_timezones_dict = {str(i): key for i, key in enumerate(country_timezones)}
+    if len(country_timezones) > 1:
+        country_timezones_dict = {str(i): key for i, key in enumerate(country_timezones, start=1)}
+        country_timezones = sorted(country_timezones_dict.values())
+
         await author.send(
             "There are multiple timezone for your country, please pick the one that match yours?"
         )
         embed = discord.Embed(title="Pick a number that matches your timezone")
-        for key, value in country_timezones_dict.items():
-            embed.add_field(name=value.upper(), value=key)
+        desc = ""
+        number_list = []
+        for index, value in enumerate(country_timezones, start=1):
+            desc += f"{index}. {value.upper()}\n"
+            number_list.append(str(index))
+
+        embed.description = box(desc, lang="md")
         await author.send(embed=embed)
-        msg = await bot.wait_for("message", check=check)
-        if msg and msg.content.lower() in list(country_timezones_dict.keys()):
-            user_data["timezone"] = country_timezones_dict.get(msg.content)
-        else:
-            while msg and msg.content.lower() not in list(country_timezones_dict.keys()):
-                msg = await bot.wait_for("message", check=check)
-                if msg and msg.content.lower() in list(country_timezones_dict.keys()):
-                    user_data["timezone"] = CONTINENT_DATA.get(msg.content)
-                    break
-    else:
+        timezone = None
+        pred_check = MessagePredicate.contained_in(
+            number_list, ctx=ctx, channel=ctx.channel, user=author
+        )
+        while not timezone:
+            with contextlib.suppress(asyncio.TimeoutError):
+                await bot.wait_for("message", timeout=30.0, check=pred_check)
+            timezone = number_list[pred_check.result] if pred_check else None
+        user_data["timezone"] = country_timezones[int(timezone) - 1]
+    elif len(country_timezones) == 1:
         user_data["timezone"] = country_timezones[0]
 
     return user_data

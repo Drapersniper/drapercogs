@@ -161,8 +161,11 @@ class CustomChannels(commands.Cog):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
-        if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
-            await self.config.guild(channel.guild).category_with_button()
+        if (
+            isinstance(channel, discord.VoiceChannel)
+            and channel.category
+            and f"{channel.category.id}"
+            in (await self.config.guild(channel.guild).category_with_button())
         ):
             logger.info(
                 f"Custom Channel ({channel.id}) has been deleted checking if it exist in database"
@@ -180,8 +183,11 @@ class CustomChannels(commands.Cog):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
-        if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
-            await self.config.guild(channel.guild).category_with_button()
+        if (
+            isinstance(channel, discord.VoiceChannel)
+            and channel.category
+            and f"{channel.category.id}"
+            in (await self.config.guild(channel.guild).category_with_button())
         ):
             logger.info(f"Custom Channel ({channel.id}) has been created adding to database")
             channel_group = self.config.guild(channel.guild)

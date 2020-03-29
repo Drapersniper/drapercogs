@@ -159,8 +159,11 @@ class DynamicChannels(commands.Cog):
         if not has_perm:
             return
 
-        if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
-            await self.config.guild(channel.guild).dynamic_channels()
+        if (
+            isinstance(channel, discord.VoiceChannel)
+            and channel.category
+            and f"{channel.category.id}"
+            in (await self.config.guild(channel.guild).dynamic_channels())
         ):
             log.debug(
                 f"Dynamic Channel ({channel.id}) has been deleted checking if it exist in database"
@@ -178,8 +181,11 @@ class DynamicChannels(commands.Cog):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
-        if isinstance(channel, discord.VoiceChannel) and f"{channel.category.id}" in (
-            await self.config.guild(channel.guild).dynamic_channels()
+        if (
+            isinstance(channel, discord.VoiceChannel)
+            and channel.category
+            and f"{channel.category.id}"
+            in (await self.config.guild(channel.guild).dynamic_channels())
         ):
             log.debug(f"Dynamic Channel ({channel.id}) has been created adding to database")
             channel_group = self.config.guild(channel.guild)
@@ -212,6 +218,7 @@ class DynamicChannels(commands.Cog):
                 after
                 and after.channel
                 and before.channel != after.channel
+                and after.channel.category
                 and after.channel.category == category
                 and f"{after.channel.category.id}" in whitelist
             ):
@@ -258,6 +265,7 @@ class DynamicChannels(commands.Cog):
                 before
                 and before.channel
                 and before.channel != after.channel
+                and before.channel.category
                 and before.channel.category == category
                 and f"{before.channel.category.id}" in whitelist
             ):

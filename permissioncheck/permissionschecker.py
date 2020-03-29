@@ -95,9 +95,7 @@ class PermissionsChecker(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
         if await ctx.bot.is_owner(ctx.author):
-            return await self.bot.on_command_error(
-            ctx, error, unhandled_by_cog=True
-        )
+            return
         error = getattr(error, "original", error)
         if self.permission_cache is None:
             self.permission_cache = discord.Permissions(**(await self.config.permissions.all()))
@@ -137,10 +135,6 @@ class PermissionsChecker(commands.Cog):
                 if current_perms.send_messages and current_perms.read_messages:
                     await ctx.send(box(text=text, lang="ini"))
                 return
-
-        await self.bot.on_command_error(
-            ctx, error, unhandled_by_cog=True
-        )
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
