@@ -72,7 +72,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                     await ctx.send(box(text=text, lang="ini"))
                 else:
                     log.info(
-                        "Missing permissions write permission in %d, Owner ID: %d",
+                        "Missing write permission in %d, Owner ID: %d",
                         ctx.guild.id,
                         ctx.guild.owner.id,
                     )

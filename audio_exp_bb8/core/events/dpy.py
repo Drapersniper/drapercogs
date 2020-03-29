@@ -66,7 +66,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 if current_perms.send_messages and current_perms.read_messages:
                     await ctx.send(box(text=text, lang="ini"))
                 else:
-                    log.info("Missing permissions write permission in %d, Owner ID: %d", ctx.guild.id, ctx.guild.owner.id)
+                    log.info("Missing write permission in %d, Owner ID: %d", ctx.guild.id, ctx.guild.owner.id)
                 raise CheckFailure(message=text)
 
         with contextlib.suppress(Exception):
