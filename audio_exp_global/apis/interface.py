@@ -575,7 +575,7 @@ class AudioAPIInterface:
                     ctx.guild,
                     (
                         f"{single_track.title} {single_track.author} {single_track.uri} "
-                        f"{str(Query.process_input(single_track, self.cog.local_folder_current_path))}"
+                        f"{Query.process_input(single_track, self.cog.local_folder_current_path)}"
                     ),
                 ):
                     has_not_allowed = True
@@ -928,6 +928,7 @@ class AudioAPIInterface:
             multiple = len(tracks) > 1
             valid = not multiple
             tries = len(tracks)
+            track = tracks[0]
             while valid is False and multiple:
                 tries -= 1
                 if tries <= 0:

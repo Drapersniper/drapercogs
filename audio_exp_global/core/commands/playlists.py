@@ -11,7 +11,7 @@ from typing import Optional, cast
 import discord
 import lavalink
 
-from redbot.core import checks, commands
+from redbot.core import commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import bold, pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
@@ -631,7 +631,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
         usage="<playlist_name_OR_id> [v2=False] [args]",
         cooldown_after_parsing=True,
     )
-    @checks.is_owner()
+    @commands.is_owner()
     @commands.bot_has_permissions(attach_files=True)
     @commands.cooldown(1, 30, commands.BucketType.guild)
     async def command_playlist_download(
@@ -1734,7 +1734,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 )
 
     @command_playlist.command(name="upload", usage="[args]")
-    @checks.is_owner()
+    @commands.is_owner()
     async def command_playlist_upload(
         self, ctx: commands.Context, *, scope_data: ScopeParser = None
     ):

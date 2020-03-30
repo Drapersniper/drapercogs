@@ -90,7 +90,7 @@ class Zipper(commands.Cog):
         return
 
     @commands.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def postcog(self, ctx, cog_name: str, py_name: Optional[str] = None):
         """Send a cog or supporting py file to the current channel.
 
@@ -99,7 +99,7 @@ class Zipper(commands.Cog):
         return await self._pull_file(ctx, cog_name, py_name)
 
     @commands.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def postsettings(self, ctx, cog_name: str, file_name: Optional[str] = None):
         """Send the specified file or setting from the Cog data path to the current channel."""
         cog_obj = ctx.bot.get_cog(cog_name)
@@ -131,7 +131,7 @@ class Zipper(commands.Cog):
             new_zip.unlink()
 
     @commands.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def postcogzip(self, ctx, cog_name: str):
         """Send a zip of the cog.
 

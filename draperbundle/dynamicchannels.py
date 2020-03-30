@@ -30,7 +30,7 @@ class DynamicChannels(commands.Cog):
         if self.task:
             self.task.cancel()
 
-    @checks.admin_or_permissions()
+    @commands.admin_or_permissions()
     @commands.guild_only()
     @commands.bot_has_permissions(manage_channels=True, manage_roles=True)
     @commands.group(name="dynamicset")

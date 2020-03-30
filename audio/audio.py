@@ -29,9 +29,9 @@ from redbot.core import Config, bank, checks, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n
-from redbot.core.utils.chat_formatting import bold, box, humanize_number, inline, pagify
+from redbot.core.utils.chat_formatting import bold, box, humanize_number, pagify
 from redbot.core.utils.menus import (
-    DEFAULT_CONTROLS,
+    CUSTOM_DEFAULT_CONTROLS,
     close_menu,
     menu,
     next_page,
@@ -70,7 +70,7 @@ from .utils import *
 
 _ = Translator("Audio", __file__)
 red_extras = version_info.to_json()
-red_extras.update({"major": 1, "minor": 2, "micro": 0, "dev_release": "99"})
+red_extras.update({"major": 1, "minor": 2, "micro": 0, "dev_release": "dev99"})
 __version__ = VersionInfo.from_json(red_extras)
 
 __author__ = ["aikaterna", "Draper"]
@@ -102,7 +102,6 @@ class Audio(commands.Cog):
         self.skip_votes: MutableMapping[discord.Guild, List[discord.Member]] = {}
         self.play_lock: MutableMapping[int, bool] = {}
         self._daily_playlist_cache: MutableMapping[int, bool] = {}
-        self._daily_global_playlist_cache: MutableMapping[int, bool] = {}
         self._dj_status_cache: MutableMapping[int, Optional[bool]] = {}
         self._dj_role_cache: MutableMapping[int, Optional[int]] = {}
         self._prefer_lyrics_cache: MutableMapping[int, Optional[bool]] = {}
@@ -119,10 +118,9 @@ class Audio(commands.Cog):
             cache_age=365,
             global_db_enabled=True,
             global_db_get_timeout=5,  # Here as a placeholder in case we want to enable the command
-            daily_playlists=True,
             status=False,
-            use_external_lavalink=False,
-            restrict=True,
+            use_external_lavalink=True,
+            restrict=False,
             localpath=str(cog_data_path(raw_name="Audio")),
             url_keyword_blacklist=[],
             url_keyword_whitelist=[],
@@ -145,11 +143,11 @@ class Audio(commands.Cog):
             jukebox=False,
             jukebox_price=0,
             maxlength=0,
-            notify=False,
+            notify=True,
             repeat=False,
             shuffle=False,
             shuffle_bumped=True,
-            thumbnail=False,
+            thumbnail=True,
             volume=100,
             vote_enabled=False,
             vote_percent=0,
@@ -197,11 +195,6 @@ class Audio(commands.Cog):
             raise RuntimeError(
                 "Not running audio command due to invalid machine architecture for Lavalink."
             )
-        with contextlib.suppress(Exception):
-            player = lavalink.get_player(ctx.guild.id)
-            notify_channel = player.fetch("channel")
-            if not notify_channel:
-                player.store("channel", ctx.channel.id)
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()
         )
@@ -210,9 +203,6 @@ class Audio(commands.Cog):
         )
         daily_cache = self._daily_playlist_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).daily_playlists()
-        )
-        global_daily_playlists = self._daily_global_playlist_cache.setdefault(
-            self.bot.user.id, await self.config.daily_playlists()
         )
         if dj_enabled:
             dj_role = self._dj_role_cache.setdefault(
@@ -728,7 +718,7 @@ class Audio(commands.Cog):
 
     @audioset.command(name="lyrics")
     @commands.guild_only()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def command_audioset_lryics(self, ctx: commands.Context):
         """Prioritise tracks with lyrics."""
         prefer_lyrics = await self.config.guild(ctx.guild).prefer_lyrics()
@@ -741,9 +731,8 @@ class Audio(commands.Cog):
             ),
         )
 
-
     @audioset.command(name="dailyqueue")
-    @checks.admin()
+    @commands.admin()
     async def _audioset_historical_queue(self, ctx: commands.Context):
         """Toggle daily queues.
 
@@ -763,26 +752,6 @@ class Audio(commands.Cog):
         )
 
     @commands.is_owner()
-    @audioset.command(name="globaldailyqueue")
-    async def _audioset_global_historical_queue(self, ctx: commands.Context):
-        """Toggle global daily queues.
-
-        Global daily queues creates a playlist for all tracks played today.
-        """
-        daily_playlists = self._daily_global_playlist_cache.setdefault(
-            self.bot.user.id, await self.config.daily_playlists()
-        )
-        await self.config.daily_playlists.set(not daily_playlists)
-        self._daily_global_playlist_cache[self.bot.user.id] = not daily_playlists
-        await self._embed_msg(
-            ctx,
-            title=_("Setting Changed"),
-            description=_("Global daily queues: {true_or_false}.").format(
-                true_or_false=_("Enabled") if not daily_playlists else _("Disabled")
-            ),
-        )
-
-    @checks.is_owner()
     @audioset.group(name="audiodb")
     async def _audiodb(self, ctx: commands.Context):
         """Change audiodb settings."""
@@ -818,7 +787,7 @@ class Audio(commands.Cog):
             return await ctx.send(
                 _(
                     "Hey! Thanks for showing interest into contributing, "
-                    "currently you dont have access to this, "
+                    "currently you don't have access to this, "
                     "if you wish to contribute please DM Draper#6666"
                 )
             )
@@ -838,7 +807,7 @@ class Audio(commands.Cog):
         await self.music_cache._api_contributer(ctx, db_entries)
 
     @audioset.command()
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def dc(self, ctx: commands.Context):
         """Toggle the bot auto-disconnecting when done playing.
 
@@ -860,11 +829,11 @@ class Audio(commands.Cog):
         await self._embed_msg(ctx, title=_("Setting Changed"), description=msg)
 
     @audioset.group(name="restrictions")
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def _perms(self, ctx: commands.Context):
         """Manages the keyword whitelist and blacklist."""
 
-    @checks.is_owner()
+    @commands.is_owner()
     @_perms.group(name="global")
     async def _perms_global(self, ctx: commands.Context):
         """Manages the global keyword whitelist/blacklist."""
@@ -996,7 +965,7 @@ class Audio(commands.Cog):
             discord.Embed(title="Global Whitelist", description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await menu(ctx, pages, CUSTOM_DEFAULT_CONTROLS(ctx))
 
     @_perms_global_blacklist.command(name="list")
     async def _perms_global_blacklist_list(self, ctx: commands.Context):
@@ -1022,7 +991,7 @@ class Audio(commands.Cog):
             discord.Embed(title="Global Blacklist", description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await menu(ctx, pages, CUSTOM_DEFAULT_CONTROLS(ctx))
 
     @_perms_global_whitelist.command(name="clear")
     async def _perms_global_whitelist_clear(self, ctx: commands.Context):
@@ -1177,7 +1146,7 @@ class Audio(commands.Cog):
             discord.Embed(title="Whitelist", description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await menu(ctx, pages, CUSTOM_DEFAULT_CONTROLS(ctx))
 
     @_perms_blacklist.command(name="list")
     async def _perms_blacklist_list(self, ctx: commands.Context):
@@ -1203,7 +1172,7 @@ class Audio(commands.Cog):
             discord.Embed(title="Blacklist", description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await menu(ctx, pages, CUSTOM_DEFAULT_CONTROLS(ctx))
 
     @_perms_whitelist.command(name="clear")
     async def _perms_whitelist_clear(self, ctx: commands.Context):
@@ -1232,7 +1201,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.group(name="autoplay")
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def _autoplay(self, ctx: commands.Context):
         """Change auto-play setting."""
 
@@ -1363,7 +1332,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.admin_or_permissions(manage_roles=True)
+    @commands.admin_or_permissions(manage_roles=True)
     async def dj(self, ctx: commands.Context):
         """Toggle DJ mode.
 
@@ -1402,7 +1371,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command(name="persistqueue")
-    @checks.admin()
+    @commands.admin()
     async def _audioset_persist_queue(self, ctx: commands.Context):
         """Toggle persistent queues.
 
@@ -1422,7 +1391,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def emptydisconnect(self, ctx: commands.Context, seconds: int):
         """Auto-disconnect from channel when bot is alone in it for x seconds, 0 to disable.
 
@@ -1453,7 +1422,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).emptydc_enabled.set(enabled)
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def emptypause(self, ctx: commands.Context, seconds: int):
         """Auto-pause after x seconds when room is empty, 0 to disable."""
         if seconds < 0:
@@ -1480,7 +1449,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).emptypause_enabled.set(enabled)
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def jukebox(self, ctx: commands.Context, price: int):
         """Set a price for queueing tracks for non-mods, 0 to disable."""
         if price < 0:
@@ -1506,7 +1475,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).jukebox.set(jukebox)
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def localpath(self, ctx: commands.Context, *, local_path=None):
         """Set the localtracks path if the Lavalink.jar is not run from the Audio data folder.
 
@@ -1585,7 +1554,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def maxlength(self, ctx: commands.Context, seconds: Union[int, str]):
         """Max length of a track to queue in seconds, 0 to disable.
 
@@ -1613,7 +1582,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).maxlength.set(seconds)
 
     @audioset.command()
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def notify(self, ctx: commands.Context):
         """Toggle track announcement and other bot messages."""
         notify = await self.config.guild(ctx.guild).notify()
@@ -1627,7 +1596,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def restrict(self, ctx: commands.Context):
         """Toggle the domain restriction on Audio.
 
@@ -1646,7 +1615,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.admin_or_permissions(manage_roles=True)
+    @commands.admin_or_permissions(manage_roles=True)
     async def role(self, ctx: commands.Context, *, role_name: discord.Role):
         """Set the role to use for DJ mode."""
         await self.config.guild(ctx.guild).dj_role.set(role_name.id)
@@ -1664,152 +1633,155 @@ class Audio(commands.Cog):
     @audioset.command()
     async def settings(self, ctx: commands.Context):
         """Show the current settings."""
-        is_owner = await ctx.bot.is_owner(ctx.author)
-        global_data = await self.config.all()
-        data = await self.config.guild(ctx.guild).all()
-        dj_role_obj = ctx.guild.get_role(data["dj_role"])
-        dj_enabled = data["dj_enabled"]
-        emptydc_enabled = data["emptydc_enabled"]
-        emptydc_timer = data["emptydc_timer"]
-        emptypause_enabled = data["emptypause_enabled"]
-        emptypause_timer = data["emptypause_timer"]
-        jukebox = data["jukebox"]
-        jukebox_price = data["jukebox_price"]
-        thumbnail = data["thumbnail"]
-        dc = data["disconnect"]
-        autoplay = data["auto_play"]
-        maxlength = data["maxlength"]
-        vote_percent = data["vote_percent"]
-        current_level = CacheLevel(global_data["cache_level"])
-        song_repeat = _("Enabled") if data["repeat"] else _("Disabled")
-        song_shuffle = _("Enabled") if data["shuffle"] else _("Disabled")
-        bumpped_shuffle = _("Enabled") if data["shuffle_bumped"] else _("Disabled")
-        song_notify = _("Enabled") if data["notify"] else _("Disabled")
-        song_status = _("Enabled") if global_data["status"] else _("Disabled")
-        persist_queue = _("Enabled") if data["persist_queue"] else _("Disabled")
+        async with ctx.typing():
+            is_owner = await ctx.bot.is_owner(ctx.author)
+            global_data = await self.config.all()
+            data = await self.config.guild(ctx.guild).all()
+            dj_role_obj = ctx.guild.get_role(data["dj_role"])
+            dj_enabled = data["dj_enabled"]
+            emptydc_enabled = data["emptydc_enabled"]
+            emptydc_timer = data["emptydc_timer"]
+            emptypause_enabled = data["emptypause_enabled"]
+            emptypause_timer = data["emptypause_timer"]
+            jukebox = data["jukebox"]
+            jukebox_price = data["jukebox_price"]
+            thumbnail = data["thumbnail"]
+            dc = data["disconnect"]
+            autoplay = data["auto_play"]
+            maxlength = data["maxlength"]
+            vote_percent = data["vote_percent"]
+            current_level = CacheLevel(global_data["cache_level"])
+            song_repeat = _("Enabled") if data["repeat"] else _("Disabled")
+            song_shuffle = _("Enabled") if data["shuffle"] else _("Disabled")
+            bumpped_shuffle = _("Enabled") if data["shuffle_bumped"] else _("Disabled")
+            song_notify = _("Enabled") if data["notify"] else _("Disabled")
+            song_status = _("Enabled") if global_data["status"] else _("Disabled")
+            persist_queue = _("Enabled") if data["persist_queue"] else _("Disabled")
 
-        spotify_cache = CacheLevel.set_spotify()
-        youtube_cache = CacheLevel.set_youtube()
-        lavalink_cache = CacheLevel.set_lavalink()
-        has_spotify_cache = current_level.is_superset(spotify_cache)
-        has_youtube_cache = current_level.is_superset(youtube_cache)
-        has_lavalink_cache = current_level.is_superset(lavalink_cache)
-        autoplaylist = data["autoplaylist"]
-        vote_enabled = data["vote_enabled"]
-        msg = "----" + _("Server Settings") + "----        \n"
-        msg += _("Auto-disconnect:  [{dc}]\n").format(dc=_("Enabled") if dc else _("Disabled"))
-        msg += _("Auto-play:        [{autoplay}]\n").format(
-            autoplay=_("Enabled") if autoplay else _("Disabled")
-        )
-        if emptydc_enabled:
-            msg += _("Disconnect timer: [{num_seconds}]\n").format(
-                num_seconds=dynamic_time(emptydc_timer)
+            spotify_cache = CacheLevel.set_spotify()
+            youtube_cache = CacheLevel.set_youtube()
+            lavalink_cache = CacheLevel.set_lavalink()
+            has_spotify_cache = current_level.is_superset(spotify_cache)
+            has_youtube_cache = current_level.is_superset(youtube_cache)
+            has_lavalink_cache = current_level.is_superset(lavalink_cache)
+            autoplaylist = data["autoplaylist"]
+            vote_enabled = data["vote_enabled"]
+            msg = "----" + _("Server Settings") + "----        \n"
+            msg += _("Auto-disconnect:  [{dc}]\n").format(dc=_("Enabled") if dc else _("Disabled"))
+            msg += _("Auto-play:        [{autoplay}]\n").format(
+                autoplay=_("Enabled") if autoplay else _("Disabled")
             )
-        if emptypause_enabled:
-            msg += _("Auto Pause timer: [{num_seconds}]\n").format(
-                num_seconds=dynamic_time(emptypause_timer)
-            )
-        if dj_enabled and dj_role_obj:
-            msg += _("DJ Role:          [{role.name}]\n").format(role=dj_role_obj)
-        if jukebox:
-            msg += _("Jukebox:          [{jukebox_name}]\n").format(jukebox_name=jukebox)
-            msg += _("Command price:    [{jukebox_price}]\n").format(
-                jukebox_price=humanize_number(jukebox_price)
-            )
-        if maxlength > 0:
-            msg += _("Max track length: [{tracklength}]\n").format(
-                tracklength=dynamic_time(maxlength)
-            )
-        msg += _(
-            "Repeat:           [{repeat}]\n"
-            "Shuffle:          [{shuffle}]\n"
-            "Shuffle bumped:   [{bumpped_shuffle}]\n"
-            "Song notify msgs: [{notify}]\n"
-            "Songs as status:  [{status}]\n"
-            "Persist queue:    [{persist_queue}]\n"
-        ).format(
-            repeat=song_repeat,
-            shuffle=song_shuffle,
-            notify=song_notify,
-            status=song_status,
-            bumpped_shuffle=bumpped_shuffle,
-            persist_queue=persist_queue,
-        )
-        if thumbnail:
-            msg += _("Thumbnails:       [{0}]\n").format(
-                _("Enabled") if thumbnail else _("Disabled")
-            )
-        if vote_percent > 0:
+            if emptydc_enabled:
+                msg += _("Disconnect timer: [{num_seconds}]\n").format(
+                    num_seconds=dynamic_time(emptydc_timer)
+                )
+            if emptypause_enabled:
+                msg += _("Auto Pause timer: [{num_seconds}]\n").format(
+                    num_seconds=dynamic_time(emptypause_timer)
+                )
+            if dj_enabled and dj_role_obj:
+                msg += _("DJ Role:          [{role.name}]\n").format(role=dj_role_obj)
+            if jukebox:
+                msg += _("Jukebox:          [{jukebox_name}]\n").format(jukebox_name=jukebox)
+                msg += _("Command price:    [{jukebox_price}]\n").format(
+                    jukebox_price=humanize_number(jukebox_price)
+                )
+            if maxlength > 0:
+                msg += _("Max track length: [{tracklength}]\n").format(
+                    tracklength=dynamic_time(maxlength)
+                )
             msg += _(
-                "Vote skip:        [{vote_enabled}]\nSkip percentage:  [{vote_percent}%]\n"
+                "Repeat:           [{repeat}]\n"
+                "Shuffle:          [{shuffle}]\n"
+                "Shuffle bumped:   [{bumpped_shuffle}]\n"
+                "Song notify msgs: [{notify}]\n"
+                "Persist queue:    [{persist_queue}]\n"
+                "{status}"
             ).format(
-                vote_percent=vote_percent,
-                vote_enabled=_("Enabled") if vote_enabled else _("Disabled"),
+                repeat=song_repeat,
+                shuffle=song_shuffle,
+                notify=song_notify,
+                status="Songs as status:  [{}]\n".format(song_status)
+                if self.bot.user.id != 512227974893010954
+                else "",
+                bumpped_shuffle=bumpped_shuffle,
+                persist_queue=persist_queue,
             )
+            if thumbnail:
+                msg += _("Thumbnails:       [{0}]\n").format(
+                    _("Enabled") if thumbnail else _("Disabled")
+                )
+            if vote_percent > 0:
+                msg += _(
+                    "Vote skip:        [{vote_enabled}]\nSkip percentage:  [{vote_percent}%]\n"
+                ).format(
+                    vote_percent=vote_percent,
+                    vote_enabled=_("Enabled") if vote_enabled else _("Disabled"),
+                )
 
-        if autoplay or autoplaylist["enabled"]:
-            if autoplaylist["enabled"]:
-                pname = autoplaylist["name"]
-                pid = autoplaylist["id"]
-                pscope = autoplaylist["scope"]
-                if pscope == PlaylistScope.GUILD.value:
-                    pscope = f"Server"
-                elif pscope == PlaylistScope.USER.value:
-                    pscope = f"User"
+            if autoplay or autoplaylist["enabled"]:
+                if autoplaylist["enabled"]:
+                    pname = autoplaylist["name"]
+                    pid = autoplaylist["id"]
+                    pscope = autoplaylist["scope"]
+                    if pscope == PlaylistScope.GUILD.value:
+                        pscope = f"Server"
+                    elif pscope == PlaylistScope.USER.value:
+                        pscope = f"User"
+                    else:
+                        pscope = "Global"
                 else:
-                    pscope = "Global"
-            else:
-                pname = _("Cached")
-                pid = _("Cached")
-                pscope = _("Cached")
-            msg += (
-                "\n---"
-                + _("Auto-play Settings")
-                + "---        \n"
-                + _("Playlist name:    [{pname}]\n")
-                + _("Playlist ID:      [{pid}]\n")
-                + _("Playlist scope:   [{pscope}]\n")
-            ).format(pname=pname, pid=pid, pscope=pscope)
+                    pname = _("Cached")
+                    pid = _("Cached")
+                    pscope = _("Cached")
+                msg += (
+                    "\n---"
+                    + _("Auto-play Settings")
+                    + "---        \n"
+                    + _("Playlist name:    [{pname}]\n")
+                    + _("Playlist ID:      [{pid}]\n")
+                    + _("Playlist scope:   [{pscope}]\n")
+                ).format(pname=pname, pid=pid, pscope=pscope)
 
-        if is_owner:
-            msg += (
-                "\n---"
-                + _("Cache Settings")
-                + "---        \n"
-                + _("Max age:                [{max_age}]\n")
-                + _("Local Spotify cache:    [{spotify_status}]\n")
-                + _("Local Youtube cache:    [{youtube_status}]\n")
-                + _("Local Lavalink cache:   [{lavalink_status}]\n")
-                + _("Global cache status:    [{global_cache}]\n")
-                + _("Global Timeout:         [{num_seconds}]\n")
-            ).format(
-                max_age=str(await self.config.cache_age()) + " " + _("days"),
-                spotify_status=_("Enabled") if has_spotify_cache else _("Disabled"),
-                youtube_status=_("Enabled") if has_youtube_cache else _("Disabled"),
-                lavalink_status=_("Enabled") if has_lavalink_cache else _("Disabled"),
-                global_cache=_("Enabled") if global_data["global_db_enabled"] else _("Disabled"),
-                num_seconds=dynamic_time(global_data["global_db_get_timeout"])
-            )
-
-        msg += _(
-            "\n---" + _("Lavalink Settings") + "---        \n"
-            "Cog version:      [{version}]\n"
-            "Red-Lavalink:     [{redlava}]\n"
-            "External server:  [{use_external_lavalink}]\n"
-        ).format(
-            version=__version__,
-            redlava=lavalink.__version__,
-            use_external_lavalink=_("Enabled")
-            if global_data["use_external_lavalink"]
-            else _("Disabled"),
-        )
-        if is_owner:
-            msg += _("Localtracks path: [{localpath}]\n").format(**global_data)
+            if is_owner:
+                global_db = await self.config.global_db_enabled()
+                msg += (
+                    "\n---"
+                    + _("Cache Settings")
+                    + "---        \n"
+                    + _("Max age:                [{max_age}]\n")
+                    + _("Local Spotify cache:    [{spotify_status}]\n")
+                    + _("Local Youtube cache:    [{youtube_status}]\n")
+                    + _("Local Lavalink cache:   [{lavalink_status}]\n")
+                    + _("Global cache status:    [{global_cache}]\n")
+                ).format(
+                    max_age=str(await self.config.cache_age()) + " " + _("days"),
+                    spotify_status=_("Enabled") if has_spotify_cache else _("Disabled"),
+                    youtube_status=_("Enabled") if has_youtube_cache else _("Disabled"),
+                    lavalink_status=_("Enabled") if has_lavalink_cache else _("Disabled"),
+                    global_cache=_("Enabled") if global_db else _("Disabled"),
+                )
+                msg += _(
+                    "\n---" + _("Lavalink Settings") + "---        \n"
+                    "Cog version:      [{version}]\n"
+                    "Red-Lavalink:     [{redlava}]\n"
+                    "Jar build:        [{jarbuild}]\n"
+                    "External server:  [{use_external_lavalink}]\n"
+                ).format(
+                    version=__version__,
+                    redlava=lavalink.__version__,
+                    jarbuild="DEV",
+                    use_external_lavalink=_("Enabled")
+                    if global_data["use_external_lavalink"]
+                    else _("Disabled"),
+                )
+                if self.bot.user.id != 512227974893010954:
+                    msg += _("Localtracks path: [{localpath}]\n").format(**global_data)
 
         await self._embed_msg(ctx, description=box(msg, lang="ini"))
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def spotifyapi(self, ctx: commands.Context):
         """Instructions to set the Spotify API tokens."""
         message = _(
@@ -1825,7 +1797,7 @@ class Audio(commands.Cog):
         ).format(prefix=ctx.prefix)
         await ctx.maybe_send_embed(message)
 
-    @checks.is_owner()
+    @commands.is_owner()
     @audioset.command()
     async def status(self, ctx: commands.Context):
         """Enable/disable tracks' titles as status."""
@@ -1840,7 +1812,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def thumbnail(self, ctx: commands.Context):
         """Toggle displaying a thumbnail on audio messages."""
         thumbnail = await self.config.guild(ctx.guild).thumbnail()
@@ -1854,7 +1826,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def vote(self, ctx: commands.Context, percent: int):
         """Percentage needed for non-mods to skip tracks, 0 to disable."""
         if percent < 0:
@@ -1882,7 +1854,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).vote_enabled.set(enabled)
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def youtubeapi(self, ctx: commands.Context):
         """Instructions to set the YouTube API key."""
         message = _(
@@ -1901,7 +1873,7 @@ class Audio(commands.Cog):
         await ctx.maybe_send_embed(message)
 
     @audioset.command(name="cache", usage="level=[5, 3, 2, 1, 0, -1, -2, -3]")
-    @checks.is_owner()
+    @commands.is_owner()
     async def _storage(self, ctx: commands.Context, *, level: int = None):
         """Sets the caching level.
 
@@ -1984,7 +1956,7 @@ class Audio(commands.Cog):
         await self.config.cache_level.set(newcache.value)
 
     @audioset.command(name="cacheage")
-    @checks.is_owner()
+    @commands.is_owner()
     async def _cacheage(self, ctx: commands.Context, age: int):
         """Sets the cache max age.
 
@@ -2059,7 +2031,7 @@ class Audio(commands.Cog):
             pages += 1
             servers_embed.append(em)
 
-        await menu(ctx, servers_embed, DEFAULT_CONTROLS)
+        await menu(ctx, servers_embed, CUSTOM_DEFAULT_CONTROLS(ctx))
 
     @commands.command()
     @commands.guild_only()
@@ -2071,7 +2043,7 @@ class Audio(commands.Cog):
         )
 
         if not self._player_check(ctx):
-            return await self._embed_msg(ctx, title=_("Nothing playing."))
+            return await self._embed_msg(ctx, title=_("{CROSS} Nothing playing."), error=True)
         player = lavalink.get_player(ctx.guild.id)
         if (
             not ctx.author.voice or ctx.author.voice.channel != player.channel
@@ -3466,7 +3438,7 @@ class Audio(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def autoplay(self, ctx: commands.Context):
         """Starts auto play."""
         if not self._player_check(ctx):
@@ -4824,7 +4796,7 @@ class Audio(commands.Cog):
                 ).format(name=playlist.name, id=playlist.id, scope=scope_name),
             )
 
-    @checks.is_owner()
+    @commands.is_owner()
     @playlist.command(
         name="download",
         usage="<playlist_name_OR_id> [v2=False] [args]",
@@ -5904,7 +5876,7 @@ class Audio(commands.Cog):
                     ),
                 )
 
-    @checks.is_owner()
+    @commands.is_owner()
     @playlist.command(name="upload", usage="[args]")
     async def _playlist_upload(self, ctx: commands.Context, *, scope_data: ScopeParser = None):
         """Uploads a playlist file as a playlist for the bot.
@@ -8173,7 +8145,7 @@ class Audio(commands.Cog):
     @commands.group(aliases=["llset"])
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @checks.is_owner()
+    @commands.is_owner()
     async def llsetup(self, ctx: commands.Context):
         """Lavalink server configuration options."""
 

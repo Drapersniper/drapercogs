@@ -49,7 +49,7 @@ class GamingProfile(commands.Cog):
         """Managers a user profile"""
 
     @commands.guild_only()
-    @checks.bot_has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
     @_profile.command(name="setup")
     async def _profile_setup(self, ctx: commands.Context):
         """Set up the environment needed by creating the required roles."""

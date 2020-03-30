@@ -18,7 +18,7 @@ class DraperDevJson(commands.Cog):
 
         restore_stdlib()
 
-    @checks.is_owner()
+    @commands.is_owner()
     @commands.group(name="hackydev")
     async def _hackydev(self, ctx: commands.Context):
         """Change hackydev settings."""

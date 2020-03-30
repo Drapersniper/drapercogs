@@ -23,4 +23,3 @@ class NameGenerator:
         if self.i:
             await asyncio.sleep(self.delay)
         return i
-

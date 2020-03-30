@@ -63,8 +63,8 @@ class PokeGram(commands.Cog):
         name_list = []
         if api:
             data = await self.make_get(url="https://pokeapi.co/api/v2/pokemon/?offset=0&limit=807")
-            for pokemon in data.get('results', []):
-                name_list.append(pokemon['name'])
+            for pokemon in data.get("results", []):
+                name_list.append(pokemon["name"])
         else:
             name_list = await self.get_from_file()
         if name_list:
@@ -73,20 +73,20 @@ class PokeGram(commands.Cog):
 
     async def find_anagrams(self, name: str) -> Tuple[List[str], str]:
         results = []
-        remaining = ''
+        remaining = ""
         if not self.valid_names:
             return results, remaining
         async for pokemon in NameGenerator(self.valid_names):
-            new_name = ''
+            new_name = ""
             split_name = list(name.lower())
             pkm_name_length = len(pokemon)
             for poke_letter in pokemon:
                 if poke_letter in split_name:
                     new_name += poke_letter
                     split_name.remove(poke_letter)
-            new_name += ' '
+            new_name += " "
             if new_name[:pkm_name_length] == pokemon:
-                remaining = ''.join(split_name)
+                remaining = "".join(split_name)
                 more_names, remaining = await self.find_anagrams(remaining)
                 if not more_names:
                     results.append(new_name + remaining)
@@ -98,7 +98,7 @@ class PokeGram(commands.Cog):
         return results, remaining
 
     @commands.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def updatenames(self, ctx: commands.Context):
         """Fetch PokeAPI for up to date names."""
         await self.fetch_names()
@@ -119,4 +119,3 @@ class PokeGram(commands.Cog):
         if not pages:
             return await ctx.send("No anagram found for {name}.".format(name=poke_name))
         await menu(ctx, pages, DEFAULT_CONTROLS)
-

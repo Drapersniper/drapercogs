@@ -62,12 +62,12 @@ class AntiBot(commands.Cog):
         if self.session:
             self.session.detach()
 
-    @checks.admin_or_permissions(kick_members=True, ban_members=True)
+    @commands.admin_or_permissions(kick_members=True, ban_members=True)
     @commands.group(name="automod")
     async def _automod(self, ctx: commands.Context):
         """Toggles whether to auto ban new joins if they exist in the global database."""
 
-    @checks.admin()
+    @commands.admin()
     @_automod.command()
     async def toggle(self, ctx: commands.Context, enabled: bool = None):
         """Toggles auto moderation on member joins."""
@@ -78,7 +78,7 @@ class AntiBot(commands.Cog):
             _("Auto mod is: {status}").format(status=_("enabled") if enabled else _("disabled"))
         )
 
-    @checks.admin()
+    @commands.admin()
     @_automod.command()
     async def days(self, ctx: commands.Context, days: int = None):
         """Set how many days an account needs to be before ignoring auto moderation."""
@@ -89,7 +89,7 @@ class AntiBot(commands.Cog):
             _("Accounts older than {days} will bypass auto moderation").format(days=days)
         )
 
-    @checks.admin()
+    @commands.admin()
     @_automod.command()
     async def appeal(self, ctx: commands.Context, invite: str = None):
         """Sets an invite link to a secondary server (appeal server)"""
@@ -149,7 +149,7 @@ class AntiBot(commands.Cog):
                     ).format(user=user)
                 )
 
-    @checks.admin()
+    @commands.admin()
     @_automod.command()
     async def recursive(self, ctx: commands.Context):
         """Go through member list and kick likely bots."""
@@ -161,7 +161,7 @@ class AntiBot(commands.Cog):
                 await self._auto_kick(member)
         await ctx.tick()
 
-    @checks.admin()
+    @commands.admin()
     @_automod.command()
     async def bottyinvites(self, ctx: commands.Context, *invites):
         """Add invite links that most bots come from This makes users who join with this invite
@@ -194,7 +194,7 @@ class AntiBot(commands.Cog):
                 )
             )
 
-    @checks.admin()
+    @commands.admin()
     @_automod.command()
     async def bypassinvites(self, ctx: commands.Context, *invites):
         """Add invite links that allows users to bypass auto moderation."""

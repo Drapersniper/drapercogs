@@ -723,7 +723,7 @@ class Audio(commands.Cog):
 
     @audioset.command(name="lyrics")
     @commands.guild_only()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def command_audioset_lryics(self, ctx: commands.Context):
         """Prioritise tracks with lyrics."""
         prefer_lyrics = await self.config.guild(ctx.guild).prefer_lyrics()
@@ -737,7 +737,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command(name="dailyqueue")
-    @checks.admin()
+    @commands.admin()
     async def _audioset_historical_queue(self, ctx: commands.Context):
         """Toggle daily queues.
 
@@ -776,7 +776,7 @@ class Audio(commands.Cog):
             ),
         )
 
-    @checks.is_owner()
+    @commands.is_owner()
     @audioset.group(name="audiodb")
     async def _audiodb(self, ctx: commands.Context):
         """Change audiodb settings."""
@@ -832,7 +832,7 @@ class Audio(commands.Cog):
         await self.music_cache._api_contributer(ctx, db_entries)
 
     @audioset.command()
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def dc(self, ctx: commands.Context):
         """Toggle the bot auto-disconnecting when done playing.
 
@@ -854,11 +854,11 @@ class Audio(commands.Cog):
         await self._embed_msg(ctx, title=_("Setting Changed"), description=msg)
 
     @audioset.group(name="restrictions")
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def _perms(self, ctx: commands.Context):
         """Manages the keyword whitelist and blacklist."""
 
-    @checks.is_owner()
+    @commands.is_owner()
     @_perms.group(name="global")
     async def _perms_global(self, ctx: commands.Context):
         """Manages the global keyword whitelist/blacklist."""
@@ -1226,7 +1226,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.group(name="autoplay")
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def _autoplay(self, ctx: commands.Context):
         """Change auto-play setting."""
 
@@ -1357,7 +1357,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.admin_or_permissions(manage_roles=True)
+    @commands.admin_or_permissions(manage_roles=True)
     async def dj(self, ctx: commands.Context):
         """Toggle DJ mode.
 
@@ -1396,7 +1396,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command(name="persistqueue")
-    @checks.admin()
+    @commands.admin()
     async def _audioset_persist_queue(self, ctx: commands.Context):
         """Toggle persistent queues.
 
@@ -1416,7 +1416,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def emptydisconnect(self, ctx: commands.Context, seconds: int):
         """Auto-disconnect from channel when bot is alone in it for x seconds, 0 to disable.
 
@@ -1447,7 +1447,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).emptydc_enabled.set(enabled)
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def emptypause(self, ctx: commands.Context, seconds: int):
         """Auto-pause after x seconds when room is empty, 0 to disable."""
         if seconds < 0:
@@ -1474,7 +1474,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).emptypause_enabled.set(enabled)
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def jukebox(self, ctx: commands.Context, price: int):
         """Set a price for queueing tracks for non-mods, 0 to disable."""
         if price < 0:
@@ -1500,7 +1500,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).jukebox.set(jukebox)
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def localpath(self, ctx: commands.Context, *, local_path=None):
         """Set the localtracks path if the Lavalink.jar is not run from the Audio data folder.
 
@@ -1579,7 +1579,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def maxlength(self, ctx: commands.Context, seconds: Union[int, str]):
         """Max length of a track to queue in seconds, 0 to disable.
 
@@ -1607,7 +1607,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).maxlength.set(seconds)
 
     @audioset.command()
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def notify(self, ctx: commands.Context):
         """Toggle track announcement and other bot messages."""
         notify = await self.config.guild(ctx.guild).notify()
@@ -1621,7 +1621,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def restrict(self, ctx: commands.Context):
         """Toggle the domain restriction on Audio.
 
@@ -1640,7 +1640,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.admin_or_permissions(manage_roles=True)
+    @commands.admin_or_permissions(manage_roles=True)
     async def role(self, ctx: commands.Context, *, role_name: discord.Role):
         """Set the role to use for DJ mode."""
         await self.config.guild(ctx.guild).dj_role.set(role_name.id)
@@ -1802,7 +1802,7 @@ class Audio(commands.Cog):
         await self._embed_msg(ctx, description=box(msg, lang="ini"))
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def spotifyapi(self, ctx: commands.Context):
         """Instructions to set the Spotify API tokens."""
         message = _(
@@ -1818,7 +1818,7 @@ class Audio(commands.Cog):
         ).format(prefix=ctx.prefix)
         await ctx.maybe_send_embed(message)
 
-    @checks.is_owner()
+    @commands.is_owner()
     @audioset.command()
     async def status(self, ctx: commands.Context):
         """Enable/disable tracks' titles as status."""
@@ -1833,7 +1833,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def thumbnail(self, ctx: commands.Context):
         """Toggle displaying a thumbnail on audio messages."""
         thumbnail = await self.config.guild(ctx.guild).thumbnail()
@@ -1847,7 +1847,7 @@ class Audio(commands.Cog):
         )
 
     @audioset.command()
-    @checks.mod_or_permissions(administrator=True)
+    @commands.mod_or_permissions(administrator=True)
     async def vote(self, ctx: commands.Context, percent: int):
         """Percentage needed for non-mods to skip tracks, 0 to disable."""
         if percent < 0:
@@ -1875,7 +1875,7 @@ class Audio(commands.Cog):
         await self.config.guild(ctx.guild).vote_enabled.set(enabled)
 
     @audioset.command()
-    @checks.is_owner()
+    @commands.is_owner()
     async def youtubeapi(self, ctx: commands.Context):
         """Instructions to set the YouTube API key."""
         message = _(
@@ -1894,7 +1894,7 @@ class Audio(commands.Cog):
         await ctx.maybe_send_embed(message)
 
     @audioset.command(name="cache", usage="level=[5, 3, 2, 1, 0, -1, -2, -3]")
-    @checks.is_owner()
+    @commands.is_owner()
     async def _storage(self, ctx: commands.Context, *, level: int = None):
         """Sets the caching level.
 
@@ -1977,7 +1977,7 @@ class Audio(commands.Cog):
         await self.config.cache_level.set(newcache.value)
 
     @audioset.command(name="cacheage")
-    @checks.is_owner()
+    @commands.is_owner()
     async def _cacheage(self, ctx: commands.Context, age: int):
         """Sets the cache max age.
 
@@ -3459,7 +3459,7 @@ class Audio(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @checks.mod_or_permissions(manage_messages=True)
+    @commands.mod_or_permissions(manage_messages=True)
     async def autoplay(self, ctx: commands.Context):
         """Starts auto play."""
         if not self._player_check(ctx):
@@ -4817,7 +4817,7 @@ class Audio(commands.Cog):
                 ).format(name=playlist.name, id=playlist.id, scope=scope_name),
             )
 
-    @checks.is_owner()
+    @commands.is_owner()
     @playlist.command(
         name="download",
         usage="<playlist_name_OR_id> [v2=False] [args]",
@@ -5897,7 +5897,7 @@ class Audio(commands.Cog):
                     ),
                 )
 
-    @checks.is_owner()
+    @commands.is_owner()
     @playlist.command(name="upload", usage="[args]")
     async def _playlist_upload(self, ctx: commands.Context, *, scope_data: ScopeParser = None):
         """Uploads a playlist file as a playlist for the bot.
@@ -8166,7 +8166,7 @@ class Audio(commands.Cog):
     @commands.group(aliases=["llset"])
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @checks.is_owner()
+    @commands.is_owner()
     async def llsetup(self, ctx: commands.Context):
         """Lavalink server configuration options."""
 

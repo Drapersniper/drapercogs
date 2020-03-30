@@ -52,7 +52,7 @@ class Reporter(commands.Cog):
             data += f'<{name} - {pct}{"%"}> '
         return data
 
-    @checks.is_owner()
+    @commands.is_owner()
     @commands.group(name="usagereport")
     async def _report(self, ctx: commands.Context):
         """Check bot settings."""

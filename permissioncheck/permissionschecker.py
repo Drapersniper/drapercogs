@@ -43,7 +43,6 @@ HUMANIZED_PERM = {
     "manage_roles": "Manage Roles",
     "manage_webhooks": "Manage Webhooks",
     "manage_emojis": "Manage Emojis",
-
 }
 
 log = logging.getLogger("red.drapercogs.PermissionsChecker")
@@ -51,23 +50,27 @@ log = logging.getLogger("red.drapercogs.PermissionsChecker")
 
 class PermissionsChecker(commands.Cog):
     """Permissions Checker commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.config: Config = Config.get_conf(self, 208903205982044161, force_registration=True)
-        default_perms = {"send_messages": True, "read_messages": True, "add_reactions": True, "embed_links": True}
+        default_perms = {
+            "send_messages": True,
+            "read_messages": True,
+            "add_reactions": True,
+            "embed_links": True,
+        }
         self.config.register_global(blacklist=[], permissions=default_perms)
         self.config.register_channel(error_count=0, last_error=0)
         self.permission_cache: discord.Permissions = None
 
-
-
     async def bot_check(self, ctx: Context):
         current_perms = ctx.channel.permissions_for(ctx.me)
         surpass_ignore = (
-                isinstance(ctx.channel, discord.abc.PrivateChannel)
-                or current_perms.manage_guild
-                or await ctx.bot.is_owner(ctx.author)
-                or await ctx.bot.is_admin(ctx.author)
+            isinstance(ctx.channel, discord.abc.PrivateChannel)
+            or current_perms.manage_guild
+            or await ctx.bot.is_owner(ctx.author)
+            or await ctx.bot.is_admin(ctx.author)
         )
         if surpass_ignore:
             return True
@@ -80,10 +83,12 @@ class PermissionsChecker(commands.Cog):
             diff = expected_perms_set - current_perms_set
             missing_perms = dict((i for i in diff if i[-1] is not False))
             missing_perms = collections.OrderedDict(sorted(missing_perms.items()))
-            text = ("I'm missing permissions in this server, "
-                    "Please address this as soon as possible. "
-                    "If this continues I will leave the server.\n\n"
-                    "Expected Permissions:\n")
+            text = (
+                "I'm missing permissions in this server, "
+                "Please address this as soon as possible. "
+                "If this continues I will leave the server.\n\n"
+                "Expected Permissions:\n"
+            )
             for perm, value in missing_perms.items():
                 text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"
             text = text.strip()
@@ -99,7 +104,10 @@ class PermissionsChecker(commands.Cog):
         error = getattr(error, "original", error)
         if self.permission_cache is None:
             self.permission_cache = discord.Permissions(**(await self.config.permissions.all()))
-        if isinstance(error, (discord.HTTPException, )) and getattr(error, "code", None) in [50001, 50013]:
+        if isinstance(error, (discord.HTTPException,)) and getattr(error, "code", None) in [
+            50001,
+            50013,
+        ]:
             channel = ctx.channel
             guild = ctx.guild
             current_perms: discord.Permissions = ctx.me.permissions_in(channel)
@@ -109,10 +117,12 @@ class PermissionsChecker(commands.Cog):
                 diff = expected_perms_set - current_perms_set
                 missing_perms = dict((i for i in diff if i[-1] is not False))
                 missing_perms = collections.OrderedDict(sorted(missing_perms.items()))
-                text = ("I'm missing permissions in this server, "
-                       "Please address this as soon as possible. "
-                       "If this continues I will leave the server.\n\n"
-                       "Expected Permissions:\n")
+                text = (
+                    "I'm missing permissions in this server, "
+                    "Please address this as soon as possible. "
+                    "If this continues I will leave the server.\n\n"
+                    "Expected Permissions:\n"
+                )
                 for perm, value in missing_perms.items():
                     text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"
                 text = text.strip()
@@ -125,7 +135,8 @@ class PermissionsChecker(commands.Cog):
                         await ctx.send(
                             "Too many permissions errors in this server, "
                             "you been warned 10 times, and didn't take action. "
-                            "I will be leaving the server now")
+                            "I will be leaving the server now"
+                        )
                         async with self.config.blacklist() as blacklist:
                             if guild.id not in blacklist:
                                 blacklist.append(guild.id)
@@ -143,7 +154,7 @@ class PermissionsChecker(commands.Cog):
                 log.info(f"leaving guild: {guild}({guild.id})")
                 await guild.leave()
 
-    @checks.is_owner()
+    @commands.is_owner()
     @commands.group(name="pchecker")
     async def pchecker(self, ctx: commands.Context):
         """Settings for Permission Checker."""
@@ -158,7 +169,7 @@ class PermissionsChecker(commands.Cog):
         permissions = dict((i for i in iter(permissions) if i[-1] is True))
         await self.config.permissions.set(permissions)
         self.permission_cache = discord.Permissions(**permissions)
-        text = ("From now on I will expected the following permissions in a channel:\n\n")
+        text = "From now on I will expected the following permissions in a channel:\n\n"
         permissions = collections.OrderedDict(sorted(permissions.items()))
         for perm, value in permissions.items():
             text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"

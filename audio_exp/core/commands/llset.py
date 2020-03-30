@@ -12,7 +12,7 @@ log = logging.getLogger("red.cogs.Audio.cog.Commands.lavalink_setup")
 
 class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.group(name="llsetup", aliases=["llset"])
-    @checks.is_owner()
+    @commands.is_owner()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.max_concurrency(1, per=commands.BucketType.guild, wait=False)

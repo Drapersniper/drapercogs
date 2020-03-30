@@ -67,7 +67,7 @@ class CustomChannels(commands.Cog):
         if self.task:
             self.task.cancel()
 
-    @checks.admin_or_permissions()
+    @commands.admin_or_permissions()
     @commands.guild_only()
     @commands.group(name="buttonset")
     @commands.bot_has_permissions(manage_channels=True, manage_roles=True)
