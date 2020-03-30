@@ -115,25 +115,30 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:
         error = getattr(error, "original", error)
+        if isinstance(error, IndexError) and "No nodes found." in str(error):
+            await self.send_embed_msg(
+                ctx,
+                title=_("Invalid Environment"),
+                description=_("Connection to Lavalink has been lost."), )
+        elif isinstance(error, KeyError) and "No such player for that guild" in str(error):
+            await self.send_embed_msg(
+                ctx,
+                title=_("No Player Available"),
+                description=_("The bot is not connected connected to a voice channel."),
+            )
         if not isinstance(
-            error,
-            (
-                commands.CheckFailure,
-                commands.UserInputError,
-                commands.DisabledCommand,
-                commands.CommandOnCooldown,
-                commands.MaxConcurrencyReached,
-            ),
+                error,
+                (
+                        commands.CheckFailure,
+                        commands.UserInputError,
+                        commands.DisabledCommand,
+                        commands.CommandOnCooldown,
+                        commands.MaxConcurrencyReached,
+                ),
         ):
             self.update_player_lock(ctx, False)
             if self.api_interface is not None:
                 await self.api_interface.run_tasks(ctx)
-        elif isinstance(error, IndexError) and "No nodes found." in str(error):
-            await self.send_embed_msg(
-                ctx,
-                title=_("Invalid Environment"),
-                description=_("Connection to Lavalink has been lost."),
-            )
         await self.bot.on_command_error(ctx, error, unhandled_by_cog=True)
 
     def cog_unload(self) -> None:

@@ -115,6 +115,20 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
 
     async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:
         error = getattr(error, "original", error)
+        handled = False
+        if isinstance(error, IndexError) and "No nodes found." in str(error):
+            handled = True
+            await self.send_embed_msg(
+                ctx,
+                title=_("Invalid Environment"),
+                description=_("Connection to Lavalink has been lost."),)
+        elif isinstance(error, KeyError) and "No such player for that guild" in str(error):
+            handled = True
+            await self.send_embed_msg(
+                ctx,
+                title=_("No Player Available"),
+                description=_("The bot is not connected connected to a voice channel."),
+            )
         if not isinstance(
             error,
             (
@@ -128,22 +142,17 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             self.update_player_lock(ctx, False)
             if self.api_interface is not None:
                 await self.api_interface.run_tasks(ctx)
-            message = "```py" + "\n"
-            message += (
-                "Error in command '{}'\nType: {}\n" "The Bot owner has received your error."
-            ).format(ctx.command.qualified_name, error)
-            message += "```" + "\n"
-            message += (
-                "Use the ``b!support`` command \nThen join the support server and "
-                "the owner of the bot or a mod will help you when they are available"
-            )
-            await ctx.send(message)
-        elif isinstance(error, IndexError) and "No nodes found." in str(error):
-            await self.send_embed_msg(
-                ctx,
-                title=_("Invalid Environment"),
-                description=_("Connection to Lavalink has been lost."),
-            )
+            if not handled:
+                message = "```py" + "\n"
+                message += (
+                    "Error in command '{}'\nType: {}\n" "The Bot owner has received your error."
+                ).format(ctx.command.qualified_name, error)
+                message += "```" + "\n"
+                message += (
+                    "Use the ``b!support`` command \nThen join the support server and "
+                    "the owner of the bot or a mod will help you when they are available"
+                )
+                await ctx.send(message)
         await self.bot.on_command_error(ctx, error, unhandled_by_cog=True)
 
     def cog_unload(self) -> None:
