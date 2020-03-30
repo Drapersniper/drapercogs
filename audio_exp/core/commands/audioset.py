@@ -30,11 +30,11 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Music configuration options."""
 
     @command_audioset.group(name="restrictions")
-    @commands.mod_or_permissions(manage_guild=True)
+    @checks.mod_or_permissions(manage_guild=True)
     async def command_audioset_perms(self, ctx: commands.Context):
         """Manages the keyword whitelist and blacklist."""
 
-    @commands.is_owner()
+    @checks.is_owner()
     @command_audioset_perms.group(name="global")
     async def command_audioset_perms_global(self, ctx: commands.Context):
         """Manages the global keyword whitelist/blacklist."""
@@ -420,12 +420,12 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
 
     @command_audioset.group(name="globaldb", enabled=False, hidden=True)
-    @commands.is_owner()
+    @checks.is_owner()
     async def command_audioset_audiodb(self, ctx: commands.Context):
         """Change global db settings."""
 
     @command_audioset.group(name="autoplay")
-    @commands.mod_or_permissions(manage_guild=True)
+    @checks.mod_or_permissions(manage_guild=True)
     async def command_audioset_autoplay(self, ctx: commands.Context):
         """Change auto-play setting."""
 
@@ -586,7 +586,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="dailyqueue")
     @commands.guild_only()
-    @commands.admin()
+    @checks.admin()
     async def command_audioset_historical_queue(self, ctx: commands.Context):
         """Toggle daily queues.
 
@@ -607,7 +607,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="dc")
     @commands.guild_only()
-    @commands.mod_or_permissions(manage_guild=True)
+    @checks.mod_or_permissions(manage_guild=True)
     async def command_audioset_dc(self, ctx: commands.Context):
         """Toggle the bot auto-disconnecting when done playing.
 
@@ -630,7 +630,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="dj")
     @commands.guild_only()
-    @commands.admin_or_permissions(manage_roles=True)
+    @checks.admin_or_permissions(manage_roles=True)
     async def command_audioset_dj(self, ctx: commands.Context):
         """Toggle DJ mode.
 
@@ -672,7 +672,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="emptydisconnect")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_emptydisconnect(self, ctx: commands.Context, seconds: int):
         """Auto-disconnect from channel when bot is alone in it for x seconds, 0 to disable.
 
@@ -704,7 +704,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="emptypause")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_emptypause(self, ctx: commands.Context, seconds: int):
         """Auto-pause after x seconds when room is empty, 0 to disable."""
         if seconds < 0:
@@ -732,7 +732,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="lyrics")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_lryics(self, ctx: commands.Context):
         """Prioritise tracks with lyrics."""
         prefer_lyrics = await self.config.guild(ctx.guild).prefer_lyrics()
@@ -747,7 +747,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="jukebox")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_jukebox(self, ctx: commands.Context, price: int):
         """Set a price for queueing tracks for non-mods, 0 to disable."""
         if price < 0:
@@ -773,7 +773,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.config.guild(ctx.guild).jukebox.set(jukebox)
 
     @command_audioset.command(name="localpath")
-    @commands.is_owner()
+    @checks.is_owner()
     @commands.bot_has_permissions(add_reactions=True)
     async def command_audioset_localpath(self, ctx: commands.Context, *, local_path=None):
         """Set the localtracks path if the Lavalink.jar is not run from the Audio data folder.
@@ -851,7 +851,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="maxlength")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_maxlength(self, ctx: commands.Context, seconds: Union[int, str]):
         """Max length of a track to queue in seconds, 0 to disable.
 
@@ -880,7 +880,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="notify")
     @commands.guild_only()
-    @commands.mod_or_permissions(manage_guild=True)
+    @checks.mod_or_permissions(manage_guild=True)
     async def command_audioset_notify(self, ctx: commands.Context):
         """Toggle track announcement and other bot messages."""
         notify = await self.config.guild(ctx.guild).notify()
@@ -894,7 +894,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         )
 
     @command_audioset.command(name="restrict")
-    @commands.is_owner()
+    @checks.is_owner()
     @commands.guild_only()
     async def command_audioset_restrict(self, ctx: commands.Context):
         """Toggle the domain restriction on Audio.
@@ -915,7 +915,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="role")
     @commands.guild_only()
-    @commands.admin_or_permissions(manage_roles=True)
+    @checks.admin_or_permissions(manage_roles=True)
     async def command_audioset_role(self, ctx: commands.Context, *, role_name: discord.Role):
         """Set the role to use for DJ mode."""
         await self.config.guild(ctx.guild).dj_role.set(role_name.id)
@@ -956,7 +956,6 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         bumpped_shuffle = _("Enabled") if data["shuffle_bumped"] else _("Disabled")
         song_notify = _("Enabled") if data["notify"] else _("Disabled")
         song_status = _("Enabled") if global_data["status"] else _("Disabled")
-        countrycode = data["country_code"]
 
         spotify_cache = CacheLevel.set_spotify()
         youtube_cache = CacheLevel.set_youtube()
@@ -996,9 +995,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             "Shuffle bumped:   [{bumpped_shuffle}]\n"
             "Song notify msgs: [{notify}]\n"
             "Songs as status:  [{status}]\n"
-            "Spotify search:   [{countrycode}]\n"
         ).format(
-            countrycode=countrycode,
             repeat=song_repeat,
             shuffle=song_shuffle,
             notify=song_notify,
@@ -1078,7 +1075,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.send_embed_msg(ctx, description=box(msg, lang="ini"))
 
     @command_audioset.command(name="status")
-    @commands.is_owner()
+    @checks.is_owner()
     @commands.guild_only()
     async def command_audioset_status(self, ctx: commands.Context):
         """Enable/disable tracks' titles as status."""
@@ -1094,7 +1091,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="thumbnail")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_thumbnail(self, ctx: commands.Context):
         """Toggle displaying a thumbnail on audio messages."""
         thumbnail = await self.config.guild(ctx.guild).thumbnail()
@@ -1109,7 +1106,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="vote")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
+    @checks.mod_or_permissions(administrator=True)
     async def command_audioset_vote(self, ctx: commands.Context, percent: int):
         """Percentage needed for non-mods to skip tracks, 0 to disable."""
         if percent < 0:
@@ -1137,7 +1134,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.config.guild(ctx.guild).vote_enabled.set(enabled)
 
     @command_audioset.command(name="youtubeapi")
-    @commands.is_owner()
+    @checks.is_owner()
     async def command_audioset_youtubeapi(self, ctx: commands.Context):
         """Instructions to set the YouTube API key."""
         message = _(
@@ -1156,7 +1153,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await ctx.maybe_send_embed(message)
 
     @command_audioset.command(name="spotifyapi")
-    @commands.is_owner()
+    @checks.is_owner()
     async def command_audioset_spotifyapi(self, ctx: commands.Context):
         """Instructions to set the Spotify API tokens."""
         message = _(
@@ -1174,8 +1171,8 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="countrycode")
     @commands.guild_only()
-    @commands.mod_or_permissions(administrator=True)
-    async def command_audioset_countrycode(self, ctx: commands.Context, country: str):
+    @checks.mod_or_permissions(administrator=True)
+    async def command_audioset_vote(self, ctx: commands.Context, country: str):
         """Set the country code for Spotify searches."""
         if len(country) != 2:
             return await self.send_embed_msg(
@@ -1195,7 +1192,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.config.guild(ctx.guild).country_code.set(country)
 
     @command_audioset.command(name="cache")
-    @commands.is_owner()
+    @checks.is_owner()
     async def command_audioset_cache(self, ctx: commands.Context, *, level: int = None):
         """Sets the caching level.
 
@@ -1280,7 +1277,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.config.cache_level.set(newcache.value)
 
     @command_audioset.command(name="cacheage")
-    @commands.is_owner()
+    @checks.is_owner()
     async def command_audioset_cacheage(self, ctx: commands.Context, age: int):
         """Sets the cache max age.
 
