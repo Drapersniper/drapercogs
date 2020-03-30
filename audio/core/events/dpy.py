@@ -127,7 +127,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("No Player Available"),
-                description=_("The bot is not connected connected to a voice channel."),
+                description=_("The bot is not connected to a voice channel."),
             )
         if not isinstance(
                 error,
