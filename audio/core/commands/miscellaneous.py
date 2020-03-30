@@ -53,16 +53,14 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 int((datetime.datetime.utcnow() - connect_start).total_seconds())
             )
             try:
-                query = Query.process_input(p.current.uri, self.local_folder_current_path)
                 if not p.current:
                     raise AttributeError
-                current_title = self.get_track_description(query, self.local_folder_current_path)
+                current_title = self.get_track_description(p.current, self.local_folder_current_path)
                 msg += "{} [`{}`]: {}\n".format(p.channel.guild.name, connect_dur, current_title)
             except AttributeError:
                 msg += "{} [`{}`]: **{}**\n".format(
                     p.channel.guild.name, connect_dur, _("Nothing playing.")
                 )
-
         if total_num == 0:
             return await self.send_embed_msg(ctx, title=_("Not connected anywhere."))
         servers_embed = []
