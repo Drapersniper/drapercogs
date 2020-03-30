@@ -3,14 +3,13 @@ import asyncio
 import contextlib
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 from operator import itemgetter
-from typing import Optional, Union
+from typing import Union
 
 import aiohttp
 import discord
-from discord.ext.commands.converter import Greedy
-from redbot.core import commands, checks
+from redbot.core import commands
 from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import ReactionPredicate
@@ -483,7 +482,7 @@ class GamingProfile(commands.Cog):
                 pos_len = 3
                 platforms_text = f"{'#':{pos_len}}\n"
                 for number, (command, name) in enumerate(platforms, 1):
-                    line = ("{number}." "    <{name}>\n" " - Command:  < {scope} >\n").format(
+                    line = "{number}." "    <{name}>\n" " - Command:  < {scope} >\n".format(
                         number=number, name=name, command=command,
                     )
                     platforms_text += line

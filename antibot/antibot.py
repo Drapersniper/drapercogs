@@ -10,7 +10,7 @@ from typing import List, Optional, Tuple, Union
 import aiohttp
 import discord
 
-from redbot.core import Config, checks, commands
+from redbot.core import Config, commands
 from redbot.core.utils.mod import get_audit_reason, is_allowed_by_hierarchy
 
 # Cog Relative Imports

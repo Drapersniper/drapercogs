@@ -3,13 +3,12 @@ import asyncio
 import contextlib
 import json
 import logging
-from collections import OrderedDict
 from datetime import timedelta
 from operator import itemgetter
 from typing import Union, Optional, Dict
 
 import discord
-from redbot.core import commands, checks
+from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.utils.antispam import AntiSpam
 from redbot.core.utils.chat_formatting import box
@@ -114,7 +113,7 @@ class DynamicChannels(commands.Cog):
         elif not valid_categories:
             await ctx.send(f"ERROR: No valid categories in {ctx.guild.name}")
             return
-        elif category_id not in (whitelisted_cat):
+        elif category_id not in whitelisted_cat:
             await ctx.send(
                 f"ERROR: Category {category_id} is not been whitelisted as a "
                 f"special category {ctx.guild.name}, use `{self._button_add.qualified_name}`"

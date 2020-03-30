@@ -9,7 +9,7 @@ import discord
 import lavalink
 from discord.embeds import EmptyEmbed
 
-from redbot.core import checks, commands
+from redbot.core import commands
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
 
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query

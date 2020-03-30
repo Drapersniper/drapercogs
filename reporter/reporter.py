@@ -8,7 +8,7 @@ from copy import deepcopy
 # Cog Dependencies
 import discord
 
-from redbot.core import Config, bank, checks, commands, modlog
+from redbot.core import Config, bank, commands, modlog
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, pagify
 
@@ -81,7 +81,6 @@ class Reporter(commands.Cog):
                     else "Red Core"
                 )
             )
-        discord.Embed.set_field_at
         global_config = await config.all_guilds()
         temp = deepcopy(global_config)
         for k, v in temp.items():

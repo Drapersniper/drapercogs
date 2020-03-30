@@ -10,7 +10,7 @@ from typing import Optional
 # Cog Dependencies
 import discord
 
-from redbot.core import checks, commands
+from redbot.core import commands
 from redbot.core.data_manager import cog_data_path
 
 _ = lambda s: s
@@ -30,7 +30,8 @@ class Zipper(commands.Cog):
             max_size = 8388608 - 1000
         return file_size <= max_size
 
-    async def zip_folder(self, path: Path, new_file: Path) -> Path:
+    @staticmethod
+    async def zip_folder(path: Path, new_file: Path) -> Path:
         to_zip = []
         exclusions = [
             "__pycache__",
@@ -51,7 +52,8 @@ class Zipper(commands.Cog):
                 tar.add(str(f), arcname=f.relative_to(path), recursive=False)
         return new_file
 
-    async def zip_file(self, path: Path, new_file: Path) -> Path:
+    @staticmethod
+    async def zip_file(path: Path, new_file: Path) -> Path:
         with tarfile.open(new_file, "w:gz") as tar:
             tar.add(str(path), arcname=new_file.relative_to(path), recursive=False)
         return new_file

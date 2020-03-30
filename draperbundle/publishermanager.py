@@ -5,7 +5,7 @@ import json
 import logging
 
 import discord
-from redbot.core import commands, checks
+from redbot.core import commands
 from redbot.core.utils.chat_formatting import pagify
 
 from .config_holder import ConfigHolder

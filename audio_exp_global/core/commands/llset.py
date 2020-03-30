@@ -2,7 +2,7 @@ import logging
 
 import discord
 
-from redbot.core import checks, commands
+from redbot.core import commands
 
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _

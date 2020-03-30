@@ -3,7 +3,6 @@ import logging
 from typing import Any, List, MutableMapping, Optional, Sequence, Tuple
 
 import aiohttp
-from redbot.core import checks
 from redbot.core.bot import Red
 
 from redbot.core import commands

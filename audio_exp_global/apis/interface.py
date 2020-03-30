@@ -6,7 +6,6 @@ import logging
 import random
 import time
 from collections import namedtuple
-from pathlib import Path
 from typing import Callable, List, MutableMapping, Optional, TYPE_CHECKING, Tuple, Union, cast
 
 import aiohttp

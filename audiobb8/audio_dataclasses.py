@@ -6,7 +6,7 @@ import os
 import posixpath
 import re
 from pathlib import Path, PosixPath, WindowsPath
-from typing import List, Optional, Union, MutableMapping, Iterator, AsyncIterator
+from typing import Optional, Union, MutableMapping, Iterator, AsyncIterator
 from urllib.parse import urlparse
 
 import lavalink

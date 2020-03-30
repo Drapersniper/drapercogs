@@ -9,37 +9,35 @@ import shutil
 import sys
 import tempfile
 import time
-from typing import ClassVar, List, Optional, Tuple
+from typing import ClassVar, Final, List, Optional, Tuple
 
 import aiohttp
 from tqdm import tqdm
 
 from redbot.core import data_manager
 
-from .debug import is_debug
 from .errors import LavalinkDownloadFailed
 
 log = logging.getLogger("red.audio.manager")
-JAR_VERSION = "3.2.2"
-JAR_BUILD = 973
-LAVALINK_DOWNLOAD_URL = (
-    f"https://github.com/Cog-Creators/Lavalink-Jars/releases/download/{JAR_VERSION}_{JAR_BUILD}/"
+JAR_VERSION: Final[str] = "3.2.2"
+JAR_BUILD: Final[int] = 973
+LAVALINK_DOWNLOAD_URL: Final[str] = (
+    "https://github.com/Cog-Creators/Lavalink-Jars/releases/download/"
+    f"{JAR_VERSION}_{JAR_BUILD}/"
     "Lavalink.jar"
 )
-LAVALINK_DOWNLOAD_DIR = data_manager.cog_data_path(raw_name="Audio")
-LAVALINK_JAR_FILE = LAVALINK_DOWNLOAD_DIR / "Lavalink.jar"
-BUNDLED_APP_YML = pathlib.Path(__file__).parent / "data" / "application.yml"
-LAVALINK_APP_YML = LAVALINK_DOWNLOAD_DIR / "application.yml"
+LAVALINK_DOWNLOAD_DIR: Final[pathlib.Path] = data_manager.cog_data_path(raw_name="Audio")
+LAVALINK_JAR_FILE: Final[pathlib.Path] = LAVALINK_DOWNLOAD_DIR / "Lavalink.jar"
+BUNDLED_APP_YML: Final[pathlib.Path] = pathlib.Path(__file__).parent / "data" / "application.yml"
+LAVALINK_APP_YML: Final[pathlib.Path] = LAVALINK_DOWNLOAD_DIR / "application.yml"
 
-_RE_READY_LINE = re.compile(rb"Started Launcher in \S+ seconds")
-_FAILED_TO_START = re.compile(rb"Web server failed to start. (.*)")
-_RE_BUILD_LINE = re.compile(rb"Build:\s+(?P<build>\d+)")
-_RE_JAVA_VERSION_LINE = re.compile(
+_RE_READY_LINE: Final[re.Pattern] = re.compile(rb"Started Launcher in \S+ seconds")
+_FAILED_TO_START: Final[re.Pattern] = re.compile(rb"Web server failed to start. (.*)")
+_RE_BUILD_LINE: Final[re.Pattern] = re.compile(rb"Build:\s+(?P<build>\d+)")
+_RE_JAVA_VERSION_LINE: Final[re.Pattern] = re.compile(
     r'version "(?P<major>\d+).(?P<minor>\d+).\d+(?:_\d+)?(?:-[A-Za-z0-9]+)?"'
 )
-_RE_JAVA_SHORT_VERSION = re.compile(r'version "(?P<major>\d+)"')
-
-IS_DEBUG = is_debug()
+_RE_JAVA_SHORT_VERSION: Final[re.Pattern] = re.compile(r'version "(?P<major>\d+)"')
 
 
 class ServerManager:
@@ -96,7 +94,7 @@ class ServerManager:
     @classmethod
     async def _get_jar_args(cls) -> List[str]:
         (java_available, java_version) = await cls._has_java()
-        if not java_available:
+        if not java_available or not java_version:
             raise RuntimeError("You must install Java 1.8+ for Lavalink to run.")
 
         if java_version == (1, 8):
@@ -115,8 +113,8 @@ class ServerManager:
             return cls._java_available, cls._java_version
         java_available = shutil.which("java") is not None
         if not java_available:
-            cls.java_available = False
-            cls.java_version = None
+            cls._java_available = False
+            cls._java_version = None
         else:
             cls._java_version = version = await cls._get_java_version()
             cls._java_available = (2, 0) > version >= (1, 8) or version >= (8, 0)
@@ -154,8 +152,7 @@ class ServerManager:
         )
 
     async def _wait_for_launcher(self) -> None:
-        if IS_DEBUG:
-            log.debug("Waiting for Lavalink server to be ready")
+        log.debug("Waiting for Lavalink server to be ready")
         lastmessage = 0
         for i in itertools.cycle(range(50)):
             line = await self._proc.stdout.readline()
@@ -167,7 +164,7 @@ class ServerManager:
             if self._proc.returncode is not None and lastmessage + 2 < time.time():
                 # Avoid Console spam only print once every 2 seconds
                 lastmessage = time.time()
-                log.critical("Internal lavalink server exited early")
+                log.critical("Internal Lavalink server exited early")
             if i == 49:
                 # Sleep after 50 lines to prevent busylooping
                 await asyncio.sleep(0.1)

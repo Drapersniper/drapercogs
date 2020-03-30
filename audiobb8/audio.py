@@ -25,7 +25,7 @@ from discord.utils import escape_markdown as escape
 from fuzzywuzzy import process
 
 from redbot import VersionInfo, version_info
-from redbot.core import Config, bank, checks, commands
+from redbot.core import Config, bank, commands
 from redbot.core.bot import Red
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator, cog_i18n

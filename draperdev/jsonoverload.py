@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Cog Dependencies
-from redbot.core import Config, checks, commands
+from redbot.core import Config, commands
 from redbot.core.bot import Red
 
 _config_identifier: int = 208903205982044161

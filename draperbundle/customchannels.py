@@ -8,7 +8,7 @@ from typing import Union, Dict
 
 import discord
 
-from redbot.core import commands, checks
+from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.utils.antispam import AntiSpam
 from redbot.core.utils.chat_formatting import box

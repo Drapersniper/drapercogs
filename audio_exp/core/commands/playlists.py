@@ -10,7 +10,7 @@ from typing import Optional, cast
 import discord
 import lavalink
 
-from redbot.core import checks, commands
+from redbot.core import commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.chat_formatting import bold, pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu

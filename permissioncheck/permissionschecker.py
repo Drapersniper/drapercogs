@@ -4,7 +4,7 @@ import time
 
 import discord
 from discord.ext.commands import CheckFailure, CommandError
-from redbot.core import Config, checks, commands
+from redbot.core import Config, commands
 from redbot.core.commands import Context
 from redbot.core.utils.chat_formatting import box, pagify
 

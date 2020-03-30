@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import ast
 import asyncio
-import concurrent.futures
 import contextlib
 import logging
 import operator as op
@@ -14,7 +13,6 @@ from urllib.parse import quote_plus
 import aiohttp
 import dateutil.parser
 import discord
-import regex
 
 from pytz import UTC
 from redbot.core import commands

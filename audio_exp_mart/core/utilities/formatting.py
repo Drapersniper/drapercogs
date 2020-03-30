@@ -216,7 +216,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             await player.play()
         return await self.send_embed_msg(ctx, embed=songembed)
 
-    def _format_search_options(self, search_choice):
+    async def _format_search_options(self, search_choice):
         query = Query.process_input(search_choice, self.local_folder_current_path)
         description = await self.get_track_description(
             search_choice, self.local_folder_current_path
