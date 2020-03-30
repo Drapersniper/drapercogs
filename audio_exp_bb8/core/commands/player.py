@@ -377,7 +377,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _category_search_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _category_search_menu,
             "\N{LEFTWARDS BLACK ARROW}": prev_page,
-            "\N{CROSS MARK}": close_menu,
+            self.bot.get_emoji(632685164408995870): close_menu,
             "\N{BLACK RIGHTWARDS ARROW}": next_page,
         }
         playlist_search_controls = {
@@ -387,7 +387,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _playlist_search_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _playlist_search_menu,
             "\N{LEFTWARDS BLACK ARROW}": prev_page,
-            "\N{CROSS MARK}": close_menu,
+            self.bot.get_emoji(632685164408995870): close_menu,
             "\N{BLACK RIGHTWARDS ARROW}": next_page,
         }
 
@@ -640,7 +640,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _search_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _search_menu,
             "\N{LEFTWARDS BLACK ARROW}": prev_page,
-            "\N{CROSS MARK}": close_menu,
+            self.bot.get_emoji(632685164408995870): close_menu,
             "\N{BLACK RIGHTWARDS ARROW}": next_page,
         }
 

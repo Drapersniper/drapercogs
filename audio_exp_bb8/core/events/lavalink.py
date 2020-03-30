@@ -110,7 +110,10 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                         length=dur, user=current_requester
                     ),
                     thumbnail=thumb,
-                    author={"name": _("Now Playing"), "url":"https://cdn.discordapp.com/emojis/572861527049109515.gif"}
+                    author={
+                        "name": _("Now Playing"),
+                        "url": "https://cdn.discordapp.com/emojis/572861527049109515.gif",
+                    },
                 )
                 player.store("notify_message", notify_message)
         if event_type == lavalink.LavalinkEvents.TRACK_START and status:

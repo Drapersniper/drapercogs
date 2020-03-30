@@ -50,7 +50,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         queue_controls = {
             "\N{LEFTWARDS BLACK ARROW}": prev_page,
-            "\N{CROSS MARK}": close_menu,
+            self.bot.get_emoji(632685164408995870): close_menu,
             "\N{BLACK RIGHTWARDS ARROW}": next_page,
             "\N{INFORMATION SOURCE}": _queue_menu,
         }
@@ -116,8 +116,8 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
             ):
                 return
 
-            expected = ("⏹", "⏯", "\N{CROSS MARK}")
-            emoji = {"stop": "⏹", "pause": "⏯", "close": "\N{CROSS MARK}"}
+            expected = ("⏹", "⏯", self.bot.get_emoji(632685164408995870))
+            emoji = {"stop": "⏹", "pause": "⏯", "close": self.bot.get_emoji(632685164408995870)}
             if player.current:
                 task: Optional[asyncio.Task] = start_adding_reactions(message, expected[:5])
             else:

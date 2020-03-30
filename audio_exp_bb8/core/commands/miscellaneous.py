@@ -64,15 +64,17 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 )
 
         if total_num == 0:
-            return await self.send_embed_msg(ctx, title=_("Not currently broadcasting a rebellion message anywhere."))
+            return await self.send_embed_msg(
+                ctx, title=_("Not currently broadcasting a rebellion message anywhere.")
+            )
         servers_embed = []
         pages = 1
         for page in pagify(msg, delims=["\n"], page_length=1500):
             em = discord.Embed(
                 colour=await ctx.embed_colour(),
-                title=_("Currently broadcasting the rebellion message in {num}/{total} servers:").format(
-                    num=humanize_number(server_num), total=humanize_number(total_num)
-                ),
+                title=_(
+                    "Currently broadcasting the rebellion message in {num}/{total} servers:"
+                ).format(num=humanize_number(server_num), total=humanize_number(total_num)),
                 description=page,
             )
             em.set_footer(

@@ -251,7 +251,8 @@ class PlaylistUtilities(MixinMeta, metaclass=CompositeMetaClass):
         avaliable_emojis = ReactionPredicate.NUMBER_EMOJIS[1:]
         avaliable_emojis.append("🔟")
         emojis = avaliable_emojis[: len(correct_scope_matches)]
-        emojis.append("\N{CROSS MARK}")
+        close_emoji = self.bot.get_emoji(632685164408995870)
+        emojis.append(close_emoji)
         start_adding_reactions(msg, emojis)
         pred = ReactionPredicate.with_emojis(emojis, msg, user=context.author)
         try:
@@ -262,7 +263,7 @@ class PlaylistUtilities(MixinMeta, metaclass=CompositeMetaClass):
             raise TooManyMatches(
                 _("Too many matches found and you did not select which one you wanted.")
             )
-        if emojis[pred.result] == "\N{CROSS MARK}":
+        if emojis[pred.result] == close_emoji:
             with contextlib.suppress(discord.HTTPException):
                 await msg.delete()
             raise TooManyMatches(
