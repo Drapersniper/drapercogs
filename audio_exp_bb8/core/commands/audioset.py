@@ -957,6 +957,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         song_notify = _("Enabled") if data["notify"] else _("Disabled")
         song_status = _("Enabled") if global_data["status"] else _("Disabled")
         persist_queue = _("Enabled") if data["persist_queue"] else _("Disabled")
+        countrycode = data["country_code"]
 
         spotify_cache = CacheLevel.set_spotify()
         youtube_cache = CacheLevel.set_youtube()
@@ -997,7 +998,9 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             "Song notify msgs: [{notify}]\n"
             "Songs as status:  [{status}]\n"
             "Persist queue:    [{persist_queue}]\n"
+            "Spotify search:   [{countrycode}]\n"
         ).format(
+            countrycode=countrycode,
             repeat=song_repeat,
             shuffle=song_shuffle,
             notify=song_notify,
@@ -1176,7 +1179,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_audioset.command(name="countrycode")
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
-    async def command_audioset_vote(self, ctx: commands.Context, country: str):
+    async def command_audioset_countrycode(self, ctx: commands.Context, country: str):
         """Set the country code for Spotify searches."""
         if len(country) != 2:
             return await self.send_embed_msg(
