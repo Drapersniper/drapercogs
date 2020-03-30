@@ -153,7 +153,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                     "the owner of the bot or a mod will help you when they are available"
                 )
                 await ctx.send(message)
-        await self.bot.on_command_error(ctx, error, unhandled_by_cog=True)
+        if not handled:
+            await self.bot.on_command_error(ctx, error, unhandled_by_cog=True)
 
     def cog_unload(self) -> None:
         if not self.cog_cleaned_up:
