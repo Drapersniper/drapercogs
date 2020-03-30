@@ -2027,7 +2027,7 @@ class Audio(commands.Cog):
                     msg += "{} [`{}`]: **[{}]({})**\n".format(
                         p.channel.guild.name, connect_dur, p.current.title, p.current.uri
                     )
-            except AttributeError:
+            except AttributeError as exc:
                 msg += "{} [`{}`]: **{}**\n".format(
                     p.channel.guild.name, connect_dur, _("Nothing playing.")
                 )

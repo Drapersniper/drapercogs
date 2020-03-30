@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import logging
 import math
+import re
 import time
 from typing import List, Optional
 
@@ -18,6 +19,8 @@ from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.formatting")
+
+RE_SQUARE = re.compile(r"[\[\]]")
 
 
 class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
@@ -317,6 +320,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 string = f"{title}"
                 if shorten and len(string) > 40:
                     string = "{}...".format((string[:40]).rstrip(" "))
+                    string = re.sub(RE_SQUARE, "", string)
                 string = f"**[{escape(string, formatting=True)}]({track.uri}) **"
         elif hasattr(track, "to_string_user") and track.is_local:
             string = track.to_string_user() + " "

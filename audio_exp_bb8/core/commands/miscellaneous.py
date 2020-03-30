@@ -58,7 +58,7 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 current_title = self.get_track_description(p.current,
                                                            self.local_folder_current_path)
                 msg += "{} [`{}`]: {}\n".format(p.channel.guild.name, connect_dur, current_title)
-            except AttributeError:
+            except AttributeError as exc:
                 msg += "{} [`{}`]: **{}**\n".format(
                     p.channel.guild.name, connect_dur, _("Nothing playing.")
                 )
