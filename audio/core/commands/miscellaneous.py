@@ -54,8 +54,9 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
             try:
                 if not p.current:
                     raise AttributeError
-                current_title = self.get_track_description(p.current,
-                                                           self.local_folder_current_path)
+                current_title = self.get_track_description(
+                    p.current, self.local_folder_current_path
+                )
                 msg += "{} [`{}`]: {}\n".format(p.channel.guild.name, connect_dur, current_title)
             except AttributeError as exc:
                 msg += "{} [`{}`]: **{}**\n".format(

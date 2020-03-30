@@ -20,7 +20,7 @@ from redbot.core.utils.predicates import MessagePredicate
 from ...apis.api_utils import FakePlaylist
 from ...apis.playlist_interface import create_playlist, delete_playlist, get_all_playlist, Playlist
 from ...audio_dataclasses import LocalPath, Query
-from ...audio_logging import IS_DEBUG
+from ...audio_logging import IS_DEBUG, debug_exc_log
 from ...converters import ComplexScopeParser, ScopeParser
 from ...errors import MissingGuild, TooManyMatches
 from ...utils import PlaylistScope
@@ -757,8 +757,8 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                         content=_("Playlist is too large, here is the compressed version."),
                         file=discord.File(str(temp_tar)),
                     )
-            except Exception:
-                pass
+            except Exception as exc:
+                debug_exc_log(log, exc, "Failed to send playlist to channel")
             temp_file.unlink()
             temp_tar.unlink()
         else:

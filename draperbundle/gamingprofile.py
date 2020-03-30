@@ -482,8 +482,12 @@ class GamingProfile(commands.Cog):
                 pos_len = 3
                 platforms_text = f"{'#':{pos_len}}\n"
                 for number, (command, name) in enumerate(platforms, 1):
-                    line = "{number}." "    <{name}>\n" " - Command:  < {scope} >\n".format(
-                        number=number, name=name, command=command,
+                    line = (
+                        "{number}."
+                        "    <{name}>\n"
+                        " - Command:  < {scope} >\n".format(
+                            number=number, name=name, command=command,
+                        )
                     )
                     platforms_text += line
                 pages = list(pagify(platforms_text, page_length=1800))

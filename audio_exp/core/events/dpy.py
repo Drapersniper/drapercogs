@@ -70,7 +70,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Invalid Environment"),
-                description=_("Connection to Lavalink has been lost."), )
+                description=_("Connection to Lavalink has been lost."),
+            )
         elif isinstance(error, KeyError) and "No such player for that guild" in str(error):
             handled = True
             await self.send_embed_msg(
@@ -79,14 +80,14 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 description=_("The bot is not connected to a voice channel."),
             )
         if not isinstance(
-                error,
-                (
-                        commands.CheckFailure,
-                        commands.UserInputError,
-                        commands.DisabledCommand,
-                        commands.CommandOnCooldown,
-                        commands.MaxConcurrencyReached,
-                ),
+            error,
+            (
+                commands.CheckFailure,
+                commands.UserInputError,
+                commands.DisabledCommand,
+                commands.CommandOnCooldown,
+                commands.MaxConcurrencyReached,
+            ),
         ):
             self.update_player_lock(ctx, False)
             if self.api_interface is not None:

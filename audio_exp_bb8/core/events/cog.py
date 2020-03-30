@@ -10,7 +10,6 @@ import lavalink
 from redbot.core import commands
 
 from ...apis.playlist_interface import Playlist, delete_playlist, get_playlist
-from ...audio_dataclasses import Query
 from ...audio_logging import debug_exc_log
 from ...utils import PlaylistScope
 from ..abc import MixinMeta

@@ -121,7 +121,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Invalid Environment"),
-                description=_("Connection to Lavalink has been lost."),)
+                description=_("Connection to Lavalink has been lost."),
+            )
         elif isinstance(error, KeyError) and "No such player for that guild" in str(error):
             handled = True
             await self.send_embed_msg(
