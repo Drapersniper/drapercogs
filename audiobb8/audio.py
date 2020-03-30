@@ -2710,7 +2710,7 @@ class Audio(commands.Cog):
         if not self._player_check(ctx):
             return await self._embed_msg(ctx, title=_("Nothing playing."))
         expected = ("⏮", "⏹", "⏯", "⏭")
-        emoji = {"prev": "⏮", "stop": "⏹", "pause": "⏯", "next": "⏭"}
+        emoji = {"prev": "⏮", "stop": "⏹", "pause": "⏯", "next": "⏭", "close": "\N{CROSS MARK}"}
         player = lavalink.get_player(ctx.guild.id)
         if player.current:
             arrow = await draw_time(ctx)
@@ -2770,7 +2770,7 @@ class Audio(commands.Cog):
                 return
 
         if not player.queue:
-            expected = ("⏹", "⏯")
+            expected = ("⏹", "⏯" , "\N{CROSS MARK}")
         if player.current:
             task = start_adding_reactions(message, expected[:4], ctx.bot.loop)
         else:
@@ -6592,8 +6592,8 @@ class Audio(commands.Cog):
                 ):
                     return
 
-            expected = ("⏹", "⏯")
-            emoji = {"stop": "⏹", "pause": "⏯"}
+            expected = ("⏹", "⏯", "\N{CROSS MARK}")
+            emoji = {"stop": "⏹", "pause": "⏯", "close": "\N{CROSS MARK}"}
             if player.current:
                 task = start_adding_reactions(message, expected[:4], ctx.bot.loop)
             else:
