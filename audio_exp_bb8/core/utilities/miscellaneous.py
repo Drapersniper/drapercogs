@@ -5,7 +5,7 @@ import functools
 import json
 import logging
 import re
-from typing import Any, Final, MutableMapping, Union, cast
+from typing import Any, Final, Mapping, MutableMapping, Union, cast
 
 import discord
 import lavalink
@@ -57,7 +57,7 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         else:
             return True
 
-    async def send_embed_msg(self, ctx: commands.Context, **kwargs) -> discord.Message:
+    async def send_embed_msg(self, ctx: commands.Context, author:Mapping[str, str]=None, **kwargs) -> discord.Message:
         colour = kwargs.get("colour") or kwargs.get("color") or await self.bot.get_embed_color(ctx)
         title = kwargs.get("title", EmptyEmbed) or EmptyEmbed
         _type = kwargs.get("type", "rich") or "rich"
@@ -67,6 +67,7 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         footer = kwargs.get("footer")
         thumbnail = kwargs.get("thumbnail")
         contents = dict(title=title, type=_type, url=url, description=description)
+        author = author
         if hasattr(kwargs.get("embed"), "to_dict"):
             embed = kwargs.get("embed")
             if embed is not None:
@@ -83,6 +84,13 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
             embed.set_footer(text=footer)
         if thumbnail:
             embed.set_thumbnail(url=thumbnail)
+        if author:
+            name = author.get("name")
+            url = author.get("url")
+            if name and url:
+                embed.set_author(name=name, icon_url=url)
+            elif name:
+                embed.set_author(name=name)
         return await ctx.send(embed=embed)
 
     async def maybe_run_pending_db_tasks(self, ctx: commands.Context) -> None:

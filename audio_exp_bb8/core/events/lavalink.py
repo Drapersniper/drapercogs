@@ -105,12 +105,12 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
 
                 notify_message = await self.send_embed_msg(
                     notify_channel,
-                    title=_("Now Playing"),
                     description=description,
                     footer=_("Track length: {length} | Requested by: {user}").format(
                         length=dur, user=current_requester
                     ),
                     thumbnail=thumb,
+                    author={"name": _("Now Playing"), "url":"https://cdn.discordapp.com/emojis/572861527049109515.gif"}
                 )
                 player.store("notify_message", notify_message)
         if event_type == lavalink.LavalinkEvents.TRACK_START and status:

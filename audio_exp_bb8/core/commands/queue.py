@@ -70,7 +70,11 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
             song += _("\n Requested by: **{track.requester}**")
             song += "\n\n{arrow}`{pos}`/`{dur}`"
             song = song.format(track=player.current, arrow=arrow, pos=pos, dur=dur)
-            embed = discord.Embed(title=_("Now Playing"), description=song)
+            embed = discord.Embed(description=song)
+            embed.set_author(
+                name=_("Now Playing"),
+                icon_url="https://cdn.discordapp.com/emojis/572861527049109515.gif",
+            )
             if (
                 await self.config.guild(ctx.guild).thumbnail()
                 and player.current

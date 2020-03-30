@@ -98,7 +98,11 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
         if player.fetch("np_message") is not None:
             with contextlib.suppress(discord.HTTPException):
                 await player.fetch("np_message").delete()
-        embed = discord.Embed(title=_("Now Playing"), description=song)
+        embed = discord.Embed(description=song)
+        embed.set_author(
+            name=_("Now Playing"),
+            icon_url="https://cdn.discordapp.com/emojis/572861527049109515.gif",
+        )
         if (
             await self.config.guild(ctx.guild).thumbnail()
             and player.current

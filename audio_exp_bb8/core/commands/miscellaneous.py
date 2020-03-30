@@ -60,17 +60,17 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 msg += "{} [`{}`]: {}\n".format(p.channel.guild.name, connect_dur, current_title)
             except AttributeError as exc:
                 msg += "{} [`{}`]: **{}**\n".format(
-                    p.channel.guild.name, connect_dur, _("Nothing playing.")
+                    p.channel.guild.name, connect_dur, _("Not currently broadcasting.")
                 )
 
         if total_num == 0:
-            return await self.send_embed_msg(ctx, title=_("Not connected anywhere."))
+            return await self.send_embed_msg(ctx, title=_("Not currently broadcasting a rebellion message anywhere."))
         servers_embed = []
         pages = 1
         for page in pagify(msg, delims=["\n"], page_length=1500):
             em = discord.Embed(
                 colour=await ctx.embed_colour(),
-                title=_("Playing in {num}/{total} servers:").format(
+                title=_("Currently broadcasting the rebellion message in {num}/{total} servers:").format(
                     num=humanize_number(server_num), total=humanize_number(total_num)
                 ),
                 description=page,
