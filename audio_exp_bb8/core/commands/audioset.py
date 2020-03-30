@@ -1377,3 +1377,23 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 true_or_false=_("Enabled") if not persist_cache else _("Disabled")
             ),
         )
+
+    @command_audioset.command(name="restart")
+    @checks.is_owner()
+    async def command_audioset_restart(self, ctx: commands.Context):
+        """Restarts the lavalink connection."""
+        with ctx.typing():
+            lavalink.unregister_event_listener(self.lavalink_event_handler)
+            await lavalink.close()
+            if self.player_manager is not None:
+                await self.player_manager.shutdown()
+
+            self.lavalink_restart_connect()
+            lavalink.register_event_listener(self.lavalink_event_handler)
+            await self.restore_players()
+            await self.send_embed_msg(
+                ctx,
+                title=_("Restarting Lavalink"),
+                description=_("It can take a couple of minutes for Lavalink to fully start up.")
+            )
+

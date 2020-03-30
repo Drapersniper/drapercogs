@@ -47,12 +47,12 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
             )
             await self.playlist_api.delete_scheduled()
             await self.api_interface.persistent_queue_api.delete_scheduled()
-            await self.restore_players()
             self.lavalink_restart_connect()
             self.player_automated_timer_task = self.bot.loop.create_task(
                 self.player_automated_timer()
             )
             lavalink.register_event_listener(self.lavalink_event_handler)
+            await self.restore_players()
         except Exception as err:
             log.exception("Audio failed to start up, please report this issue.", exc_info=err)
             raise err
