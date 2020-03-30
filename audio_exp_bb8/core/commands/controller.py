@@ -147,7 +147,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             expected = ("⏹", "⏯", "\N{CROSS MARK}")
         task: Optional[asyncio.Task]
         if player.current:
-            task = start_adding_reactions(message, expected[:4])
+            task = start_adding_reactions(message, expected[:5])
         else:
             task = None
 
@@ -176,6 +176,8 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
         elif react == "next":
             await self._clear_react(message, emoji)
             await ctx.invoke(self.command_skip)
+        elif react == "close":
+            await message.delete()
 
     @commands.command(name="pause")
     @commands.guild_only()
