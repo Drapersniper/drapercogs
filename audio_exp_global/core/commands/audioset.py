@@ -1397,5 +1397,3 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 description=_("It can take a couple of minutes for Lavalink to fully start up.")
             )
 
-
-

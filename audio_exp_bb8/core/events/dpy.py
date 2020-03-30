@@ -50,7 +50,12 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             missing_perms = dict((i for i in diff if i[-1] is not False))
             missing_perms = OrderedDict(sorted(missing_perms.items()))
             missing_permissions = missing_perms.keys()
-            log.debug("Missing the following perms in %d, Owner ID: %d: %s", ctx.guild.id, ctx.guild.owner.id, humanize_list(list(missing_permissions)))
+            log.debug(
+                "Missing the following perms in %d, Owner ID: %d: %s",
+                ctx.guild.id,
+                ctx.guild.owner.id,
+                humanize_list(list(missing_permissions)),
+            )
             if not surpass_ignore:
                 text = _(
                     "I'm missing permissions in this server, "
@@ -60,13 +65,17 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 for perm, value in missing_perms.items():
                     text += "{perm}: [{status}]\n".format(
                         status=_("Enabled") if value else _("Disabled"),
-                        perm=HUMANIZED_PERM.get(perm)
+                        perm=HUMANIZED_PERM.get(perm),
                     )
                 text = text.strip()
                 if current_perms.send_messages and current_perms.read_messages:
                     await ctx.send(box(text=text, lang="ini"))
                 else:
-                    log.info("Missing write permission in %d, Owner ID: %d", ctx.guild.id, ctx.guild.owner.id)
+                    log.info(
+                        "Missing write permission in %d, Owner ID: %d",
+                        ctx.guild.id,
+                        ctx.guild.owner.id,
+                    )
                 raise CheckFailure(message=text)
 
         with contextlib.suppress(Exception):

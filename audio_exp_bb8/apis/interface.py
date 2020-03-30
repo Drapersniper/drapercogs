@@ -442,8 +442,8 @@ class AudioAPIInterface:
             guild_data = await self.config.guild(ctx.guild).all()
             enqueued_tracks = 0
             consecutive_fails = 0
-            queue_dur = await ctx.cog.queue_duration(ctx)
-            queue_total_duration = ctx.cog.format_time(queue_dur)
+            queue_dur = await self.cog.queue_duration(ctx)
+            queue_total_duration = self.cog.format_time(queue_dur)
             before_queue_length = len(player.queue)
             tracks_from_spotify = await self.fetch_from_spotify_api(
                 query_type, uri, params=None, notifier=notifier
@@ -587,7 +587,7 @@ class AudioAPIInterface:
                     if len(player.queue) >= 10000:
                         continue
                     if guild_data["maxlength"] > 0:
-                        if ctx.cog.is_track_too_long(single_track, guild_data["maxlength"]):
+                        if self.cog.is_track_too_long(single_track, guild_data["maxlength"]):
                             enqueued_tracks += 1
                             single_track.extras.update(
                                 {
@@ -764,7 +764,7 @@ class AudioAPIInterface:
         valid_global_entry = False
         results = None
         called_api = False
-        prefer_lyrics = await ctx.cog.get_lyrics_status(ctx)
+        prefer_lyrics = await self.cog.get_lyrics_status(ctx)
         if prefer_lyrics and query.is_youtube and query.is_search:
             query_string = f"{query} - lyrics"
         if cache_enabled and not forced and not query.is_local:
@@ -912,7 +912,8 @@ class AudioAPIInterface:
 
         if not tracks or not getattr(playlist, "tracks", None):
             if cache_enabled:
-                tracks = [await self.get_random_track_from_db()]
+                track = await self.get_random_track_from_db()
+                tracks = [] if not track else [track]
             if not tracks:
                 ctx = namedtuple("Context", "message guild cog")
                 (results, called_api) = await self.fetch_track(
@@ -925,8 +926,6 @@ class AudioAPIInterface:
                 tracks = list(results.tracks)
         if tracks:
             multiple = len(tracks) > 1
-            track = tracks[0]
-
             valid = not multiple
             tries = len(tracks)
             while valid is False and multiple:
@@ -936,9 +935,7 @@ class AudioAPIInterface:
                 track = random.choice(tracks)
                 query = Query.process_input(track, self.cog.local_folder_current_path)
                 await asyncio.sleep(0.001)
-                if not query.valid:
-                    continue
-                if (
+                if not query.valid or (
                     query.is_local
                     and query.local_track_path is not None
                     and not query.local_track_path.exists()
