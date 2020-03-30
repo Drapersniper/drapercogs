@@ -83,14 +83,14 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "⏹",
             "⏯",
             "⏭",
-            self.bot.get_emoji(632685164408995870),
+            self.get_cross_emoji(ctx),
         )
         emoji = {
             "prev": "⏮",
             "stop": "⏹",
             "pause": "⏯",
             "next": "⏭",
-            "close": self.bot.get_emoji(632685164408995870),
+            "close": self.get_cross_emoji(ctx),
         }
         player = lavalink.get_player(ctx.guild.id)
         if player.current:
@@ -160,7 +160,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return
 
         if not player.queue:
-            expected = ("⏹", "⏯", self.bot.get_emoji(632685164408995870))
+            expected = ("⏹", "⏯", self.get_cross_emoji(ctx))
         task: Optional[asyncio.Task]
         if player.current:
             task = start_adding_reactions(message, expected[:5])

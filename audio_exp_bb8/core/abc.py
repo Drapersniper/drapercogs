@@ -500,3 +500,8 @@ class MixinMeta(ABC):
     @abstractmethod
     async def restore_players(self) -> bool:
         raise NotImplementedError()
+
+    @abstractmethod
+    def get_cross_emoji(self, ctx: commands.Context) -> str:
+        raise NotImplementedError()
+

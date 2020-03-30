@@ -251,7 +251,7 @@ class PlaylistUtilities(MixinMeta, metaclass=CompositeMetaClass):
         avaliable_emojis = ReactionPredicate.NUMBER_EMOJIS[1:]
         avaliable_emojis.append("🔟")
         emojis = avaliable_emojis[: len(correct_scope_matches)]
-        close_emoji = self.bot.get_emoji(632685164408995870)
+        close_emoji = self.get_cross_emoji(context)
         emojis.append(close_emoji)
         start_adding_reactions(msg, emojis)
         pred = ReactionPredicate.with_emojis(emojis, msg, user=context.author)

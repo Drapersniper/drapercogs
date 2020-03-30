@@ -1,4 +1,5 @@
 from ..cog_utils import CompositeMetaClass
+from .bb8 import BB8Utilities
 from .equalizer import EqualizerUtilities
 from .formatting import FormattingUtilities
 from .local_tracks import LocalTrackUtilities
@@ -18,6 +19,7 @@ class Utilities(
     PlaylistUtilities,
     QueueUtilities,
     ValidationUtilities,
+    BB8Utilities,
     metaclass=CompositeMetaClass,
 ):
     """Class joining all utility subclasses"""

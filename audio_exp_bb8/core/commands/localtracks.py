@@ -85,7 +85,7 @@ class LocalTrackCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _local_folder_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _local_folder_menu,
             "\N{LEFTWARDS BLACK ARROW}": prev_page,
-            self.bot.get_emoji(632685164408995870): close_menu,
+            self.get_cross_emoji(ctx): close_menu,
             "\N{BLACK RIGHTWARDS ARROW}": next_page,
         }
 

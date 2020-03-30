@@ -2770,7 +2770,7 @@ class Audio(commands.Cog):
                 return
 
         if not player.queue:
-            expected = ("⏹", "⏯" , "\N{CROSS MARK}")
+            expected = ("⏹", "⏯", "\N{CROSS MARK}")
         if player.current:
             task = start_adding_reactions(message, expected[:4], ctx.bot.loop)
         else:
