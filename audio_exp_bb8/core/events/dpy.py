@@ -131,7 +131,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             message = "```py" + "\n"
             message += (
                 "Error in command '{}'\nType: {}\n" "The Bot owner has received your error."
-            ).format(ctx.command.qualified_name, error.original)
+            ).format(ctx.command.qualified_name, error)
             message += "```" + "\n"
             message += (
                 "Use the ``b!support`` command \nThen join the support server and "

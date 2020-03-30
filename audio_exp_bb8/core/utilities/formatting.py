@@ -366,10 +366,10 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return box(line, lang="md")
 
     async def draw_time(self, ctx) -> str:
-        saber1 = discord.utils.get(self.bot.emojis, id=632678611148865548)
-        saber2 = discord.utils.get(self.bot.emojis, id=632678634280452106)
-        saber3 = discord.utils.get(self.bot.emojis, id=632678653116940298)
-        tiefighter = discord.utils.get(self.bot.emojis, id=632674535774355486)
+        saber1 = str(discord.utils.get(self.bot.emojis, id=632678611148865548))
+        saber2 = str(discord.utils.get(self.bot.emojis, id=632678634280452106))
+        saber3 = str(discord.utils.get(self.bot.emojis, id=632678653116940298))
+        tiefighter = str(discord.utils.get(self.bot.emojis, id=632674535774355486))
         player = lavalink.get_player(ctx.guild.id)
         paused = player.paused
         pos = player.position

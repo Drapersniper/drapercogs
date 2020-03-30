@@ -150,7 +150,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
             return
         elif autoplay and not player.queue:
             embed = discord.Embed(
-                title=_("Track Skipped"),
+                title=_("⏩ Track Skipped"),
                 description=await self.get_track_description(
                     player.current, self.local_folder_current_path
                 ),
@@ -187,7 +187,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
             ]
         else:
             embed = discord.Embed(
-                title=_("Track Skipped"),
+                title=_("⏩ Track Skipped"),
                 description=await self.get_track_description(
                     player.current, self.local_folder_current_path
                 ),
