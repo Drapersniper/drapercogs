@@ -236,14 +236,14 @@ class MartineUtilities(MixinMeta, metaclass=CompositeMetaClass):
 
     def get_cross_emoji(self, ctx: commands.Context) -> str:
         if ctx.me.permissions_in(ctx.channel).external_emojis:
-            cross = discord.utils.get(self.bot.emojis, id=631530205495689236)
+            cross = str(discord.utils.get(self.bot.emojis, id=631530205495689236))
         else:
             cross = "\N{CROSS MARK}"
         return cross
 
     def get_wave_emoji(self, ctx: commands.Context) -> str:
         if ctx.me.permissions_in(ctx.channel).external_emojis:
-            emoji = discord.utils.get(self.bot.emojis, id=672268771133489202)
+            emoji = str(discord.utils.get(self.bot.emojis, id=672268771133489202))
         else:
             emoji = "\N{WAVING HAND SIGN}"
         return emoji
