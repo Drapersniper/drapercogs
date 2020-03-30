@@ -26,33 +26,6 @@ class AudioEvents(MixinMeta, metaclass=CompositeMetaClass):
     ):
         if not (track and guild):
             return
-        self.bot.counter["tracks_played"] += 1
-        query = Query.process_input(track, self.local_folder_current_path)
-        if track.is_stream:
-            self.bot.counter["streams_played"] += 1
-            if query.is_youtube:
-                self.bot.counter["yt_streams_played"] += 1
-            elif query.is_mixer:
-                self.bot.counter["mixer_streams_played"] += 1
-            elif query.is_twitch:
-                self.bot.counter["ttv_streams_played"] += 1
-            elif query.is_other:
-                self.bot.counter["other_streams_played"] += 1
-
-        if query.is_youtube:
-            self.bot.counter["youtube_tracks"] += 1
-        elif query.is_soundcloud:
-            self.bot.counter["soundcloud_tracks"] += 1
-        elif query.is_bandcamp:
-            self.bot.counter["bandcamp_tracks"] += 1
-        elif query.is_vimeo:
-            self.bot.counter["vimeo_tracks"] += 1
-        elif query.is_mixer:
-            self.bot.counter["mixer_tracks"] += 1
-        elif query.is_twitch:
-            self.bot.counter["twitch_tracks"] += 1
-        elif query.is_other:
-            self.bot.counter["other_tracks"] += 1
         track_identifier = track.track_identifier
         if self.playlist_api is not None:
             daily_cache = self._daily_playlist_cache.setdefault(
@@ -177,7 +150,6 @@ class AudioEvents(MixinMeta, metaclass=CompositeMetaClass):
     async def on_red_audio_track_enqueue(self, guild: discord.Guild, track, requester):
         if not (track and guild):
             return
-        self.bot.counter["tracks_enqueued"] += 1
         persist_cache = self._persist_queue_cache.setdefault(
             guild.id, await self.config.guild(guild).persist_queue()
         )
