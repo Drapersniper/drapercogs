@@ -395,10 +395,6 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return box(line, lang="md")
 
     async def draw_time(self, ctx) -> str:
-        saber1 = discord.utils.get(self.bot.emojis, id=632678611148865548)
-        saber2 = discord.utils.get(self.bot.emojis, id=632678634280452106)
-        saber3 = discord.utils.get(self.bot.emojis, id=632678653116940298)
-        tiefighter = discord.utils.get(self.bot.emojis, id=632674535774355486)
         player = lavalink.get_player(ctx.guild.id)
         paused = player.paused
         pos = player.position
@@ -406,18 +402,14 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         sections = 12
         loc_time = round((pos / dur) * sections)
         bar = "\N{BOX DRAWINGS HEAVY HORIZONTAL}"
-        hit_loc = False
+        seek = "\N{RADIO BUTTON}"
         if paused:
-            msg = f"{tiefighter}{saber1}"
+            msg = "\N{DOUBLE VERTICAL BAR}"
         else:
-            msg = f"{saber1}"
+            msg = "\N{BLACK RIGHT-POINTING TRIANGLE}"
         for i in range(sections):
             if i == loc_time:
-                hit_loc = True
-                msg += saber3
+                msg += seek
             else:
-                if hit_loc:
-                    msg += bar
-                else:
-                    msg += saber2
+                msg += bar
         return msg
