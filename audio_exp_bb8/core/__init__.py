@@ -62,7 +62,7 @@ class Audio(
             send_messages=True,
             read_message_history=True,
             add_reactions=True,
-            external_emojis=True
+            external_emojis=True,
         )
 
         default_global = dict(

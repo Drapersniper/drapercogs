@@ -129,13 +129,14 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             if self.api_interface is not None:
                 await self.api_interface.run_tasks(ctx)
             message = "```py" + "\n"
-            message += ("Error in command '{}'\nType: {}\n"
-                       "The Bot owner has received your error.").format(
-                ctx.command.qualified_name, error.original
-            )
+            message += (
+                "Error in command '{}'\nType: {}\n" "The Bot owner has received your error."
+            ).format(ctx.command.qualified_name, error.original)
             message += "```" + "\n"
-            message += ("Use the ``b!support`` command \nThen join the support server and "
-                       "the owner of the bot or a mod will help you when they are available")
+            message += (
+                "Use the ``b!support`` command \nThen join the support server and "
+                "the owner of the bot or a mod will help you when they are available"
+            )
             await ctx.send(message)
         elif isinstance(error, IndexError) and "No nodes found." in str(error):
             await self.send_embed_msg(

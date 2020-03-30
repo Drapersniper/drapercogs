@@ -1394,6 +1394,5 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Restarting Lavalink"),
-                description=_("It can take a couple of minutes for Lavalink to fully start up.")
+                description=_("It can take a couple of minutes for Lavalink to fully start up."),
             )
-
