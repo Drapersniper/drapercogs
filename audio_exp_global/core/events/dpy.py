@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 import logging
 import re
@@ -171,7 +172,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 description=_("The bot is not connected to a voice channel."),
                 error=True,
             )
-        elif isinstance(error, TrackEnqueueError):
+        elif isinstance(error, (TrackEnqueueError, asyncio.exceptions.TimeoutError)):
             handled = True
             await self.send_embed_msg(
                 ctx,
