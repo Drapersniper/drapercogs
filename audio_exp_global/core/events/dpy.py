@@ -16,6 +16,7 @@ from redbot.core.utils.chat_formatting import box, humanize_list
 
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, HUMANIZED_PERM, _
+from ...audio_logging import debug_exc_log
 from ...errors import TrackEnqueueError
 
 log = logging.getLogger("red.cogs.Audio.cog.Events.dpy")
@@ -164,6 +165,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 description=_("Connection to Lavalink has been lost."),
                 error=True,
             )
+            debug_exc_log(log, error, "This is a handled error")
         elif isinstance(error, KeyError) and "such player for that guild" in str(error):
             handled = True
             await self.send_embed_msg(
@@ -172,6 +174,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 description=_("The bot is not connected to a voice channel."),
                 error=True,
             )
+            debug_exc_log(log, error, "This is a handled error")
         elif isinstance(error, (TrackEnqueueError, asyncio.exceptions.TimeoutError)):
             handled = True
             await self.send_embed_msg(
@@ -183,6 +186,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 ),
                 error=True,
             )
+            debug_exc_log(log, error, "This is a handled error")
         if not isinstance(
             error,
             (
