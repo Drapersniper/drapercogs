@@ -118,21 +118,49 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
     async def cog_command_error(self, ctx: commands.Context, error: Exception) -> None:
         error = getattr(error, "original", error)
         handled = False
-        if isinstance(error, (IndexError, ClientConnectorError)) and any(
-                e in str(error).lower() for e in [
-                    "no nodes found.", "cannot connect to host"
-                ]):
+        if isinstance(error, commands.ArgParserFailure):
+            handled = True
+            msg = _("`{user_input}` is not a valid value for `{command}`").format(
+                user_input=error.user_input, command=error.cmd,
+            )
+            if error.custom_help_msg:
+                msg += f"\n{error.custom_help_msg}"
+            await self.send_embed_msg(
+                ctx,
+                title=_("Unable To Parse Argument"),
+                description=msg,
+                error=True,
+            )
+            if error.send_cmd_help:
+                await ctx.send_help()
+        elif isinstance(error, commands.ConversionFailure):
+            handled = True
+            if error.args:
+                await self.send_embed_msg(
+                    ctx,
+                    title=_("Invalid Argument"),
+                    description=error.args[0],
+                    error=True,
+                )
+            else:
+                await ctx.send_help()
+        elif isinstance(error, (IndexError, ClientConnectorError)) and any(
+                e in str(error).lower() for e in ["no nodes found.", "cannot connect to host"]
+        ):
             handled = True
             await self.send_embed_msg(
                 ctx,
                 title=_("Invalid Environment"),
-                description=_("Connection to Lavalink has been lost."), error=True)
-        elif isinstance(error, KeyError) and "No such player for that guild" in str(error):
+                description=_("Connection to Lavalink has been lost."),
+                error=True,
+            )
+        elif isinstance(error, KeyError) and "such player for that guild" in str(error):
             handled = True
             await self.send_embed_msg(
                 ctx,
                 title=_("No Player Available"),
                 description=_("The bot is not connected to a voice channel."),
+                error=True,
             )
         elif isinstance(error, TrackEnqueueError):
             handled = True
@@ -143,6 +171,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                     "I'm unable get a track from Lavalink at the moment,"
                     "try again in a few minutes."
                 ),
+                error=True,
             )
         if not isinstance(
             error,
