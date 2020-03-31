@@ -504,4 +504,3 @@ class MixinMeta(ABC):
     @abstractmethod
     def get_cross_emoji(self, ctx: commands.Context) -> str:
         raise NotImplementedError()
-
