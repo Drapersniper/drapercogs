@@ -26,7 +26,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="play")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_play(self, ctx: commands.Context, *, query: str):
         """Play a URL or search for a track."""
         query = Query.process_input(query, self.local_folder_current_path)
@@ -123,7 +122,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="bumpplay")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_bumpplay(
         self, ctx: commands.Context, play_now: Optional[bool] = False, *, query: str
     ):
@@ -334,7 +332,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="genre")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=False)
     async def command_genre(self, ctx: commands.Context):
         """Pick a Spotify playlist from a list of categories to start playing."""
 
@@ -526,7 +523,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     @commands.mod_or_permissions(manage_guild=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=False)
     async def command_autoplay(self, ctx: commands.Context):
         """Starts auto play."""
         if not self._player_check(ctx):
@@ -610,7 +606,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="search")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=False)
     async def command_search(self, ctx: commands.Context, *, query: str):
         """Pick a track with a search.
 

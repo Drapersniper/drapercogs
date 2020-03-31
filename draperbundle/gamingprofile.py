@@ -63,7 +63,6 @@ class GamingProfile(commands.Cog):
         await ctx.tick()
 
     @_profile.command(name="create", aliases=["make"])
-    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_create(self, ctx: commands.Context):
         """Creates and sets up or updates an existing profile"""
         author = ctx.author
@@ -132,7 +131,6 @@ class GamingProfile(commands.Cog):
                 )
 
     @_profile.command(name="update")
-    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_update(self, ctx: commands.Context):
         """Updates an existing profile"""
         role_to_add = []
@@ -247,7 +245,6 @@ class GamingProfile(commands.Cog):
                 return await ctx.send(f"No one has an account registered with {platform.title()}")
 
     @_profile.command(name="delete", aliases=["purge", "remove"])
-    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_delete(self, ctx: commands.Context):
         """Deletes your profile permanently"""
         try:
@@ -441,7 +438,6 @@ class GamingProfile(commands.Cog):
         """Manage your service usernames"""
 
     @_profile_username.command(name="add", aliases=["+"])
-    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def _profile_username_add(self, ctx: commands.Context):
         """Adds/updates an account for the specified service"""
         try:
@@ -461,7 +457,6 @@ class GamingProfile(commands.Cog):
             await ctx.author.send("No accounts to add to your profile")
 
     @_profile_username.command(name="remove", aliases=["delete", "purge", "-"])
-    @commands.max_concurrency(1, per=commands.BucketType.user)
     async def account_remove(self, ctx: commands.Context, *, platform: str):
         """Removes an account from the specified service"""
         supported_platforms = await get_supported_platforms(supported=True)

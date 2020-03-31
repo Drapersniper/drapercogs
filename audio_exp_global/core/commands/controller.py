@@ -23,7 +23,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="disconnect")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=False)
     async def command_disconnect(self, ctx: commands.Context):
         """Disconnect from the voice channel."""
         if not self._player_check(ctx):
@@ -73,7 +72,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="now")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=False)
     async def command_now(self, ctx: commands.Context):
         """Now playing."""
         if not self._player_check(ctx):
@@ -182,7 +180,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="pause")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_pause(self, ctx: commands.Context):
         """Pause or resume a playing track."""
         dj_enabled = self._dj_status_cache.setdefault(
@@ -223,7 +220,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="prev")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_prev(self, ctx: commands.Context):
         """Skip to the start of the previously played track."""
         if not self._player_check(ctx):
@@ -287,7 +283,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="seek")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_seek(self, ctx: commands.Context, seconds: Union[int, str]):
         """Seek ahead or behind on a track by seconds or a to a specific time.
 
@@ -373,7 +368,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.group(name="shuffle", autohelp=False)
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_shuffle(self, ctx: commands.Context):
         """Toggle shuffle."""
         if ctx.invoked_subcommand is None:
@@ -414,7 +408,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_shuffle.command(name="bumped")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_shuffle_bumpped(self, ctx: commands.Context):
         """Toggle bumped track shuffle.
 
@@ -458,7 +451,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="skip")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_skip(self, ctx: commands.Context, skip_to_track: int = None):
         """Skip to the next track, or to a given track number."""
         if not self._player_check(ctx):
@@ -549,7 +541,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="stop")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_stop(self, ctx: commands.Context):
         """Stop playback and clear the queue."""
         dj_enabled = self._dj_status_cache.setdefault(
@@ -601,7 +592,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.guild_only()
     @commands.cooldown(1, 15, commands.BucketType.guild)
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_summon(self, ctx: commands.Context):
         """Summon the bot to a voice channel."""
         dj_enabled = self._dj_status_cache.setdefault(
@@ -666,7 +656,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="volume")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_volume(self, ctx: commands.Context, vol: int = None):
         """Set the volume, 1% - 150%."""
         dj_enabled = self._dj_status_cache.setdefault(
@@ -714,7 +703,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="repeat")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_repeat(self, ctx: commands.Context):
         """Toggle repeat."""
         dj_enabled = self._dj_status_cache.setdefault(
@@ -758,7 +746,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="remove")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_remove(self, ctx: commands.Context, index_or_url: Union[int, str]):
         """Remove a specific track number from the queue."""
         dj_enabled = self._dj_status_cache.setdefault(
@@ -834,7 +821,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.command(name="bump")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
-    @commands.max_concurrency(1, per=commands.BucketType.guild, wait=True)
     async def command_bump(self, ctx: commands.Context, index: int):
         """Bump a track number to the top of the queue."""
         dj_enabled = self._dj_status_cache.setdefault(
