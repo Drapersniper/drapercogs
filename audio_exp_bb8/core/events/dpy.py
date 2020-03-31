@@ -12,6 +12,7 @@ from redbot.core.utils.chat_formatting import box, humanize_list
 
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, HUMANIZED_PERM, _
+from ...errors import TrackEnqueueError
 
 log = logging.getLogger("red.cogs.Audio.cog.Events.dpy")
 
@@ -129,6 +130,16 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 ctx,
                 title=_("No Player Available"),
                 description=_("The bot is not connected to a voice channel."),
+            )
+        elif isinstance(error, TrackEnqueueError):
+            handled = True
+            await self.send_embed_msg(
+                ctx,
+                title=_("Unable to Get Track"),
+                description=_(
+                    "I'm unable get a track from Lavalink at the moment,"
+                    "try again in a few minutes."
+                ),
             )
         if not isinstance(
             error,
