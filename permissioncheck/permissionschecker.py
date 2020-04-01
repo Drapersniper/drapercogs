@@ -184,7 +184,7 @@ class PermissionsChecker(commands.Cog):
     async def pchecker_blacklist_list(self, ctx: commands.Context):
         """List all blacklisted server IDs."""
         blacklist = await self.config.blacklist()
-        output = "\n".join("IDs in blacklist:", *map(str, blacklist))
+        output = "\n".join(["IDs in blacklist:", *map(str, blacklist)])
 
         for page in pagify(output):
             await ctx.send(box(page))
