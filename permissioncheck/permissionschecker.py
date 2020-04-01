@@ -87,10 +87,10 @@ class PermissionsChecker(commands.Cog):
                 "I'm missing permissions in this server, "
                 "Please address this as soon as possible. "
                 "If this continues I will leave the server.\n\n"
-                "Expected Permissions:\n"
+                "I need the following permissions which I currently lack:\n"
             )
             for perm, value in missing_perms.items():
-                text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"
+                text += f"{HUMANIZED_PERM.get(perm)}: [{'On' if value else 'Off'}]\n"
             text = text.strip()
             if current_perms.send_messages and current_perms.read_messages:
                 await ctx.send(box(text=text, lang="ini"))
@@ -121,10 +121,10 @@ class PermissionsChecker(commands.Cog):
                     "I'm missing permissions in this server, "
                     "Please address this as soon as possible. "
                     "If this continues I will leave the server.\n\n"
-                    "Expected Permissions:\n"
+                    "I need the following permissions which I currently lack:\n"
                 )
                 for perm, value in missing_perms.items():
-                    text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"
+                    text += f"{HUMANIZED_PERM.get(perm)}: [{'On' if value else 'Off'}]\n"
                 text = text.strip()
                 async with self.config.guild(guild).all() as channel_data:
                     if channel_data["last_error"] > time.time() + 600:
@@ -172,7 +172,7 @@ class PermissionsChecker(commands.Cog):
         text = "From now on I will expected the following permissions in a channel:\n\n"
         permissions = collections.OrderedDict(sorted(permissions.items()))
         for perm, value in permissions.items():
-            text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"
+            text += f"{HUMANIZED_PERM.get(perm)}: [{'On' if value else 'Off'}]\n"
         text = text.strip()
         await ctx.send(box(text=text, lang="ini"))
 
