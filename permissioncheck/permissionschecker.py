@@ -61,7 +61,7 @@ class PermissionsChecker(commands.Cog):
             "embed_links": True,
         }
         self.config.register_global(blacklist=[], permissions=default_perms)
-        self.config.register_channel(error_count=0, last_error=0)
+        self.config.register_guild(error_count=0, last_error=0)
         self.permission_cache: discord.Permissions = None
 
     async def bot_check(self, ctx: Context):
@@ -126,7 +126,7 @@ class PermissionsChecker(commands.Cog):
                 for perm, value in missing_perms.items():
                     text += f"{HUMANIZED_PERM.get(perm)}: [{'Enabled' if value else 'Disabled'}]\n"
                 text = text.strip()
-                async with self.config.channel(channel).all() as channel_data:
+                async with self.config.guild(guild).all() as channel_data:
                     if channel_data["last_error"] > time.time() + 600:
                         channel_data["error_count"] = 0
                     if channel_data["error_count"] >= 10:
