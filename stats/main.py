@@ -188,9 +188,9 @@ class Stats(commands.Cog):
                 "Servers: {total}\n"
                 "Discord latency: {lat}ms\n"
                 "Shard count: {shards}\n"
-                "Large Guilds: {large}\n"
-                "Not Chunked Guilds: {chuncked}\n"
-                "Unavailable Guilds: {unavaliable}\n"
+                "Large servers: {large}\n"
+                "Unchunked servers: {chuncked}\n"
+                "Unavailable servers: {unavaliable}\n"
 
             ).format(
                 lat=bold(humanize_number(discord_latency)),
@@ -199,10 +199,6 @@ class Stats(commands.Cog):
                 large=bold(humanize_number(large_guilds)),
                 chuncked=bold(humanize_number(not_chunked_guilds)),
                 unavaliable=bold(humanize_number(unavaliable_guilds))
-
-
-
-
             )
         )
         data.add_field(name=_("Members:"), value=member_msg)
