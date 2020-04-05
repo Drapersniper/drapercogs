@@ -183,6 +183,7 @@ class Stats(commands.Cog):
                 "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
                 "\N{SPEECH BALLOON} Text: {text}\n"
                 "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
+                "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
                 "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
             ).format(total=bold(humanize_number(guild_channel_count)),
                      text=bold(humanize_number(guild_text_channel_count)),
