@@ -51,6 +51,12 @@ class Stats(commands.Cog):
             audio_cog = bot.get_cog("Audio")
             guild_count = len(bot.guilds)
             unique_user = set([m.id async for s in AsyncGen(bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable])
+            large_guilds = set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and s.large])
+            not_chunked_guilds = set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and not s.chunked])
+            unavaliable_guilds = set([s.id async for s in AsyncGen(bot.guilds) if s.unavailable])
+
+            channel_categories_count = sum([len(s.categories) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
+
             guild_channel_count = sum([len(s.channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
             guild_text_channel_count = sum([len(s.text_channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
             guild_voice_channel_count = sum([len(s.voice_channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
@@ -78,6 +84,11 @@ class Stats(commands.Cog):
             idle_users = idle_users - streaming_users
             do_not_disturb_users = do_not_disturb_users - streaming_users
             offline_users = offline_users - streaming_users
+            gaming_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and discord.ActivityType.playing in [a.type for a in m.activities if a]])
+            listening_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and discord.ActivityType.listening in [a.type for a in m.activities if a]])
+            watching_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and discord.ActivityType.watching in [a.type for a in m.activities if a]])
+            custom_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and discord.ActivityType.custom in [a.type for a in m.activities if a]])
+
             humans = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable if not m.bot])
             bots = unique_user - humans
             discord_latency = int(round(bot.latency * 1000))
@@ -90,6 +101,12 @@ class Stats(commands.Cog):
                 "\N{LARGE RED CIRCLE}": len(do_not_disturb_users),
                 "\N{MEDIUM WHITE CIRCLE}": len(offline_users),
                 "\N{LARGE PURPLE CIRCLE}": len(streaming_users),
+                "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": len(streaming_users),
+                "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": len(gaming_users),
+                "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": len(listening_users),
+                "\N{TELEVISION}\N{VARIATION SELECTOR-16}": len(watching_users),
+                _("Custom"): len(custom_users),
+
             }
             vc_regions = {
                 "eu-west": _("EU West ") + "\U0001F1EA\U0001F1FA",
@@ -121,20 +138,20 @@ class Stats(commands.Cog):
                 "extreme": _("Extreme"),
             }
             features = {
-                "PARTNERED": _("Partnered"),
-                "VERIFIED": _("Verified"),
-                "DISCOVERABLE": _("Server Discovery"),
-                "FEATURABLE": _("Featurable"),
-                "PUBLIC": _("Public"),
-                "PUBLIC_DISABLED": _("Public disabled"),
-                "INVITE_SPLASH": _("Splash Invite"),
                 "VIP_REGIONS": _("VIP Voice Servers"),
                 "VANITY_URL": _("Vanity URL"),
+                "INVITE_SPLASH": _("Splash Invite"),
+                "VERIFIED": _("Verified"),
+                "PARTNERED": _("Partnered"),
                 "MORE_EMOJI": _("More Emojis"),
+                "DISCOVERABLE": _("Server Discovery"),
+                "FEATURABLE": _("Featurable"),
                 "COMMERCE": _("Commerce"),
+                "PUBLIC": _("Public"),
                 "NEWS": _("News Channels"),
-                "ANIMATED_ICON": _("Animated Icon"),
                 "BANNER": _("Banner Image"),
+                "ANIMATED_ICON": _("Animated Icon"),
+                "PUBLIC_DISABLED": _("Public disabled"),
                 "MEMBER_LIST_DISABLED": _("Member list disabled"),
             }
             region_count = {}
@@ -164,13 +181,28 @@ class Stats(commands.Cog):
                     "\n" if count % 2 == 0 else ""
                 )
             count += 1
+
         data.add_field(
             name=_("General:"),
             value=_(
                 "Servers: {total}\n"
                 "Discord latency: {lat}ms\n"
-                "Shard count: {shards}").format(lat=bold(humanize_number(discord_latency)),
-                                                shards=bold(humanize_number(shards)), total=bold(humanize_number(guild_count))
+                "Shard count: {shards}\n"
+                "Large Guilds: {large}\n"
+                "Not Chunked Guilds: {chuncked}\n"
+                "Unavailable Guilds: {unavaliable}\n"
+
+            ).format(
+                lat=bold(humanize_number(discord_latency)),
+                shards=bold(humanize_number(shards)),
+                total=bold(humanize_number(guild_count)),
+                large=bold(humanize_number(large_guilds)),
+                chuncked=bold(humanize_number(not_chunked_guilds)),
+                unavaliable=bold(humanize_number(unavaliable_guilds))
+
+
+
+
             )
         )
         data.add_field(name=_("Members:"), value=member_msg)
@@ -178,6 +210,7 @@ class Stats(commands.Cog):
             name=_("Channels:"),
             value=_(
                 "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
+                "\N{BOOKMARK TABS} Categories: {categories}"
                 "\N{SPEECH BALLOON} Text: {text}\n"
                 "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
@@ -186,7 +219,9 @@ class Stats(commands.Cog):
                      text=bold(humanize_number(guild_text_channel_count)),
                      voice=bold(humanize_number(guild_voice_channel_count)),
                      users=bold(humanize_number(user_voice_channel_count)),
-                     with_me=bold(humanize_number(user_voice_channel_with_me_count)))
+                     with_me=bold(humanize_number(user_voice_channel_with_me_count)),
+                     categories=bold(humanize_number(channel_categories_count))
+                     )
         )
         region_data = ""
         for r, value in region_count.items():
