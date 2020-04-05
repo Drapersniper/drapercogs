@@ -1,3 +1,6 @@
+import asyncio
+from typing import AsyncIterable, Sequence
+
 import discord
 from redbot.core import commands
 from redbot.core.bot import Red
@@ -6,6 +9,27 @@ import lavalink
 
 _ = lambda s: s
 
+
+class AsyncGen(AsyncIterable):
+    """Yield entry every `delay` seconds."""
+
+    def __init__(self, contents: Sequence, delay: float = 0.0):
+        self.delay = delay
+        self.content = contents
+        self.i = 0
+        self.to = len(contents)
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if self.i >= self.to:
+            raise StopAsyncIteration
+        i = self.content[self.i]
+        self.i += 1
+        if self.i % 200 == 0:
+            await asyncio.sleep(self.delay)
+        return i
 
 class Stats(commands.Cog):
     def __init__(self, bot: Red):
@@ -22,106 +46,108 @@ class Stats(commands.Cog):
         Default to False.
         """
         bot = ctx.bot
-        audio_cog = bot.get_cog("Audio")
-        guild_count = len(bot.guilds)
-        unique_user = set([m.id for s in bot.guilds for m in s.members if not s.unavailable])
-        guild_channel_count = sum(len(s.channels) for s in bot.guilds if not s.unavailable)
-        guild_text_channel_count = sum(len(s.text_channels) for s in bot.guilds if not s.unavailable)
-        guild_voice_channel_count = sum(len(s.voice_channels) for s in bot.guilds if not s.unavailable)
-        user_voice_channel_count = sum(len(c.members) for s in bot.guilds for c in s.voice_channels if not s.unavailable)
-        boosted_servers = len(set(s.id for s in bot.guilds if not s.unavailable and s.premium_tier != 0))
-        tier_3_count = len(set(s.id for s in bot.guilds if not s.unavailable and s.premium_tier == 3))
-        tier_1_count = len(set(s.id for s in bot.guilds if not s.unavailable and s.premium_tier == 1))
-        tier_2_count = len(set(s.id for s in bot.guilds if not s.unavailable and s.premium_tier == 2))
+        print(123)
+        async with ctx.typing():
+            audio_cog = bot.get_cog("Audio")
+            guild_count = len(bot.guilds)
+            unique_user = set([m.id async for s in AsyncGen(bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable])
+            guild_channel_count = sum([len(s.channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
+            guild_text_channel_count = sum([len(s.text_channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
+            guild_voice_channel_count = sum([len(s.voice_channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
+            user_voice_channel_count = sum([len(c.members) async for s in AsyncGen(self.bot.guilds) async for c in AsyncGen(s.voice_channels) if not s.unavailable])
+            boosted_servers = len(set([s.id async for s in AsyncGen(self.bot.guilds) if not s.unavailable and s.premium_tier != 0]))
+            tier_3_count = len(set([s.id async for s in AsyncGen(self.bot.guilds) if not s.unavailable and s.premium_tier == 3]))
+            tier_1_count = len(set([s.id async for s in AsyncGen(self.bot.guilds) if not s.unavailable and s.premium_tier == 1]))
+            tier_2_count = len(set([s.id async for s in AsyncGen(self.bot.guilds) if not s.unavailable and s.premium_tier == 2]))
 
-        role_count = sum(len(s.roles) for s in bot.guilds if not s.unavailable)
-        emoji_count = sum(len(s.emojis) for s in bot.guilds if not s.unavailable)
-        animated_emojis = sum(1 for s in bot.guilds for e in s.emojis if not s.unavailable and e.animated)
-        static_emojis = emoji_count-animated_emojis
-        if audio_cog:
-            active_music_players = len(lavalink.active_players())
-            total_music_players = len(lavalink.all_players())
-        online_users = set([m.id for s in bot.guilds for m in s.members if not s.unavailable and m.status is discord.Status.online])
-        idle_users = set([m.id for s in bot.guilds for m in s.members if not s.unavailable and m.status is discord.Status.idle])
-        do_not_disturb_users = set([m.id for s in bot.guilds for m in s.members if not s.unavailable and m.status is discord.Status.do_not_disturb])
-        offline_users = set([m.id for s in bot.guilds for m in s.members if not s.unavailable and m.status is discord.Status.offline])
-        streaming_users = set([m.id for s in bot.guilds for m in s.members for a in m.activities if not s.unavailable and a.type is discord.ActivityType.streaming])
-        online_users = online_users - streaming_users
-        idle_users = idle_users - streaming_users
-        do_not_disturb_users = do_not_disturb_users - streaming_users
-        offline_users = offline_users - streaming_users
-        humans = set([m.id for s in bot.guilds for m in s.members if not s.unavailable if not m.bot])
-        bots = unique_user - humans
-        discord_latency = int(round(bot.latency * 1000))
-        shards = bot.shard_count
-        online_stats = {
-            _("Humans: "): len(humans),
-            _(" • Bots: "): len(bots),
-            "\N{LARGE GREEN CIRCLE}": len(online_users),
-            "\N{LARGE ORANGE CIRCLE}": len(idle_users),
-            "\N{LARGE RED CIRCLE}": len(do_not_disturb_users),
-            "\N{MEDIUM WHITE CIRCLE}": len(offline_users),
-            "\N{LARGE PURPLE CIRCLE}": len(streaming_users),
-        }
-        vc_regions = {
-            "vip-us-east": _("__VIP__ US East ") + "\U0001F1FA\U0001F1F8",
-            "vip-us-west": _("__VIP__ US West ") + "\U0001F1FA\U0001F1F8",
-            "vip-amsterdam": _("__VIP__ Amsterdam ") + "\U0001F1F3\U0001F1F1",
-            "eu-west": _("EU West ") + "\U0001F1EA\U0001F1FA",
-            "eu-central": _("EU Central ") + "\U0001F1EA\U0001F1FA",
-            "europe": _("Europe ") + "\U0001F1EA\U0001F1FA",
-            "london": _("London ") + "\U0001F1EC\U0001F1E7",
-            "frankfurt": _("Frankfurt ") + "\U0001F1E9\U0001F1EA",
-            "amsterdam": _("Amsterdam ") + "\U0001F1F3\U0001F1F1",
-            "us-west": _("US West ") + "\U0001F1FA\U0001F1F8",
-            "us-east": _("US East ") + "\U0001F1FA\U0001F1F8",
-            "us-south": _("US South ") + "\U0001F1FA\U0001F1F8",
-            "us-central": _("US Central ") + "\U0001F1FA\U0001F1F8",
-            "singapore": _("Singapore ") + "\U0001F1F8\U0001F1EC",
-            "sydney": _("Sydney ") + "\U0001F1E6\U0001F1FA",
-            "brazil": _("Brazil ") + "\U0001F1E7\U0001F1F7",
-            "hongkong": _("Hong Kong ") + "\U0001F1ED\U0001F1F0",
-            "russia": _("Russia ") + "\U0001F1F7\U0001F1FA",
-            "japan": _("Japan ") + "\U0001F1EF\U0001F1F5",
-            "southafrica": _("South Africa ") + "\U0001F1FF\U0001F1E6",
-            "india": _("India ") + "\U0001F1EE\U0001F1F3",
-            "dubai": _("Dubai ") + "\U0001F1E6\U0001F1EA",
-            "south-korea": _("South Korea ") + "\U0001f1f0\U0001f1f7",
-        }
-        verif = {
-            "none": _("None"),
-            "low": _("Low"),
-            "medium": _("Medium"),
-            "high": _("High"),
-            "extreme": _("Extreme"),
-        }
-        features = {
-            "PARTNERED": _("Partnered"),
-            "VERIFIED": _("Verified"),
-            "DISCOVERABLE": _("Server Discovery"),
-            "FEATURABLE": _("Featurable"),
-            "PUBLIC": _("Public"),
-            "PUBLIC_DISABLED": _("Public disabled"),
-            "INVITE_SPLASH": _("Splash Invite"),
-            "VIP_REGIONS": _("VIP Voice Servers"),
-            "VANITY_URL": _("Vanity URL"),
-            "MORE_EMOJI": _("More Emojis"),
-            "COMMERCE": _("Commerce"),
-            "NEWS": _("News Channels"),
-            "ANIMATED_ICON": _("Animated Icon"),
-            "BANNER": _("Banner Image"),
-            "MEMBER_LIST_DISABLED": _("Member list disabled"),
-        }
-        region_count = {}
-        for k in vc_regions.keys():
-            region_count[k] = sum(1 for s in bot.guilds if not s.unavailable and f"{s.region}" == k)
-        verif_count = {}
-        for k in verif.keys():
-            verif_count[k] = sum(1 for s in bot.guilds if not s.unavailable and f"{s.verification_level}" == k)
-        features_count = {}
-        for k in features.keys():
-            features_count[k] = sum(
-                1 for s in bot.guilds if not s.unavailable and k in s.features)
+            role_count = sum([len(s.roles) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
+            emoji_count = sum([len(s.emojis) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
+            animated_emojis = sum([1 async for s in AsyncGen(self.bot.guilds) async for e in AsyncGen(s.emojis) if not s.unavailable and e.animated])
+            static_emojis = emoji_count-animated_emojis
+            if audio_cog:
+                active_music_players = len(lavalink.active_players())
+                total_music_players = len(lavalink.all_players())
+            online_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and m.status is discord.Status.online])
+            idle_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and m.status is discord.Status.idle])
+            do_not_disturb_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and m.status is discord.Status.do_not_disturb])
+            offline_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable and m.status is discord.Status.offline])
+            streaming_users = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) for a in m.activities if not s.unavailable and a.type is discord.ActivityType.streaming])
+            online_users = online_users - streaming_users
+            idle_users = idle_users - streaming_users
+            do_not_disturb_users = do_not_disturb_users - streaming_users
+            offline_users = offline_users - streaming_users
+            humans = set([m.id async for s in AsyncGen(self.bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable if not m.bot])
+            bots = unique_user - humans
+            discord_latency = int(round(bot.latency * 1000))
+            shards = bot.shard_count
+            online_stats = {
+                _("Humans: "): len(humans),
+                _(" • Bots: "): len(bots),
+                "\N{LARGE GREEN CIRCLE}": len(online_users),
+                "\N{LARGE ORANGE CIRCLE}": len(idle_users),
+                "\N{LARGE RED CIRCLE}": len(do_not_disturb_users),
+                "\N{MEDIUM WHITE CIRCLE}": len(offline_users),
+                "\N{LARGE PURPLE CIRCLE}": len(streaming_users),
+            }
+            vc_regions = {
+                "vip-us-east": _("__VIP__ US East ") + "\U0001F1FA\U0001F1F8",
+                "vip-us-west": _("__VIP__ US West ") + "\U0001F1FA\U0001F1F8",
+                "vip-amsterdam": _("__VIP__ Amsterdam ") + "\U0001F1F3\U0001F1F1",
+                "eu-west": _("EU West ") + "\U0001F1EA\U0001F1FA",
+                "eu-central": _("EU Central ") + "\U0001F1EA\U0001F1FA",
+                "europe": _("Europe ") + "\U0001F1EA\U0001F1FA",
+                "london": _("London ") + "\U0001F1EC\U0001F1E7",
+                "frankfurt": _("Frankfurt ") + "\U0001F1E9\U0001F1EA",
+                "amsterdam": _("Amsterdam ") + "\U0001F1F3\U0001F1F1",
+                "us-west": _("US West ") + "\U0001F1FA\U0001F1F8",
+                "us-east": _("US East ") + "\U0001F1FA\U0001F1F8",
+                "us-south": _("US South ") + "\U0001F1FA\U0001F1F8",
+                "us-central": _("US Central ") + "\U0001F1FA\U0001F1F8",
+                "singapore": _("Singapore ") + "\U0001F1F8\U0001F1EC",
+                "sydney": _("Sydney ") + "\U0001F1E6\U0001F1FA",
+                "brazil": _("Brazil ") + "\U0001F1E7\U0001F1F7",
+                "hongkong": _("Hong Kong ") + "\U0001F1ED\U0001F1F0",
+                "russia": _("Russia ") + "\U0001F1F7\U0001F1FA",
+                "japan": _("Japan ") + "\U0001F1EF\U0001F1F5",
+                "southafrica": _("South Africa ") + "\U0001F1FF\U0001F1E6",
+                "india": _("India ") + "\U0001F1EE\U0001F1F3",
+                "dubai": _("Dubai ") + "\U0001F1E6\U0001F1EA",
+                "south-korea": _("South Korea ") + "\U0001f1f0\U0001f1f7",
+            }
+            verif = {
+                "none": _("None"),
+                "low": _("Low"),
+                "medium": _("Medium"),
+                "high": _("High"),
+                "extreme": _("Extreme"),
+            }
+            features = {
+                "PARTNERED": _("Partnered"),
+                "VERIFIED": _("Verified"),
+                "DISCOVERABLE": _("Server Discovery"),
+                "FEATURABLE": _("Featurable"),
+                "PUBLIC": _("Public"),
+                "PUBLIC_DISABLED": _("Public disabled"),
+                "INVITE_SPLASH": _("Splash Invite"),
+                "VIP_REGIONS": _("VIP Voice Servers"),
+                "VANITY_URL": _("Vanity URL"),
+                "MORE_EMOJI": _("More Emojis"),
+                "COMMERCE": _("Commerce"),
+                "NEWS": _("News Channels"),
+                "ANIMATED_ICON": _("Animated Icon"),
+                "BANNER": _("Banner Image"),
+                "MEMBER_LIST_DISABLED": _("Member list disabled"),
+            }
+            region_count = {}
+            for k in vc_regions.keys():
+                region_count[k] = sum([1 async for s in AsyncGen(self.bot.guilds) if not s.unavailable and f"{s.region}" == k])
+            verif_count = {}
+            for k in verif.keys():
+                verif_count[k] = sum([1 async for s in AsyncGen(self.bot.guilds) if not s.unavailable and f"{s.verification_level}" == k])
+            features_count = {}
+            for k in features.keys():
+                features_count[k] = sum(
+                    [1 async for s in AsyncGen(self.bot.guilds) if not s.unavailable and k in s.features])
 
         data = discord.Embed(
             colour=await ctx.embed_colour(),
