@@ -27,7 +27,7 @@ class AsyncGen(AsyncIterable):
             raise StopAsyncIteration
         i = self.content[self.i]
         self.i += 1
-        if self.i % 1000 == 0:
+        if self.i % 500 == 0:
             await asyncio.sleep(self.delay)
         return i
 
