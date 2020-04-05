@@ -13,10 +13,11 @@ _ = lambda s: s
 class AsyncGen(AsyncIterable):
     """Yield entry every `delay` seconds."""
 
-    def __init__(self, contents: Sequence, delay: float = 0.0):
+    def __init__(self, contents: Sequence, delay: float = 0.0, steps: int = 500):
         self.delay = delay
         self.content = contents
         self.i = 0
+        self.steps = steps
         self.to = len(contents)
 
     def __aiter__(self):
@@ -27,7 +28,7 @@ class AsyncGen(AsyncIterable):
             raise StopAsyncIteration
         i = self.content[self.i]
         self.i += 1
-        if self.i % 500 == 0:
+        if self.i % self.steps == 0:
             await asyncio.sleep(self.delay)
         return i
 
@@ -46,7 +47,6 @@ class Stats(commands.Cog):
         Default to False.
         """
         bot = ctx.bot
-        print(123)
         async with ctx.typing():
             audio_cog = bot.get_cog("Audio")
             guild_count = len(bot.guilds)
