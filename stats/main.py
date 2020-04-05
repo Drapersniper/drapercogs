@@ -210,7 +210,7 @@ class Stats(commands.Cog):
             name=_("Channels:"),
             value=_(
                 "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
-                "\N{BOOKMARK TABS} Categories: {categories}"
+                "\N{BOOKMARK TABS} Categories: {categories}\n"
                 "\N{SPEECH BALLOON} Text: {text}\n"
                 "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
