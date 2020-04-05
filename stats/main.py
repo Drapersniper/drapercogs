@@ -190,7 +190,8 @@ class Stats(commands.Cog):
         )
         region_data = ""
         for r, value in region_count.items():
-            region_data += f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
+            if value:
+                region_data += f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
         data.add_field(
             name=_("Regions:"),
             value=region_data
@@ -198,14 +199,16 @@ class Stats(commands.Cog):
 
         verif_data = ""
         for r, value in verif_count.items():
-            verif_data += f"{bold(humanize_number(value))} - {verif.get(r)}\n"
+            if value:
+                verif_data += f"{bold(humanize_number(value))} - {verif.get(r)}\n"
         data.add_field(
             name=_("Server Verification:"),
             value=verif_data
         )
         features_data = ""
         for r, value in features_count.items():
-            features_data += f"{bold(humanize_number(value))} - {features.get(r)}\n"
+            if value:
+                features_data += f"{bold(humanize_number(value))} - {features.get(r)}\n"
         data.add_field(
             name=_("Features:"),
             value=features_data
