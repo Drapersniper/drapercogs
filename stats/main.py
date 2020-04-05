@@ -92,9 +92,6 @@ class Stats(commands.Cog):
                 "\N{LARGE PURPLE CIRCLE}": len(streaming_users),
             }
             vc_regions = {
-                "vip-us-east": _("__VIP__ US East ") + "\U0001F1FA\U0001F1F8",
-                "vip-us-west": _("__VIP__ US West ") + "\U0001F1FA\U0001F1F8",
-                "vip-amsterdam": _("__VIP__ Amsterdam ") + "\U0001F1F3\U0001F1F1",
                 "eu-west": _("EU West ") + "\U0001F1EA\U0001F1FA",
                 "eu-central": _("EU Central ") + "\U0001F1EA\U0001F1FA",
                 "europe": _("Europe ") + "\U0001F1EA\U0001F1FA",
