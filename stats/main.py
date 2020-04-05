@@ -1,10 +1,11 @@
 import asyncio
+import datetime
 from typing import AsyncIterable, Sequence
 
 import discord
 from redbot.core import commands
 from redbot.core.bot import Red
-from redbot.core.utils.chat_formatting import bold, humanize_number
+from redbot.core.utils.chat_formatting import bold, humanize_number, humanize_timedelta
 import lavalink
 
 _ = lambda s: s
@@ -164,10 +165,17 @@ class Stats(commands.Cog):
             for k in features.keys():
                 features_count[k] = sum(
                     [1 async for s in AsyncGen(self.bot.guilds) if not s.unavailable and k in s.features])
-
+        since = self.bot.uptime.strftime("%Y-%m-%d %H:%M:%S")
+        delta = datetime.datetime.utcnow() - self.bot.uptime
+        uptime_str = humanize_timedelta(timedelta=delta) or _("Less than one second")
+        description = _("Uptime: **{time_quantity}** (since {timestamp} UTC)").format(
+                time_quantity=uptime_str, timestamp=since
+            )
         data = discord.Embed(
+            description=description,
             colour=await ctx.embed_colour(),
         )
+
         data.set_author(
             name=str(ctx.me),
             icon_url=ctx.me.avatar_url
