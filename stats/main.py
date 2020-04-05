@@ -55,7 +55,7 @@ class Stats(commands.Cog):
             guild_text_channel_count = sum([len(s.text_channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
             guild_voice_channel_count = sum([len(s.voice_channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
             user_voice_channel_count = sum([len(c.members) async for s in AsyncGen(self.bot.guilds) async for c in AsyncGen(s.voice_channels) if not s.unavailable])
-            user_voice_channel_with_me_count = sum([len(c.members) async for s in AsyncGen(self.bot.guilds) async for c in AsyncGen(s.voice_channels) if not s.unavailable and s.me in c.members])
+            user_voice_channel_with_me_count = sum([len(c.members) - 1 async for s in AsyncGen(self.bot.guilds) async for c in AsyncGen(s.voice_channels) if not s.unavailable and s.me in c.members])
 
             boosted_servers = len(set([s.id async for s in AsyncGen(self.bot.guilds) if not s.unavailable and s.premium_tier != 0]))
             tier_3_count = len(set([s.id async for s in AsyncGen(self.bot.guilds) if not s.unavailable and s.premium_tier == 3]))
