@@ -51,9 +51,9 @@ class Stats(commands.Cog):
             audio_cog = bot.get_cog("Audio")
             guild_count = len(bot.guilds)
             unique_user = set([m.id async for s in AsyncGen(bot.guilds) async for m in AsyncGen(s.members) if not s.unavailable])
-            large_guilds = set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and s.large])
-            not_chunked_guilds = set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and not s.chunked])
-            unavaliable_guilds = set([s.id async for s in AsyncGen(bot.guilds) if s.unavailable])
+            large_guilds = len(set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and s.large]))
+            not_chunked_guilds = len(set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and not s.chunked]))
+            unavaliable_guilds = len(set([s.id async for s in AsyncGen(bot.guilds) if s.unavailable]))
 
             channel_categories_count = sum([len(s.categories) async for s in AsyncGen(self.bot.guilds) if not s.unavailable])
 
