@@ -391,19 +391,6 @@ class Stats(commands.Cog):
                 static_emojis=bold(humanize_number(counter["static_emojis"])),
             ),
         )
-        if audio_cog:
-            data.add_field(
-                name=_("Audio Stats:"),
-                value=_(
-                    "Total Players: {total}\n"
-                    "Active Players: {active}\n"
-                    "Inactive Players: {inactive}"
-                ).format(
-                    total=bold(humanize_number(counter["total_music_players"])),
-                    active=bold(humanize_number(counter["active_music_players"])),
-                    inactive=bold(humanize_number(counter["inactive_music_players"])),
-                ),
-            )
         data.add_field(name=_("Members:"), value=member_msg)
 
         member_msg_web = ""
@@ -434,10 +421,10 @@ class Stats(commands.Cog):
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
+        data.add_field(name=_("Bot Statuses:"), value=member_msg_bots)
         data.add_field(name=_("Desktop Statuses:"), value=member_msg_desktop)
         data.add_field(name=_("Web Statuses:"), value=member_msg_web)
         data.add_field(name=_("Mobile Statuses:"), value=member_msg_mobile)
-        data.add_field(name=_("Bot Statuses:"), value=member_msg_bots)
         shard_latencies = ""
         count = 1
         for shard_id, latency in self.bot.latencies:
@@ -459,4 +446,17 @@ class Stats(commands.Cog):
                 unloaded=bold(humanize_number(len(unloaded))),
             ),
         )
+        if audio_cog:
+            data.add_field(
+                name=_("Audio Stats:"),
+                value=_(
+                    "Total Players: {total}\n"
+                    "Active Players: {active}\n"
+                    "Inactive Players: {inactive}"
+                ).format(
+                    total=bold(humanize_number(counter["total_music_players"])),
+                    active=bold(humanize_number(counter["active_music_players"])),
+                    inactive=bold(humanize_number(counter["inactive_music_players"])),
+                ),
+            )
         await ctx.send(embed=data)
