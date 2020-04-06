@@ -166,7 +166,7 @@ class Stats(commands.Cog):
                         counter["static_emojis"] += 1
 
                 async for m in AsyncGen(s.members):
-                    if not not m.bot:
+                    if m.bot:
                         temp_data["bots"].add(m.id)
                     else:
                         temp_data["humans"].add(m.id)
