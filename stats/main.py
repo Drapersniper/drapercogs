@@ -167,9 +167,9 @@ class Stats(commands.Cog):
 
                 async for m in AsyncGen(s.members):
                     if not not m.bot:
-                        temp_data["humans"].add(m.id)
-                    else:
                         temp_data["bots"].add(m.id)
+                    else:
+                        temp_data["humans"].add(m.id)
 
                     temp_data["unique_user"].add(m.id)
                     if m.is_on_mobile():
@@ -181,34 +181,60 @@ class Stats(commands.Cog):
                             temp_data["streaming_users"].add(m.id)
                             if m.bot:
                                 temp_data["streaming_bots"].add(m.id)
+                            else:
+                                temp_data["streaming_human"].add(m.id)
                             streaming = True
                         elif a.type is discord.ActivityType.playing:
                             temp_data["gaming_users"].add(m.id)
+                            if m.bot:
+                                temp_data["gaming_bots"].add(m.id)
+                            else:
+                                temp_data["gaming_human"].add(m.id)
 
                         if a.type is discord.ActivityType.listening:
                             temp_data["listening_users"].add(m.id)
+                            if m.bot:
+                                temp_data["listening_bots"].add(m.id)
+                            else:
+                                temp_data["listening_human"].add(m.id)
                         if a.type is discord.ActivityType.watching:
                             temp_data["watching_users"].add(m.id)
+                            if m.bot:
+                                temp_data["watching_bots"].add(m.id)
+                            else:
+                                temp_data["watching_human"].add(m.id)
                         if a.type is discord.ActivityType.custom:
                             temp_data["custom_users"].add(m.id)
+                            if m.bot:
+                                temp_data["custom_bots"].add(m.id)
+                            else:
+                                temp_data["custom_human"].add(m.id)
 
                     if not streaming:
                         if m.status is discord.Status.online:
                             temp_data["online_users"].add(m.id)
                             if m.bot:
                                 temp_data["online_bots"].add(m.id)
+                            else:
+                                temp_data["online_human"].add(m.id)
                         elif m.status is discord.Status.idle:
                             temp_data["idle_users"].add(m.id)
                             if m.bot:
                                 temp_data["idle_bots"].add(m.id)
+                            else:
+                                temp_data["idle_human"].add(m.id)
                         elif m.status is discord.Status.do_not_disturb:
                             temp_data["do_not_disturb_users"].add(m.id)
                             if m.bot:
                                 temp_data["do_not_disturb_bots"].add(m.id)
+                            else:
+                                temp_data["do_not_disturb_human"].add(m.id)
                         elif m.status is discord.Status.offline:
                             temp_data["offline_users"].add(m.id)
                             if m.bot:
                                 temp_data["offline_bots"].add(m.id)
+                            else:
+                                temp_data["offline_human"].add(m.id)
 
                     if m.mobile_status is discord.Status.online:
                         temp_data["mobile_online_users"].add(m.id)
@@ -277,6 +303,23 @@ class Stats(commands.Cog):
                 "\N{LARGE RED CIRCLE}": counter["do_not_disturb_bots"],
                 "\N{MEDIUM WHITE CIRCLE}": counter["offline_bots"],
                 "\N{LARGE PURPLE CIRCLE}": counter["streaming_bots"],
+                "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter["streaming_bots"],
+                "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": counter["gaming_bots"],
+                "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter["listening_bots"],
+                "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter["watching_bots"],
+                _("Custom"): counter["custom_bots"],
+            }
+            online_stats_humans = {
+                "\N{LARGE GREEN CIRCLE}": counter["online_human"],
+                "\N{LARGE ORANGE CIRCLE}": counter["idle_human"],
+                "\N{LARGE RED CIRCLE}": counter["do_not_disturb_human"],
+                "\N{MEDIUM WHITE CIRCLE}": counter["offline_human"],
+                "\N{LARGE PURPLE CIRCLE}": counter["streaming_human"],
+                "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter["streaming_human"],
+                "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": counter["gaming_human"],
+                "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter["listening_human"],
+                "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter["watching_human"],
+                _("Custom"): counter["custom_human"],
             }
 
         since = self.bot.uptime.strftime("%Y-%m-%d %H:%M:%S")
@@ -343,13 +386,13 @@ class Stats(commands.Cog):
         data.add_field(
             name=_("Channels:"),
             value=_(
-                "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
+                "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total Channels: {total}\n"
                 "\N{BOOKMARK TABS} Categories: {categories}\n"
-                "\N{SPEECH BALLOON} Text: {text}\n"
+                "\N{SPEECH BALLOON} Text Channels: {text}\n"
                 "\N{MONEY BAG} Store Channels: {store}\n"
                 "\N{NO ONE UNDER EIGHTEEN SYMBOL} NSFW Channels: {nsfw}\n"
                 "\N{NEWSPAPER} News Channels: {news}\n"
-                "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
+                "\N{SPEAKER WITH THREE SOUND WAVES} Voice Channels: {voice}\n"
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
                 "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
@@ -395,32 +438,40 @@ class Stats(commands.Cog):
 
         member_msg_web = ""
         count = 1
-        for emoji, value in sorted(online_stats_web.items(), reverse=False):
+        for emoji, value in online_stats_web.items():
             member_msg_web += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
         member_msg_mobile = ""
         count = 1
-        for emoji, value in sorted(online_stats_mobile.items(), reverse=False):
+        for emoji, value in online_stats_mobile.items():
             member_msg_mobile += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
         member_msg_desktop = ""
         count = 1
-        for emoji, value in sorted(online_stats_desktop.items(), reverse=False):
+        for emoji, value in online_stats_desktop.items():
             member_msg_desktop += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
         member_msg_bots = ""
         count = 1
-        for emoji, value in sorted(online_stats_bots.items(), reverse=False):
+        for emoji, value in online_stats_bots.items():
             member_msg_bots += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
+        member_msg_humans = ""
+        count = 1
+        for emoji, value in online_stats_humans.items():
+            member_msg_humans += f"{emoji} {bold(humanize_number(value))} " + (
+                "\n" if count % 2 == 0 else ""
+            )
+            count += 1
+        data.add_field(name=_("Human Statuses:"), value=member_msg_humans)
         data.add_field(name=_("Bot Statuses:"), value=member_msg_bots)
         data.add_field(name=_("Desktop Statuses:"), value=member_msg_desktop)
         data.add_field(name=_("Web Statuses:"), value=member_msg_web)
@@ -432,7 +483,6 @@ class Stats(commands.Cog):
                 f"Shard {shard_id + 1} - {bold(humanize_number(int(latency*1000)))}ms\n"
             )
             count += 1
-        data.add_field(name=_("Shard Latencies:"), value=shard_latencies)
         loaded = set(ctx.bot.extensions.keys())
         all_cogs = set(await self.bot._cog_mgr.available_modules())
         unloaded = all_cogs - loaded
@@ -459,4 +509,5 @@ class Stats(commands.Cog):
                     inactive=bold(humanize_number(counter["inactive_music_players"])),
                 ),
             )
+        data.add_field(name=_("Shard Latencies:"), value=shard_latencies)
         await ctx.send(embed=data)
