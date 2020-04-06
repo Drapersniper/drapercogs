@@ -15,7 +15,7 @@ _ = lambda s: s
 class AsyncGen(AsyncIterable):
     """Yield entry every `delay` seconds."""
 
-    def __init__(self, contents: Sequence, delay: float = 0.0, steps: int = 100):
+    def __init__(self, contents: Sequence, delay: float = 0.0, steps: int = 10):
         self.delay = delay
         self.content = contents
         self.i = 0
