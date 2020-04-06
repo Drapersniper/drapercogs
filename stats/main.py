@@ -614,7 +614,7 @@ class Stats(commands.Cog):
                 "\N{NEWSPAPER} News Channels: {news}\n"
                 "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
-                "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC on Mobile: {users_mobile}\n"
+                "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
                 "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
             ).format(
                 store=bold(humanize_number(store_text_channel_count)),
