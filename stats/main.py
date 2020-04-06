@@ -609,7 +609,7 @@ class Stats(commands.Cog):
                 "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
                 "\N{BOOKMARK TABS} Categories: {categories}\n"
                 "\N{SPEECH BALLOON} Text: {text}\n"
-                "\N{MONEY WITH WINGS} Store Channels: {store}\n"
+                "\N{MONEY BAG} Store Channels: {store}\n"
                 "\N{NO ONE UNDER EIGHTEEN SYMBOL} NSFW Channels: {nsfw}\n"
                 "\N{NEWSPAPER} News Channels: {news}\n"
                 "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
