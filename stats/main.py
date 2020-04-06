@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from collections import Counter, defaultdict
 from typing import AsyncIterable, Sequence
 
 import discord
@@ -48,441 +49,7 @@ class Stats(commands.Cog):
         `details`: Shows more information when set to `True`.
         Default to False.
         """
-        bot = ctx.bot
         async with ctx.typing():
-            audio_cog = bot.get_cog("Audio")
-            guild_count = len(bot.guilds)
-            unique_user = set(
-                [
-                    m.id
-                    async for s in AsyncGen(bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable
-                ]
-            )
-            large_guilds = len(
-                set([s.id async for s in AsyncGen(bot.guilds) if not s.unavailable and s.large])
-            )
-            not_chunked_guilds = len(
-                set(
-                    [
-                        s.id
-                        async for s in AsyncGen(bot.guilds)
-                        if not s.unavailable and not s.chunked
-                    ]
-                )
-            )
-            unavaliable_guilds = len(
-                set([s.id async for s in AsyncGen(bot.guilds) if s.unavailable])
-            )
-
-            channel_categories_count = sum(
-                [len(s.categories) async for s in AsyncGen(self.bot.guilds) if not s.unavailable]
-            )
-
-            guild_channel_count = sum(
-                [len(s.channels) async for s in AsyncGen(self.bot.guilds) if not s.unavailable]
-            )
-            guild_text_channel_count = sum(
-                [
-                    len(s.text_channels)
-                    async for s in AsyncGen(self.bot.guilds)
-                    if not s.unavailable
-                ]
-            )
-            nsfw_text_channel_count = sum(
-                [
-                    1
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for c in AsyncGen(s.text_channels)
-                    if not s.unavailable and c.is_nsfw()
-                ]
-            )
-            news_text_channel_count = sum(
-                [
-                    1
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for c in AsyncGen(s.text_channels)
-                    if not s.unavailable and c.is_news()
-                ]
-            )
-            store_text_channel_count = sum(
-                [
-                    1
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for c in AsyncGen(s.channels)
-                    if not s.unavailable and c.type is discord.ChannelType.store
-                ]
-            )
-            guild_voice_channel_count = sum(
-                [
-                    len(s.voice_channels)
-                    async for s in AsyncGen(self.bot.guilds)
-                    if not s.unavailable
-                ]
-            )
-            user_voice_channel_count = sum(
-                [
-                    len(c.members)
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for c in AsyncGen(s.voice_channels)
-                    if not s.unavailable
-                ]
-            )
-            user_voice_channel_mobile_count = sum(
-                [
-                    1
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for c in AsyncGen(s.voice_channels)
-                    async for m in AsyncGen(c.members)
-                    if not s.unavailable
-                    if m.is_on_mobile()
-                ]
-            )
-            user_voice_channel_with_me_count = sum(
-                [
-                    len(c.members) - 1
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for c in AsyncGen(s.voice_channels)
-                    if not s.unavailable and s.me in c.members
-                ]
-            )
-
-            boosted_servers = len(
-                set(
-                    [
-                        s.id
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and s.premium_tier != 0
-                    ]
-                )
-            )
-            tier_3_count = len(
-                set(
-                    [
-                        s.id
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and s.premium_tier == 3
-                    ]
-                )
-            )
-            tier_1_count = len(
-                set(
-                    [
-                        s.id
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and s.premium_tier == 1
-                    ]
-                )
-            )
-            tier_2_count = len(
-                set(
-                    [
-                        s.id
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and s.premium_tier == 2
-                    ]
-                )
-            )
-
-            role_count = sum(
-                [len(s.roles) async for s in AsyncGen(self.bot.guilds) if not s.unavailable]
-            )
-            emoji_count = sum(
-                [len(s.emojis) async for s in AsyncGen(self.bot.guilds) if not s.unavailable]
-            )
-            animated_emojis = sum(
-                [
-                    1
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for e in AsyncGen(s.emojis)
-                    if not s.unavailable and e.animated
-                ]
-            )
-            static_emojis = emoji_count - animated_emojis
-            if audio_cog:
-                active_music_players = len(lavalink.active_players())
-                total_music_players = len(lavalink.all_players())
-            online_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.status is discord.Status.online
-                ]
-            )
-            idle_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.status is discord.Status.idle
-                ]
-            )
-            do_not_disturb_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.status is discord.Status.do_not_disturb
-                ]
-            )
-            offline_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.status is discord.Status.offline
-                ]
-            )
-            streaming_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    for a in m.activities
-                    if not s.unavailable and a.type is discord.ActivityType.streaming
-                ]
-            )
-            mobile_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.is_on_mobile()
-                ]
-            )
-            online_users = online_users - streaming_users
-            idle_users = idle_users - streaming_users
-            do_not_disturb_users = do_not_disturb_users - streaming_users
-            offline_users = offline_users - streaming_users
-            gaming_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable
-                    and discord.ActivityType.playing in [a.type for a in m.activities if a]
-                ]
-            )
-            listening_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable
-                    and discord.ActivityType.listening in [a.type for a in m.activities if a]
-                ]
-            )
-            watching_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable
-                    and discord.ActivityType.watching in [a.type for a in m.activities if a]
-                ]
-            )
-            custom_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable
-                    and discord.ActivityType.custom in [a.type for a in m.activities if a]
-                ]
-            )
-
-            humans = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable
-                    if not m.bot
-                ]
-            )
-            bots = unique_user - humans
-            discord_latency = int(round(bot.latency * 1000))
-            shards = bot.shard_count
-
-            mobile_online_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.mobile_status is discord.Status.online
-                ]
-            )
-            mobile_idle_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.mobile_status is discord.Status.idle
-                ]
-            )
-            mobile_do_not_disturb_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.mobile_status is discord.Status.do_not_disturb
-                ]
-            )
-            mobile_offline_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.mobile_status is discord.Status.offline
-                ]
-            )
-            desktop_online_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.desktop_status is discord.Status.online
-                ]
-            )
-            desktop_idle_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.desktop_status is discord.Status.idle
-                ]
-            )
-            desktop_do_not_disturb_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.desktop_status is discord.Status.do_not_disturb
-                ]
-            )
-            desktop_offline_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.desktop_status is discord.Status.offline
-                ]
-            )
-            web_online_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.web_status is discord.Status.online
-                ]
-            )
-            web_idle_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.web_status is discord.Status.idle
-                ]
-            )
-            web_do_not_disturb_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.web_status is discord.Status.do_not_disturb
-                ]
-            )
-            web_offline_users = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.web_status is discord.Status.offline
-                ]
-            )
-
-            online_bots = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.bot and m.status is discord.Status.online
-                ]
-            )
-            idle_bots = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.bot and m.status is discord.Status.idle
-                ]
-            )
-            do_not_disturb_bots = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.bot and m.status is discord.Status.do_not_disturb
-                ]
-            )
-            offline_bots = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    if not s.unavailable and m.bot and m.status is discord.Status.offline
-                ]
-            )
-            streaming_bots = set(
-                [
-                    m.id
-                    async for s in AsyncGen(self.bot.guilds)
-                    async for m in AsyncGen(s.members)
-                    for a in m.activities
-                    if not s.unavailable and m.bot and a.type is discord.ActivityType.streaming
-                ]
-            )
-
-            online_stats = {
-                "\N{LARGE GREEN CIRCLE}": len(online_users),
-                "\N{LARGE ORANGE CIRCLE}": len(idle_users),
-                "\N{LARGE RED CIRCLE}": len(do_not_disturb_users),
-                "\N{MEDIUM WHITE CIRCLE}": len(offline_users),
-                "\N{LARGE PURPLE CIRCLE}": len(streaming_users),
-                "\N{MOBILE PHONE}": len(mobile_users),
-                "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": len(streaming_users),
-                "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": len(gaming_users),
-                "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": len(listening_users),
-                "\N{TELEVISION}\N{VARIATION SELECTOR-16}": len(watching_users),
-                _("Custom"): len(custom_users),
-            }
-            online_stats_web = {
-                "\N{LARGE GREEN CIRCLE}": len(web_online_users),
-                "\N{LARGE ORANGE CIRCLE}": len(web_idle_users),
-                "\N{LARGE RED CIRCLE}": len(web_do_not_disturb_users),
-                "\N{MEDIUM WHITE CIRCLE}": len(web_offline_users),
-            }
-            online_stats_mobile = {
-                "\N{LARGE GREEN CIRCLE}": len(mobile_online_users),
-                "\N{LARGE ORANGE CIRCLE}": len(mobile_idle_users),
-                "\N{LARGE RED CIRCLE}": len(mobile_do_not_disturb_users),
-                "\N{MEDIUM WHITE CIRCLE}": len(mobile_offline_users),
-            }
-            online_stats_desktop = {
-                "\N{LARGE GREEN CIRCLE}": len(desktop_online_users),
-                "\N{LARGE ORANGE CIRCLE}": len(desktop_idle_users),
-                "\N{LARGE RED CIRCLE}": len(desktop_do_not_disturb_users),
-                "\N{MEDIUM WHITE CIRCLE}": len(desktop_offline_users),
-            }
-            online_stats_bots = {
-                "\N{LARGE GREEN CIRCLE}": len(online_bots),
-                "\N{LARGE ORANGE CIRCLE}": len(idle_bots),
-                "\N{LARGE RED CIRCLE}": len(do_not_disturb_bots),
-                "\N{MEDIUM WHITE CIRCLE}": len(offline_bots),
-                "\N{LARGE PURPLE CIRCLE}": len(streaming_bots),
-            }
             vc_regions = {
                 "eu-west": _("EU West ") + "\U0001F1EA\U0001F1FA",
                 "eu-central": _("EU Central ") + "\U0001F1EA\U0001F1FA",
@@ -529,33 +96,189 @@ class Stats(commands.Cog):
                 "PUBLIC_DISABLED": _("Public disabled"),
                 "MEMBER_LIST_DISABLED": _("Member list disabled"),
             }
-            region_count = {}
-            for k in vc_regions.keys():
-                region_count[k] = sum(
-                    [
-                        1
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and f"{s.region}" == k
-                    ]
-                )
-            verif_count = {}
-            for k in verif.keys():
-                verif_count[k] = sum(
-                    [
-                        1
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and f"{s.verification_level}" == k
-                    ]
-                )
-            features_count = {}
-            for k in features.keys():
-                features_count[k] = sum(
-                    [
-                        1
-                        async for s in AsyncGen(self.bot.guilds)
-                        if not s.unavailable and k in s.features
-                    ]
-                )
+            audio_cog = self.bot.get_cog("Audio")
+            counter = Counter()
+            counter["guild_count"] = len(self.bot.guilds)
+            counter["active_music_players"] = len(lavalink.active_players())
+            counter["total_music_players"] = len(lavalink.all_players())
+            counter["inactive_music_players"] = counter["total_music_players"] - counter["active_music_players"]
+
+            counter["discord_latency"] = int(round(self.bot.latency * 1000))
+            counter["shards"] = self.bot.shard_count
+            temp_data = defaultdict(set)
+            region_count = Counter()
+            verif_count = Counter()
+            features_count = Counter()
+            async for s in AsyncGen(self.bot.guilds):
+                if s.unavailable:
+                    temp_data["unavailable"].add(s.id)
+                    continue
+
+                async for f in AsyncGen(s.features):
+                    features_count[f] += 1
+
+                verif_count[f"{s.verification_level}"] += 1
+                region_count[f"{s.region}"] += 1
+                counter["channel_categories_count"] += len(s.categories)
+                counter["guild_channel_count"] += len(s.channels)
+                counter["guild_text_channel_count"] += len(s.text_channels)
+                counter["guild_voice_channel_count"] += len(s.voice_channels)
+                counter["role_count"] += len(s.roles)
+                counter["emoji_count"] += len(s.emojis)
+
+                if s.large:
+                    temp_data["large_guilds"].add(s.id)
+                if not s.chunked:
+                    temp_data["not_chunked_guilds"].add(s.id)
+                if s.premium_tier != 0:
+                    temp_data["boosted_servers"].add(s.id)
+
+
+                if s.premium_tier == 1:
+                    temp_data["tier_1_count"].add(s.id)
+                elif s.premium_tier == 2:
+                    temp_data["tier_2_count"].add(s.id)
+                elif s.premium_tier == 3:
+                    temp_data["tier_3_count"].add(s.id)
+
+                async for c in AsyncGen(s.text_channels):
+                    if c.is_nsfw():
+                        temp_data["nsfw_text_channel_count"].add(c.id)
+                    if c.is_news():
+                        temp_data["news_text_channel_count"].add(c.id)
+                    if c.type is discord.ChannelType.store:
+                        temp_data["store_text_channel_count"].add(c.id)
+
+                async for vc in AsyncGen(s.voice_channels):
+                    counter["user_voice_channel_count"] += len(vc.members)
+
+                    if s.me in vc.members:
+                        counter["user_voice_channel_with_me_count"] += len(vc.members) - 1
+
+                    async for vcm in AsyncGen(vc.members):
+                        if vcm.is_on_mobile():
+                            temp_data["user_voice_channel_mobile_count"].add(vcm.id)
+
+                async for e in AsyncGen(s.emojis):
+                    if e.animated:
+                        counter["animated_emojis"] += 1
+                    else:
+                        counter["static_emojis"] += 1
+
+                async for m in AsyncGen(s.members):
+                    if not not m.bot:
+                        temp_data["humans"].add(m.id)
+                    else:
+                        temp_data["bots"].add(m.id)
+
+                    temp_data["unique_user"].add(m.id)
+                    if m.is_on_mobile():
+                        temp_data["mobile_users"].add(m.id)
+                    streaming = False
+
+                    async for a in AsyncGen(m.activities):
+                        if a.type is discord.ActivityType.streaming:
+                            temp_data["streaming_users"].add(m.id)
+                            if m.bot:
+                                temp_data["streaming_bots"].add(m.id)
+                            streaming = True
+                        elif a.type is discord.ActivityType.playing:
+                            temp_data["gaming_users"].add(m.id)
+
+                        if a.type is discord.ActivityType.listening:
+                            temp_data["listening_users"].add(m.id)
+                        if a.type is discord.ActivityType.watching:
+                            temp_data["watching_users"].add(m.id)
+                        if a.type is discord.ActivityType.custom:
+                            temp_data["watching_users"].add(m.id)
+
+                    if not streaming:
+                        if m.status is discord.Status.online:
+                            temp_data["online_users"].add(m.id)
+                            if m.bot:
+                                temp_data["online_bots"].add(m.id)
+                        elif m.status is discord.Status.idle:
+                            temp_data["idle_users"].add(m.id)
+                            if m.bot:
+                                temp_data["idle_bots"].add(m.id)
+                        elif m.status is discord.Status.do_not_disturb:
+                            temp_data["do_not_disturb_users"].add(m.id)
+                            if m.bot:
+                                temp_data["do_not_disturb_bots"].add(m.id)
+                        elif m.status is discord.Status.offline:
+                            temp_data["offline_users"].add(m.id)
+                            if m.bot:
+                                temp_data["offline_bots"].add(m.id)
+
+                    if m.mobile_status is discord.Status.online:
+                        temp_data["mobile_online_users"].add(m.id)
+                    elif m.mobile_status is discord.Status.idle:
+                        temp_data["mobile_idle_users"].add(m.id)
+                    elif m.mobile_status is discord.Status.do_not_disturb:
+                        temp_data["mobile_do_not_disturb_users"].add(m.id)
+                    elif m.mobile_status is discord.Status.offline:
+                        temp_data["mobile_offline_users"].add(m.id)
+
+                    if m.desktop_status is discord.Status.online:
+                        temp_data["desktop_online_users"].add(m.id)
+                    elif m.desktop_status is discord.Status.idle:
+                        temp_data["desktop_idle_users"].add(m.id)
+                    elif m.desktop_status is discord.Status.do_not_disturb:
+                        temp_data["desktop_do_not_disturb_users"].add(m.id)
+                    elif m.desktop_status is discord.Status.offline:
+                        temp_data["desktop_offline_users"].add(m.id)
+
+                    if m.web_status is discord.Status.online:
+                        temp_data["web_online_users"].add(m.id)
+                    elif m.web_status is discord.Status.idle:
+                        temp_data["web_idle_users"].add(m.id)
+                    elif m.web_status is discord.Status.do_not_disturb:
+                        temp_data["web_do_not_disturb_users"].add(m.id)
+                    elif m.web_status is discord.Status.offline:
+                        temp_data["web_offline_users"].add(m.id)
+
+            for key, value in temp_data.items():
+                counter[key] = len(value)
+
+            online_stats = {
+                "\N{LARGE GREEN CIRCLE}": counter["online_users"],
+                "\N{LARGE ORANGE CIRCLE}": counter["idle_users"],
+                "\N{LARGE RED CIRCLE}": counter["do_not_disturb_users"],
+                "\N{MEDIUM WHITE CIRCLE}": counter["offline_users"],
+                "\N{LARGE PURPLE CIRCLE}": counter["streaming_users"],
+                "\N{MOBILE PHONE}": counter["mobile_users"],
+                "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter["streaming_users"],
+                "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": counter["gaming_users"],
+                "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter["listening_users"],
+                "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter["watching_users"],
+                _("Custom"): counter["custom_users"],
+            }
+            online_stats_web = {
+                "\N{LARGE GREEN CIRCLE}": counter["web_online_users"],
+                "\N{LARGE ORANGE CIRCLE}": counter["web_idle_users"],
+                "\N{LARGE RED CIRCLE}": counter["web_do_not_disturb_users"],
+                "\N{MEDIUM WHITE CIRCLE}": counter["web_offline_users"],
+            }
+            online_stats_mobile = {
+                "\N{LARGE GREEN CIRCLE}": counter["mobile_online_users"],
+                "\N{LARGE ORANGE CIRCLE}": counter["mobile_idle_users"],
+                "\N{LARGE RED CIRCLE}": counter["mobile_do_not_disturb_users"],
+                "\N{MEDIUM WHITE CIRCLE}": counter["mobile_offline_users"],
+            }
+            online_stats_desktop = {
+                "\N{LARGE GREEN CIRCLE}": counter["desktop_online_users"],
+                "\N{LARGE ORANGE CIRCLE}": counter["desktop_idle_users"],
+                "\N{LARGE RED CIRCLE}": counter["desktop_do_not_disturb_users"],
+                "\N{MEDIUM WHITE CIRCLE}": counter["desktop_offline_users"],
+            }
+            online_stats_bots = {
+                "\N{LARGE GREEN CIRCLE}": counter["online_bots"],
+                "\N{LARGE ORANGE CIRCLE}": counter["idle_bots"],
+                "\N{LARGE RED CIRCLE}": counter["do_not_disturb_bots"],
+                "\N{MEDIUM WHITE CIRCLE}": counter["offline_bots"],
+                "\N{LARGE PURPLE CIRCLE}": counter["streaming_bots"],
+            }
+
         since = self.bot.uptime.strftime("%Y-%m-%d %H:%M:%S")
         delta = datetime.datetime.utcnow() - self.bot.uptime
         uptime_str = humanize_timedelta(timedelta=delta) or _("Less than one second")
@@ -568,10 +291,10 @@ class Stats(commands.Cog):
         member_msg = _(
             "Users online: {online}/{total_users}\nHumans: {humans}\nBots: {bots}\n"
         ).format(
-            online=bold(humanize_number(len(online_users))),
-            total_users=bold(humanize_number(len(unique_user))),
-            humans=bold(humanize_number(len(humans))),
-            bots=bold(humanize_number(len(bots))),
+            online=bold(humanize_number(counter["online_users"])),
+            total_users=bold(humanize_number(counter["unique_user"])),
+            humans=bold(humanize_number(counter["humans"])),
+            bots=bold(humanize_number(counter["bots"])),
         )
         count = 1
         for emoji, value in online_stats.items():
@@ -590,16 +313,16 @@ class Stats(commands.Cog):
                 "Unchunked servers: {chuncked}\n"
                 "Unavailable servers: {unavaliable}\n"
             ).format(
-                lat=bold(humanize_number(discord_latency)),
-                shards=bold(humanize_number(shards)),
-                total=bold(humanize_number(guild_count)),
-                large=bold(humanize_number(large_guilds)),
-                chuncked=bold(humanize_number(not_chunked_guilds)),
-                unavaliable=bold(humanize_number(unavaliable_guilds)),
+                lat=bold(humanize_number(counter["discord_latency"])),
+                shards=bold(humanize_number(counter["shards"])),
+                total=bold(humanize_number(counter["guild_count"])),
+                large=bold(humanize_number(counter["large_guilds"])),
+                chuncked=bold(humanize_number( counter["not_chunked_guilds"] )),
+                unavaliable=bold(humanize_number(counter["unavaliable_guilds"] )),
             ),
         )
         verif_data = ""
-        for r, value in verif_count.items():
+        for r, value in sorted(verif_count.items(), reverse=False):
             if value:
                 verif_data += f"{bold(humanize_number(value))} - {verif.get(r)}\n"
         data.add_field(name=_("Server Verification:"), value=verif_data)
@@ -617,26 +340,26 @@ class Stats(commands.Cog):
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
                 "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
             ).format(
-                store=bold(humanize_number(store_text_channel_count)),
-                nsfw=bold(humanize_number(nsfw_text_channel_count)),
-                news=bold(humanize_number(news_text_channel_count)),
-                users_mobile=bold(humanize_number(user_voice_channel_mobile_count)),
-                total=bold(humanize_number(guild_channel_count)),
-                text=bold(humanize_number(guild_text_channel_count)),
-                voice=bold(humanize_number(guild_voice_channel_count)),
-                users=bold(humanize_number(user_voice_channel_count)),
-                with_me=bold(humanize_number(user_voice_channel_with_me_count)),
-                categories=bold(humanize_number(channel_categories_count)),
+                store=bold(humanize_number(counter["store_text_channel_count"])),
+                nsfw=bold(humanize_number(counter["nsfw_text_channel_count"])),
+                news=bold(humanize_number(counter["news_text_channel_count"])),
+                users_mobile=bold(humanize_number(counter["user_voice_channel_mobile_count"])),
+                total=bold(humanize_number(counter["guild_channel_count"])),
+                text=bold(humanize_number(counter["guild_text_channel_count"])),
+                voice=bold(humanize_number(counter["guild_voice_channel_count"])),
+                users=bold(humanize_number(counter["user_voice_channel_count"])),
+                with_me=bold(humanize_number(counter["user_voice_channel_with_me_count"])),
+                categories=bold(humanize_number(counter["channel_categories_count"])),
             ),
         )
         region_data = ""
-        for r, value in region_count.items():
+        for r, value in sorted(region_count.items(), reverse=False):
             if value:
                 region_data += f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
         data.add_field(name=_("Regions:"), value=region_data)
 
         features_data = ""
-        for r, value in features_count.items():
+        for r, value in sorted(features_count.items(), reverse=False):
             if value:
                 features_data += f"{bold(humanize_number(value))} - {features.get(r)}\n"
         data.add_field(name=_("Features:"), value=features_data)
@@ -648,10 +371,10 @@ class Stats(commands.Cog):
                 "\N{DIGIT TWO}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {voice}\n"
                 "\N{DIGIT THREE}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {users}"
             ).format(
-                total=bold(humanize_number(boosted_servers)),
-                text=bold(humanize_number(tier_1_count)),
-                voice=bold(humanize_number(tier_2_count)),
-                users=bold(humanize_number(tier_3_count)),
+                total=bold(humanize_number(counter["boosted_servers"])),
+                text=bold(humanize_number(counter["tier_1_count"])),
+                voice=bold(humanize_number(counter["tier_2_count"])),
+                users=bold(humanize_number(counter["tier_3_count"])),
             ),
         )
         data.add_field(
@@ -662,10 +385,10 @@ class Stats(commands.Cog):
                 "Total Animated Emojis: {animated_emoji}\n"
                 "Total Static Emojis: {static_emojis}\n"
             ).format(
-                total=bold(humanize_number(role_count)),
-                emoji_count=bold(humanize_number(emoji_count)),
-                animated_emoji=bold(humanize_number(animated_emojis)),
-                static_emojis=bold(humanize_number(static_emojis)),
+                total=bold(humanize_number(counter["role_count"])),
+                emoji_count=bold(humanize_number(counter["emoji_count"])),
+                animated_emoji=bold(humanize_number(counter["animated_emojis"])),
+                static_emojis=bold(humanize_number(counter["static_emojis"])),
             ),
         )
         if audio_cog:
@@ -676,37 +399,37 @@ class Stats(commands.Cog):
                     "Active Players: {active}\n"
                     "Inactive Players: {inactive}"
                 ).format(
-                    total=bold(humanize_number(total_music_players)),
-                    active=bold(humanize_number(active_music_players)),
-                    inactive=bold(humanize_number(total_music_players - active_music_players)),
+                    total=bold(humanize_number(counter["total_music_players"])),
+                    active=bold(humanize_number(counter["active_music_players"])),
+                    inactive=bold(humanize_number(counter["inactive_music_players"])),
                 ),
             )
         data.add_field(name=_("Members:"), value=member_msg)
 
         member_msg_web = ""
         count = 1
-        for emoji, value in online_stats_web.items():
+        for emoji, value in sorted(online_stats_web.items(), reverse=False):
             member_msg_web += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
         member_msg_mobile = ""
         count = 1
-        for emoji, value in online_stats_mobile.items():
+        for emoji, value in sorted(online_stats_mobile.items(), reverse=False):
             member_msg_mobile += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
         member_msg_desktop = ""
         count = 1
-        for emoji, value in online_stats_desktop.items():
+        for emoji, value in sorted(online_stats_desktop.items(), reverse=False):
             member_msg_desktop += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
         member_msg_bots = ""
         count = 1
-        for emoji, value in online_stats_bots.items():
+        for emoji, value in sorted(online_stats_bots.items(), reverse=False):
             member_msg_bots += f"{emoji} {bold(humanize_number(value))} " + (
                 "\n" if count % 2 == 0 else ""
             )
@@ -736,5 +459,4 @@ class Stats(commands.Cog):
                 unloaded=bold(humanize_number(len(unloaded))),
             ),
         )
-
         await ctx.send(embed=data)
