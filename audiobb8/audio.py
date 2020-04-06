@@ -8715,6 +8715,18 @@ class Audio(commands.Cog):
             )
 
     @commands.Cog.listener()
+    async def on_red_audio_track_end(self, guild, song, requester):
+        if not (guild and song):
+            return
+        if self.api_interface is not None and self.playlist_api is not None:
+            await self.api_interface.local_cache_api.youtube.clean_up_old_entries()
+            await asyncio.sleep(5)
+            await self.playlist_api.delete_scheduled()
+            await self.api_interface.persistent_queue_api.drop(guild.id)
+            await asyncio.sleep(5)
+            await self.api_interface.persistent_queue_api.delete_scheduled()
+
+    @commands.Cog.listener()
     async def on_red_audio_queue_end(
         self, guild: discord.Guild, track: lavalink.Track, requester: discord.Member
     ):

@@ -266,7 +266,9 @@ LIMIT 1;
 YOUTUBE_DELETE_OLD_ENTRIES = """
 DELETE FROM youtube
 WHERE
-    last_updated < :maxage;
+    last_updated < :maxage
+    LIMIT 100
+;
 """
 
 # Spotify table statements
@@ -331,7 +333,9 @@ LIMIT 1;
 SPOTIFY_DELETE_OLD_ENTRIES = """
 DELETE FROM spotify
 WHERE
-    last_updated < :maxage;
+    last_updated < :maxage
+    LIMIT 100
+;
 """
 
 # Lavalink table statements
@@ -401,7 +405,9 @@ LIMIT 1
 LAVALINK_DELETE_OLD_ENTRIES = """
 DELETE FROM lavalink
 WHERE
-    last_updated < :maxage;
+    last_updated < :maxage
+    LIMIT 100
+;
 """
 LAVALINK_FETCH_ALL_ENTRIES_GLOBAL = """
 SELECT query, data 
