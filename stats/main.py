@@ -190,7 +190,7 @@ class Stats(commands.Cog):
                         if a.type is discord.ActivityType.watching:
                             temp_data["watching_users"].add(m.id)
                         if a.type is discord.ActivityType.custom:
-                            temp_data["watching_users"].add(m.id)
+                            temp_data["custom_users"].add(m.id)
 
                     if not streaming:
                         if m.status is discord.Status.online:
