@@ -132,10 +132,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             if error.custom_help_msg:
                 msg += f"\n{error.custom_help_msg}"
             await self.send_embed_msg(
-                ctx,
-                title=_("Unable To Parse Argument"),
-                description=msg,
-                error=True,
+                ctx, title=_("Unable To Parse Argument"), description=msg, error=True,
             )
             if error.send_cmd_help:
                 await ctx.send_help()
@@ -144,19 +141,21 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             if error.args:
                 if match := RE_CONVERSION.search(error.args[0]):
                     await self.send_embed_msg(
-                        ctx, title=_("Invalid Argument"), description=_(
+                        ctx,
+                        title=_("Invalid Argument"),
+                        description=_(
                             "The argument you gave for `{}` is not valid: I was expecting a `{}`."
-                        ).format(match.group(2), match.group(1)), error=True,
+                        ).format(match.group(2), match.group(1)),
+                        error=True,
                     )
                 else:
                     await self.send_embed_msg(
-                        ctx, title=_("Invalid Argument"), description=error.args[0],
-                        error=True,
+                        ctx, title=_("Invalid Argument"), description=error.args[0], error=True,
                     )
             else:
                 await ctx.send_help()
         elif isinstance(error, (IndexError, ClientConnectorError)) and any(
-                e in str(error).lower() for e in ["no nodes found.", "cannot connect to host"]
+            e in str(error).lower() for e in ["no nodes found.", "cannot connect to host"]
         ):
             handled = True
             await self.send_embed_msg(
