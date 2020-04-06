@@ -90,6 +90,30 @@ class Stats(commands.Cog):
                     if not s.unavailable
                 ]
             )
+            nsfw_text_channel_count = sum(
+                [
+                    1
+                    async for s in AsyncGen(self.bot.guilds)
+                    async for c in AsyncGen(s.text_channels)
+                    if not s.unavailable and c.is_nsfw()
+                ]
+            )
+            news_text_channel_count = sum(
+                [
+                    1
+                    async for s in AsyncGen(self.bot.guilds)
+                    async for c in AsyncGen(s.text_channels)
+                    if not s.unavailable and c.is_news()
+                ]
+            )
+            store_text_channel_count = sum(
+                [
+                    1
+                    async for s in AsyncGen(self.bot.guilds)
+                    async for c in AsyncGen(s.channels)
+                    if not s.unavailable and c.type is discord.ChannelType.store
+                ]
+            )
             guild_voice_channel_count = sum(
                 [
                     len(s.voice_channels)
@@ -103,6 +127,16 @@ class Stats(commands.Cog):
                     async for s in AsyncGen(self.bot.guilds)
                     async for c in AsyncGen(s.voice_channels)
                     if not s.unavailable
+                ]
+            )
+            user_voice_channel_mobile_count = sum(
+                [
+                    1
+                    async for s in AsyncGen(self.bot.guilds)
+                    async for c in AsyncGen(s.voice_channels)
+                    async for m in AsyncGen(c.members)
+                    if not s.unavailable
+                    if m.is_on_mobile()
                 ]
             )
             user_voice_channel_with_me_count = sum(
@@ -575,10 +609,18 @@ class Stats(commands.Cog):
                 "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
                 "\N{BOOKMARK TABS} Categories: {categories}\n"
                 "\N{SPEECH BALLOON} Text: {text}\n"
+                "\N{MONEY BAG}\N{VARIATION SELECTOR-16} Store Channels: {store}\n"
+                "\N{NO ONE UNDER EIGHTEEN SYMBOL} NSFW Channels: {nsfw}\n"
+                "\N{NEWSPAPER} News Channels: {news}\n"
                 "\N{SPEAKER WITH THREE SOUND WAVES} Voice: {voice}\n"
                 "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
+                "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC on Mobile: {users_mobile}\n"
                 "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
             ).format(
+                store=bold(humanize_number(store_text_channel_count)),
+                nsfw=bold(humanize_number(nsfw_text_channel_count)),
+                news=bold(humanize_number(news_text_channel_count)),
+                users_mobile=bold(humanize_number(user_voice_channel_mobile_count)),
                 total=bold(humanize_number(guild_channel_count)),
                 text=bold(humanize_number(guild_text_channel_count)),
                 voice=bold(humanize_number(guild_voice_channel_count)),
