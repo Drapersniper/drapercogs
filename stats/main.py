@@ -677,7 +677,7 @@ class Stats(commands.Cog):
         count = 1
         for shard_id, latency in self.bot.latencies:
             shard_latencies += (
-                f"Shard {shard_id + 1} - {bold(humanize_number(int(latency*100)))}ms\n"
+                f"Shard {shard_id + 1} - {bold(humanize_number(int(latency*1000)))}ms\n"
             )
             count += 1
         data.add_field(name=_("Shard Latencies:"), value=shard_latencies)
