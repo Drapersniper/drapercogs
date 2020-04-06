@@ -15,7 +15,7 @@ _ = lambda s: s
 class AsyncGen(AsyncIterable):
     """Yield entry every `delay` seconds."""
 
-    def __init__(self, contents: Sequence, delay: float = 0.0, steps: int = 10):
+    def __init__(self, contents: Sequence, delay: float = 0.0, steps: int = 1):
         self.delay = delay
         self.content = contents
         self.i = 0
@@ -327,6 +327,20 @@ class Stats(commands.Cog):
                 verif_data += f"{bold(humanize_number(value))} - {verif.get(r)}\n"
         data.add_field(name=_("Server Verification:"), value=verif_data)
         data.add_field(
+            name=_("Nitro boosts:"),
+            value=_(
+                "Total: {total}\n"
+                "\N{DIGIT ONE}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Level: {text}\n"
+                "\N{DIGIT TWO}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {voice}\n"
+                "\N{DIGIT THREE}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {users}"
+            ).format(
+                total=bold(humanize_number(counter["boosted_servers"])),
+                text=bold(humanize_number(counter["tier_1_count"])),
+                voice=bold(humanize_number(counter["tier_2_count"])),
+                users=bold(humanize_number(counter["tier_3_count"])),
+            ),
+        )
+        data.add_field(
             name=_("Channels:"),
             value=_(
                 "\N{SPEECH BALLOON} \N{SPEAKER WITH THREE SOUND WAVES} Total: {total}\n"
@@ -363,20 +377,6 @@ class Stats(commands.Cog):
             if value:
                 features_data += f"{bold(humanize_number(value))} - {features.get(r)}\n"
         data.add_field(name=_("Features:"), value=features_data)
-        data.add_field(
-            name=_("Nitro boosts:"),
-            value=_(
-                "Total: {total}\n"
-                "\N{DIGIT ONE}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Level: {text}\n"
-                "\N{DIGIT TWO}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {voice}\n"
-                "\N{DIGIT THREE}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {users}"
-            ).format(
-                total=bold(humanize_number(counter["boosted_servers"])),
-                text=bold(humanize_number(counter["tier_1_count"])),
-                voice=bold(humanize_number(counter["tier_2_count"])),
-                users=bold(humanize_number(counter["tier_3_count"])),
-            ),
-        )
         data.add_field(
             name=_("Misc:"),
             value=_(
