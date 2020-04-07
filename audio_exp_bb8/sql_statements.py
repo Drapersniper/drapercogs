@@ -338,8 +338,7 @@ FROM youtube
 WHERE
     last_fetched > :day
     AND last_updated > :maxage
-ORDER BY RANDOM()
-LIMIT 1
+LIMIT 100
 ;
 """
 
@@ -437,8 +436,7 @@ FROM spotify
 WHERE
     last_fetched > :day
     AND last_updated > :maxage
-ORDER BY RANDOM()
-LIMIT 1
+LIMIT 100
 ;
 """
 
@@ -522,8 +520,7 @@ FROM lavalink
 WHERE
     last_fetched > :day
     AND last_updated > :maxage
-ORDER BY RANDOM()
-LIMIT 1
+LIMIT 100
 ;
 """
 LAVALINK_DELETE_OLD_ENTRIES: Final[
