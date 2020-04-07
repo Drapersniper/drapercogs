@@ -69,7 +69,6 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         footer = kwargs.get("footer")
         thumbnail = kwargs.get("thumbnail")
         contents = dict(title=title, type=_type, url=url, description=description)
-        author = author
         if hasattr(kwargs.get("embed"), "to_dict"):
             embed = kwargs.get("embed")
             if embed is not None:
@@ -284,7 +283,7 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 temp_guild_playlist = guild_data.pop("playlists", None)
                 if temp_guild_playlist:
                     guild_playlist = {}
-                    for (count, (name, data)) in enumerate(temp_guild_playlist.items(), 1):
+                    for (count, (name, data)) in enumerate(temp_guild_playlist.items(), 1000):
                         if not data or not name:
                             continue
                         playlist = {"id": count, "name": name, "guild": int(guild_id)}

@@ -504,3 +504,11 @@ class MixinMeta(ABC):
     @abstractmethod
     def get_cross_emoji(self, ctx: commands.Context) -> str:
         raise NotImplementedError()
+
+    @abstractmethod
+    async def command_skip(self, ctx: commands.Context, skip_to_track: int = None):
+        raise NotImplementedError()
+
+    @abstractmethod
+    async def command_prev(self, ctx: commands.Context):
+        raise NotImplementedError()

@@ -500,3 +500,11 @@ class MixinMeta(ABC):
     @abstractmethod
     async def restore_players(self) -> bool:
         raise NotImplementedError()
+
+    @abstractmethod
+    async def command_skip(self, ctx: commands.Context, skip_to_track: int = None):
+        raise NotImplementedError()
+
+    @abstractmethod
+    async def command_prev(self, ctx: commands.Context):
+        raise NotImplementedError()

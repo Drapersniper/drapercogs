@@ -113,16 +113,13 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             name=_("Now Playing"),
             icon_url="https://cdn.discordapp.com/emojis/572861527049109515.gif",
         )
-        if (
-            await self.config.guild(ctx.guild).thumbnail()
-            and player.current
-            and player.current.thumbnail
-        ):
-            embed.set_thumbnail(url=player.current.thumbnail)
+        guild_data = await self.config.guild(ctx.guild).all()
 
-        shuffle = await self.config.guild(ctx.guild).shuffle()
-        repeat = await self.config.guild(ctx.guild).repeat()
-        autoplay = await self.config.guild(ctx.guild).auto_play()
+        if guild_data["thumbnail"] and player.current and player.current.thumbnail:
+            embed.set_thumbnail(url=player.current.thumbnail)
+        shuffle = guild_data["shuffle"]
+        repeat = guild_data["repeat"]
+        autoplay = guild_data["auto_play"]
         text = ""
         text += (
             _("Auto-Play")
@@ -157,8 +154,8 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
         ):
             return
 
-        if not player.queue:
-            expected = ("⏹", "⏯", self.get_cross_emoji(ctx))
+        if not player.queue and not autoplay:
+            expected = ("⏹", "⏯", "\N{CROSS MARK}")
         task: Optional[asyncio.Task]
         if player.current:
             task = start_adding_reactions(message, expected[:5])

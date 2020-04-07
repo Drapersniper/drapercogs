@@ -158,8 +158,10 @@ class AudioEvents(MixinMeta, metaclass=CompositeMetaClass):
             )
 
     @commands.Cog.listener()
-    async def on_red_audio_track_end(self, guild, song, requester):
-        if not (guild and song):
+    async def on_red_audio_track_end(
+        self, guild: discord.Guild, track: lavalink.Track, requester: discord.Member
+    ):
+        if not (track and guild):
             return
         if self.api_interface is not None and self.playlist_api is not None:
             await self.api_interface.local_cache_api.youtube.clean_up_old_entries()
