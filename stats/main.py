@@ -101,7 +101,9 @@ class Stats(commands.Cog):
             counter["guild_count"] = len(self.bot.guilds)
             counter["active_music_players"] = len(lavalink.active_players())
             counter["total_music_players"] = len(lavalink.all_players())
-            counter["inactive_music_players"] = counter["total_music_players"] - counter["active_music_players"]
+            counter["inactive_music_players"] = (
+                counter["total_music_players"] - counter["active_music_players"]
+            )
 
             counter["discord_latency"] = int(round(self.bot.latency * 1000))
             counter["shards"] = self.bot.shard_count
@@ -132,7 +134,6 @@ class Stats(commands.Cog):
                     temp_data["not_chunked_guilds"].add(s.id)
                 if s.premium_tier != 0:
                     temp_data["boosted_servers"].add(s.id)
-
 
                 if s.premium_tier == 1:
                     temp_data["tier_1_count"].add(s.id)
@@ -360,8 +361,8 @@ class Stats(commands.Cog):
                 shards=bold(humanize_number(counter["shards"])),
                 total=bold(humanize_number(counter["guild_count"])),
                 large=bold(humanize_number(counter["large_guilds"])),
-                chuncked=bold(humanize_number( counter["not_chunked_guilds"] )),
-                unavaliable=bold(humanize_number(counter["unavaliable_guilds"] )),
+                chuncked=bold(humanize_number(counter["not_chunked_guilds"])),
+                unavaliable=bold(humanize_number(counter["unavaliable_guilds"])),
             ),
         )
         verif_data = ""

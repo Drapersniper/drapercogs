@@ -217,7 +217,7 @@ default_guild_RandomQuotes = {
     "channels": {},
 }
 default_channel_RandomQuotes = {"quotes": {}, "permaQuotes": {}}
-default_guild_GamingProfile = {"no_profile_role": None, "profile_role": None}
+default_guild_GamingProfile = {"no_profile_role": None, "profile_role": None, "role_management": True}
 default_channel_status = {"game": None}
 
 ConfigHolder.AccountManager.register_user(**default_member_AccountManager)
