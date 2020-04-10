@@ -13,7 +13,7 @@ CONTINENT_DATA = {
 TIMEZONE_REGEX = re.compile(r"UTC[+-]([01]\d|2[0-4])(:?[0-5]\d)?|UTC[+-]\d", re.I)
 
 UNITS = {"s": "seconds", "m": "minutes", "h": "hours", "d": "days", "w": "weeks"}
-REPLACE_BRACKER = re.compile(r"\((?:[^()]+|(?R))*\)")
+REPLACE_BRACKER = re.compile(r"\((?:[^()]+)*\)")
 NAMEFIXER = re.compile(
     r"^[\p{P}\p{S}\p{Nl}\p{No}\p{M}\p{Z}]*"
 )
