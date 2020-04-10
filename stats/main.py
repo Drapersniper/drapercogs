@@ -497,7 +497,7 @@ class Stats(commands.Cog):
                 cogs=bold(humanize_number(len(all_cogs))),
                 loaded=bold(humanize_number(len(loaded))),
                 unloaded=bold(humanize_number(len(unloaded))),
-                commands=bold(humanize_number(len(unloaded))),
+                commands=bold(humanize_number(len(commands))),
             ),
         )
         if audio_cog:
