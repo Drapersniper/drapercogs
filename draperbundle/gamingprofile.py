@@ -72,12 +72,15 @@ class GamingProfile(commands.Cog):
             guild_data["role_management"] = not current_role_management
 
         if not current_role_management:
-            await ctx.send(("Gamming profile will manage regional and profile roles, "
-                           "run `{}gprofile setup` to ensure you have all the "
-                           "required roles in the server.").format(ctx.clean_prefix))
+            await ctx.send(
+                (
+                    "Gamming profile will manage regional and profile roles, "
+                    "run `{}gprofile setup` to ensure you have all the "
+                    "required roles in the server."
+                ).format(ctx.clean_prefix)
+            )
         else:
             await ctx.send("Gamming profile will not longer touch user roles")
-
 
     @_profile.command(name="create", aliases=["make"])
     async def _profile_create(self, ctx: commands.Context):
@@ -118,7 +121,11 @@ class GamingProfile(commands.Cog):
                     for platform, username in accounts.items():
                         account = {platform: username}
                         services.update(account)
-            if getattr(author, "guild", None) and await self.profileConfig.guild(author.guild).role_management() and author.guild.me.guild_permissions.manage_roles:
+            if (
+                getattr(author, "guild", None)
+                and await self.profileConfig.guild(author.guild).role_management()
+                and author.guild.me.guild_permissions.manage_roles
+            ):
                 doesnt_have_profile_role = get_role_named(ctx.guild, "No Profile")
                 has_profile_role = get_role_named(ctx.guild, "Has Profile")
                 continent_role = user_data.get("zone")
@@ -171,7 +178,11 @@ class GamingProfile(commands.Cog):
                 for platform, username in accounts.items():
                     account = {platform: username}
                     services.update(account)
-        if getattr(author, "guild", None) and await self.profileConfig.guild(author.guild).role_management() and author.guild.me.guild_permissions.manage_roles:
+        if (
+            getattr(author, "guild", None)
+            and await self.profileConfig.guild(author.guild).role_management()
+            and author.guild.me.guild_permissions.manage_roles
+        ):
             continent_role = user.get("zone")
             role_names = [role.name for role in author.roles]
             if continent_role and continent_role not in role_names:

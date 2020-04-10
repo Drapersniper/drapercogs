@@ -206,7 +206,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
     while not country:
         with contextlib.suppress(asyncio.TimeoutError):
             await bot.wait_for("message", timeout=30.0, check=pred_check)
-        country = number_list[pred_check.result] if pred_check  and pred_check.result else None
+        country = number_list[pred_check.result] if pred_check and pred_check.result else None
     with contextlib.suppress(Exception):
         menu_task.cancel()
     user_data["country"] = validcountries[int(country) - 1]
@@ -240,7 +240,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         while not zone:
             with contextlib.suppress(asyncio.TimeoutError):
                 await bot.wait_for("message", timeout=30.0, check=pred_check)
-            zone = number_list[pred_check.result] if pred_check and pred_check.result  else None
+            zone = number_list[pred_check.result] if pred_check and pred_check.result else None
         user_data["zone"] = continent_data[int(zone) - 1]
     else:
         user_data["zone"] = country_data.get(cached_country, {}).get("region", None)
