@@ -10,5 +10,5 @@
         "utility"
     ],
     "hidden": false,
-    "requirements": ["regex", "python-dateutil", "pytz"]
+    "requirements": ["python-dateutil", "pytz"]
 }

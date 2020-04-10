@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import regex
+import re
 
 
 CONTINENT_DATA = {
@@ -10,25 +10,25 @@ CONTINENT_DATA = {
     "5": "Oceania",
     "6": "South America",
 }
-TIMEZONE_REGEX = regex.compile(r"UTC[+-]([01]\d|2[0-4])(:?[0-5]\d)?|UTC[+-]\d", regex.I)
+TIMEZONE_REGEX = re.compile(r"UTC[+-]([01]\d|2[0-4])(:?[0-5]\d)?|UTC[+-]\d", re.I)
 
 UNITS = {"s": "seconds", "m": "minutes", "h": "hours", "d": "days", "w": "weeks"}
-REPLACE_BRACKER = regex.compile(r"\((?:[^()]++|(?R))*+\)")
-NAMEFIXER = regex.compile(
-    r"^[\p{Punctuation}\p{Symbol}\p{Letter_Number}\p{Other_Number}\p{Punctuation}\p{Mark}\p{Separator}]*"
+REPLACE_BRACKER = re.compile(r"\((?:[^()]+|(?R))*\)")
+NAMEFIXER = re.compile(
+    r"^[\p{P}\p{S}\p{Nl}\p{No}\p{M}\p{Z}]*"
 )
-QUOTE_CLEANER = regex.compile(
+QUOTE_CLEANER = re.compile(
     r"^(<+[\p{P}\p{Sm}\p{Sc}\p{Sk}\p{So}\p{M}\p{Z}\p{N}]*>+)*$|"
     r"^(:+[\p{P}\p{Sm}\p{Sc}\p{Sk}\p{So}\p{M}\p{Z}\p{N}\p{L}]*:+)*$|"
     r"^([:<]+[\p{L}\p{N}\p{P}]+[:>]+)+$",
-    regex.I | regex.M,
+    re.I | re.M,
 )
-URLMATCHER = regex.compile(
+URLMATCHER = re.compile(
     r"(?:(?:https?|ftp)://|"
     r"\b(?:[a-z\d]+.))(?:(?:[^\s()<>]+|((?:[^\s()<>]+|"
     r"(?:([^\s()<>]+)))?))+(?:((?:[^\s()<>]+|(?:(?:[^\s()<>]+)))?)|"
     r"[^\s`!()[]{};:'\".,<>?«»“�?‘’]))?",
-    regex.I,
+    re.I,
 )
 
 bfv_icon = (

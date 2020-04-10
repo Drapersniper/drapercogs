@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import re
 from copy import copy
 from operator import itemgetter
 
 import discord
-import regex
 from discord.ext.commands.converter import Greedy  # @UnusedImport
 from redbot.core import commands
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
@@ -314,7 +314,7 @@ class PCSpecs(commands.Cog):
                 if "\n" in component_value:
                     new_line = "\n" * component_value.count("\n")
                 component_name_field += f"{component_value}\n"
-                component_name_field = regex.sub(REPLACE_BRACKER, "", component_name_field)
+                component_name_field = re.sub(REPLACE_BRACKER, "", component_name_field)
                 component_field += f"{component}{new_line}\n"
         component_field = component_field.strip()
         component_name_field = component_name_field.strip()
