@@ -12,6 +12,7 @@ from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 from .config_holder import ConfigHolder
+from .utilities import get_activity_list
 
 _ = lambda s: s
 
@@ -49,41 +50,11 @@ class MemberStatus(commands.Cog):
             game_list = [game]
             ending = f" {game}."
         playing_data = await self.get_players_per_activity(ctx=ctx, game_name=game_list)
-        embed_colour = await ctx.embed_colour()
+
         if playing_data:
-            embed_list = []
-            count = -1
-            splitter = 1
-            for key, value in sorted(playing_data.items()):
-                count += 1
-                if count % splitter == 0:
-                    embed = discord.Embed(
-                        title=_("Who's playing {name}?").format(name=game_name),
-                        colour=embed_colour,
-                    )
-
-                title = "{key} ({value} {status})".format(
-                    key=key, value=len(value), status=_("playing")
-                )
-                content = ""
-                for mention, display_name, black_hole, account in sorted(
-                    value, key=itemgetter(2, 1)
-                ):
-                    content += f"{display_name}"
-                    if account:
-                        content += f" | {account}"
-                    content += "\n"
-
-                outputs = pagify(content, page_length=1000, priority=True)
-                for enum_count, field in enumerate(outputs, 1):
-                    if enum_count > 1:
-                        title = "{key} ({extra} {value})".format(
-                            key=key, value=enum_count, extra=_("Part")
-                        )
-                    embed.add_field(name=f"{title}", value=field)
-                if count % splitter == 0:
-                    embed_list.append(copy(embed))
-
+            embed_list = await get_activity_list(
+                ctx, playing_data, game_name, discord.ActivityType.playing
+            )
             await menu(
                 ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
             )
@@ -96,39 +67,9 @@ class MemberStatus(commands.Cog):
     async def swatching(self, ctx: commands.Context):
         """Shows who's watching what."""
 
-        watching_data = await self.get_players_per_activity(ctx=ctx, movie=True)
-        embed_colour = await ctx.embed_colour()
-        if watching_data:
-            embed_list = []
-            count = -1
-            splitter = 1
-            for key, value in sorted(watching_data.items()):
-                count += 1
-                if count % splitter == 0:
-                    embed = discord.Embed(title=_("Who's watching what?"), colour=embed_colour)
-
-                title = "{key} ({value} {status})".format(
-                    key=key, value=len(value), status=_("watching")
-                )
-                content = ""
-                for mention, display_name, black_hole, account in sorted(
-                    value, key=itemgetter(2, 1)
-                ):
-                    content += f"{display_name}"
-                    if account:
-                        content += f" | {account}"
-                    content += "\n"
-
-                outputs = pagify(content, page_length=1000, priority=True)
-                for enum_count, field in enumerate(outputs, 1):
-                    if enum_count > 1:
-                        title = "{key} ({extra} {value})".format(
-                            key=key, value=enum_count, extra=_("Part")
-                        )
-                    embed.add_field(name=f"{title}", value=field)
-                if count % splitter == 0:
-                    embed_list.append(copy(embed))
-
+        data = await self.get_players_per_activity(ctx=ctx, movie=True)
+        if data:
+            embed_list = await get_activity_list(ctx, data, None, discord.ActivityType.watching)
             await menu(
                 ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
             )
@@ -141,38 +82,9 @@ class MemberStatus(commands.Cog):
     async def slistening(self, ctx: commands.Context):
         """Shows who's listening what."""
 
-        listening_data = await self.get_players_per_activity(ctx=ctx, music=True)
-        embed_colour = await ctx.embed_colour()
-        if listening_data:
-            embed_list = []
-            count = -1
-            splitter = 1
-            for key, value in sorted(listening_data.items()):
-                count += 1
-                if count % splitter == 0:
-                    embed = discord.Embed(title=_("Who's listening to what?"), colour=embed_colour)
-
-                title = "{key} ({value} {status})".format(
-                    key=key, value=len(value), status=_("listening")
-                )
-                content = ""
-                for mention, display_name, black_hole, account in sorted(
-                    value, key=itemgetter(2, 1)
-                ):
-                    content += f"{display_name}"
-                    if account:
-                        content += f" | {account}"
-                    content += "\n"
-
-                outputs = pagify(content, page_length=1000, priority=True)
-                for enum_count, field in enumerate(outputs, 1):
-                    if enum_count > 1:
-                        title = "{key} ({extra} {value})".format(
-                            key=key, value=enum_count, extra=_("Part")
-                        )
-                    embed.add_field(name=f"{title}", value=field)
-                if count % splitter == 0:
-                    embed_list.append(copy(embed))
+        data = await self.get_players_per_activity(ctx=ctx, music=True)
+        if data:
+            embed_list = await get_activity_list(ctx, data, None, discord.ActivityType.listening)
 
             await menu(
                 ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
@@ -198,39 +110,10 @@ class MemberStatus(commands.Cog):
         streaming_data = await self.get_players_per_activity(
             ctx=ctx, stream=True, game_name=game_list
         )
-        embed_colour = await ctx.embed_colour()
         if streaming_data:
-            embed_list = []
-            count = -1
-            splitter = 1
-            for key, value in sorted(streaming_data.items()):
-                count += 1
-                if count % splitter == 0:
-                    embed = discord.Embed(
-                        title=_("Who's streaming {}?").format(game_name), colour=embed_colour
-                    )
-
-                title = "{key} ({value} {status})".format(
-                    key=key, value=len(value), status=_("streaming")
-                )
-                content = ""
-                for mention, display_name, black_hole, account in sorted(
-                    value, key=itemgetter(2, 1)
-                ):
-                    content += f"{display_name}"
-                    if account:
-                        content += f" | {account}"
-                    content += "\n"
-
-                outputs = pagify(content, page_length=1000, priority=True)
-                for enum_count, field in enumerate(outputs, 1):
-                    if enum_count > 1:
-                        title = "{key} ({extra} {value})".format(
-                            key=key, value=enum_count, extra=_("Part")
-                        )
-                    embed.add_field(name=f"{title}", value=field)
-                if count % splitter == 0:
-                    embed_list.append(copy(embed))
+            embed_list = await get_activity_list(
+                ctx, streaming_data, game_name, discord.ActivityType.streaming
+            )
 
             await menu(
                 ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60

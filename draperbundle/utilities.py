@@ -6,8 +6,9 @@ import logging
 import operator as op
 import random
 from calendar import day_name
+from copy import copy
 from datetime import date, datetime, timedelta, timezone
-from typing import List, Sequence, Union
+from typing import List, Sequence, Union, Tuple, Any
 from urllib.parse import quote_plus
 
 import aiohttp
@@ -300,6 +301,58 @@ def get_user_named(bot, name):
             return False
 
     return discord.utils.find(pred, members)
+
+
+async def get_activity_list(ctx, data, game_name, activity):
+    username = False
+    if activity == discord.ActivityType.playing:
+        activity_name = "playing "
+        username = True
+    elif activity == discord.ActivityType.streaming:
+        activity_name = "streaming "
+        username = True
+    elif activity == discord.ActivityType.listening:
+        activity_name = "listening to"
+    else:
+        activity_name = "watching "
+
+    usernames = ""
+    discord_names = ""
+    embed_list = []
+    embed_colour = await ctx.embed_colour()
+    for key, value in sorted(data.items()):
+        player_data = sorted(value, key=op.itemgetter(2, 1))
+        usernames = ""
+        discord_names = ""
+        for mention, display_name, black_hole, account in player_data:
+            account = account or "Unknown"
+            if (
+                len(usernames + f"{account}\n") > 1000
+                or len(discord_names + f"{display_name}\n") > 1000
+            ):
+                embed = discord.Embed(
+                    title=("Who's {activity}{name}?").format(name=key, activity=activity_name),
+                    colour=embed_colour,
+                )
+                embed.add_field(name=f"Discord Member", value=discord_names, inline=True)
+                if username:
+                    embed.add_field(name=f"Username", value=usernames, inline=True)
+                embed_list.append(embed)
+                usernames = ""
+                discord_names = ""
+            usernames += f"{account}\n"
+            discord_names += f"{display_name}\n"
+        if usernames:
+            embed = discord.Embed(
+                title=("Who's {activity} {name}?").format(name=key, activity=activity_name),
+                colour=embed_colour,
+            )
+            embed.add_field(name=f"Discord Member", value=discord_names, inline=True)
+            if username:
+                embed.add_field(name=f"Username", value=usernames, inline=True)
+            embed_list.append(embed)
+
+    return embed_list
 
 
 def get_meta_data(date: datetime):
