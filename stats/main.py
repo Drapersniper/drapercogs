@@ -487,14 +487,17 @@ class Stats(commands.Cog):
         loaded = set(ctx.bot.extensions.keys())
         all_cogs = set(await self.bot._cog_mgr.available_modules())
         unloaded = all_cogs - loaded
+        commands = list(self.bot.walk_commands())
         data.add_field(
             name=_("Bot Extensions:"),
             value=_(
-                "Available Cogs: {cogs}\n" "Loaded Cogs: {loaded}\n" "Unloaded Cogs: {unloaded}"
+                "Available Cogs: {cogs}\n" "Loaded Cogs: {loaded}\n" 
+                "Unloaded Cogs: {unloaded}\nCommands: {commands}"
             ).format(
                 cogs=bold(humanize_number(len(all_cogs))),
                 loaded=bold(humanize_number(len(loaded))),
                 unloaded=bold(humanize_number(len(unloaded))),
+                commands=bold(humanize_number(len(unloaded))),
             ),
         )
         if audio_cog:
