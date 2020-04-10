@@ -316,8 +316,6 @@ async def get_activity_list(ctx, data, game_name, activity):
     else:
         activity_name = "watching "
 
-    usernames = ""
-    discord_names = ""
     embed_list = []
     embed_colour = await ctx.embed_colour()
     for key, value in sorted(data.items()):
