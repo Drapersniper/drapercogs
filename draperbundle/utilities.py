@@ -332,9 +332,9 @@ async def get_activity_list(ctx, data, game_name, activity):
                     title=("Who's {activity}{name}?").format(name=key, activity=activity_name),
                     colour=embed_colour,
                 )
-                embed.add_field(name=f"Discord Member", value=discord_names, inline=True)
+                embed.add_field(name="Discord Member", value=discord_names, inline=True)
                 if username:
-                    embed.add_field(name=f"Username", value=usernames, inline=True)
+                    embed.add_field(name="Username", value=usernames, inline=True)
                 embed_list.append(embed)
                 usernames = ""
                 discord_names = ""
@@ -345,9 +345,9 @@ async def get_activity_list(ctx, data, game_name, activity):
                 title=("Who's {activity} {name}?").format(name=key, activity=activity_name),
                 colour=embed_colour,
             )
-            embed.add_field(name=f"Discord Member", value=discord_names, inline=True)
+            embed.add_field(name="Discord Member", value=discord_names, inline=True)
             if username:
-                embed.add_field(name=f"Username", value=usernames, inline=True)
+                embed.add_field(name="Username", value=usernames, inline=True)
             embed_list.append(embed)
 
     return embed_list
