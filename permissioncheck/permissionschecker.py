@@ -64,7 +64,7 @@ class PermissionsChecker(commands.Cog):
         self.config.register_guild(error_count=0, last_error=0)
         self.permission_cache: discord.Permissions = None
 
-    async def bot_check(self, ctx: Context):
+    async def bot_check_once(self, ctx: Context):
         current_perms = ctx.channel.permissions_for(ctx.me)
         surpass_ignore = (
             isinstance(ctx.channel, discord.abc.PrivateChannel)
