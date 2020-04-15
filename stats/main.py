@@ -42,6 +42,7 @@ class Stats(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
+    @commands.max_concurrency(1, commands.BucketType.guild, wait=False)
     async def botinfo(self, ctx: commands.Context):
         """
         Show bot information.
