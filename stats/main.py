@@ -96,6 +96,7 @@ class Stats(commands.Cog):
                 "ANIMATED_ICON": _("Animated Icon"),
                 "PUBLIC_DISABLED": _("Public disabled"),
                 "MEMBER_LIST_DISABLED": _("Member list disabled"),
+                "ENABLED_DISCOVERABLE_BEFORE": _("Was in Server Discovery"),
             }
             audio_cog = self.bot.get_cog("Audio")
             counter = Counter()
