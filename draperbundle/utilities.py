@@ -201,7 +201,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         number_list.append(str(index))
     pages = [box(page, lang="md") for page in list(pagify(desc, shorten_by=20))]
     ctx = namedtuple("Context", "author me bot send")
-    ctx = ctx(author, bot.user, bot, ctx.send)
+    ctx = ctx(author, bot.user, bot, author.send)
     menu_task = asyncio.create_task(menu(ctx, pages, DEFAULT_CONTROLS, timeout=180))
     country = None
     pred_check = MessagePredicate.contained_in(
