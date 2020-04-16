@@ -97,6 +97,7 @@ class Stats(commands.Cog):
                 "PUBLIC_DISABLED": _("Public disabled"),
                 "MEMBER_LIST_DISABLED": _("Member list disabled"),
                 "ENABLED_DISCOVERABLE_BEFORE": _("Was in Server Discovery"),
+                "WELCOME_SCREEN_ENABLED": _("Welcome Screen"),
             }
             audio_cog = self.bot.get_cog("Audio")
             counter = Counter()
@@ -421,7 +422,7 @@ class Stats(commands.Cog):
         features_data = ""
         for r, value in sorted(features_count.items(), reverse=False):
             if value:
-                features_data += f"{bold(humanize_number(value))} - {features.get(r)}\n"
+                features_data += f"{bold(humanize_number(value))} - {features.get(r) or r}\n"
         data.add_field(name=_("Features:"), value=features_data)
         data.add_field(
             name=_("Misc:"),
