@@ -6,6 +6,7 @@ import logging
 import operator as op
 import random
 from calendar import day_name
+from collections import namedtuple
 from copy import copy
 from datetime import date, datetime, timedelta, timezone
 from typing import List, Sequence, Union, Tuple, Any
@@ -190,7 +191,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
 
     msg = await author.send("What country are you from (Enter the number next to the country)?")
     ctx = await bot.get_context(msg)
-    ctx.author = author
+    ctx.message.author = author
     country_data = WorldData.get("country", {})
     validcountries = sorted(list(value.get("name") for _, value in country_data.items()))
     desc = ""
@@ -199,6 +200,8 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         desc += f"{index}. {value}\n"
         number_list.append(str(index))
     pages = [box(page, lang="md") for page in list(pagify(desc, shorten_by=20))]
+    ctx = namedtuple("Context", "author me bot send")
+    ctx = ctx(author, ctx.me, ctx.me, ctx.send)
     menu_task = asyncio.create_task(menu(ctx, pages, DEFAULT_CONTROLS, timeout=180))
     country = None
     pred_check = MessagePredicate.contained_in(
