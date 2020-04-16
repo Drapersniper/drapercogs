@@ -4,7 +4,7 @@ import contextlib
 import logging
 
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union, Mapping
 
 # Cog Dependencies
 import aiohttp
@@ -55,8 +55,15 @@ class AntiBot(commands.Cog):
         self.ban_queue: List[Tuple[int, int]] = []
         self.kick_queue: List[Tuple[int, int]] = []
 
+    @commands.Cog.listener()
+    async def on_red_api_tokens_update(
+            self, service_name: str, api_tokens: Mapping[str, str]
+    ) -> None:
+        if service_name == "ksoft":
+            self.ban_api = api_tokens
+
     async def initialize(self):
-        self.ban_api = await self.bot.db.api_tokens.get_raw("ksoft", default={"api_key": None})
+        self.ban_api = await self.bot.get_shared_api_tokens("ksoft")
 
     def cog_unload(self):
         if self.session:
