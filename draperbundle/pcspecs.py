@@ -291,7 +291,7 @@ class PCSpecs(commands.Cog):
             header += f"{activity}\n"
         description += header
 
-        embed = discord.Embed(title=f"{discord_user_name}' rig", description=description)
+        embed = discord.Embed(title=f"{discord_user_name}'{'s' if not discord_user_name.endswith('s') else ''} rig", description=description)
         footer = ""
         if last_seen_datetime:
             if last_seen_text == "Now":

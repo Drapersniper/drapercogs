@@ -74,13 +74,13 @@ class GamingProfile(commands.Cog):
         if not current_role_management:
             await ctx.send(
                 (
-                    "Gamming profile will manage regional and profile roles, "
+                    "Gaming profile will manage regional and profile roles, "
                     "run `{}gprofile setup` to ensure you have all the "
                     "required roles in the server."
                 ).format(ctx.clean_prefix)
             )
         else:
-            await ctx.send("Gamming profile will not longer touch user roles")
+            await ctx.send("Gaming profile will no longer touch user roles")
 
     @_profile.command(name="create", aliases=["make"])
     async def _profile_create(self, ctx: commands.Context):
