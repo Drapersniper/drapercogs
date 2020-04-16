@@ -202,7 +202,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
     menu_task = asyncio.create_task(menu(ctx, pages, DEFAULT_CONTROLS, timeout=180))
     country = None
     pred_check = MessagePredicate.contained_in(
-        number_list, ctx=ctx, user=author, channel=ctx.channel
+        number_list, channel=author
     )
     while not country:
         with contextlib.suppress(asyncio.TimeoutError):
