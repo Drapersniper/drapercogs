@@ -89,12 +89,9 @@ class GamingProfile(commands.Cog):
     async def _profile_create(self, ctx: commands.Context):
         """Creates and sets up or updates an existing profile"""
         author = ctx.author
-        discord_user_name = str(author)
         user_data = {
             "country": None,
             "discord_user_id": author.id,
-            "discord_true_name": author.name,
-            "discord_user_name": discord_user_name,
             "identifier": author.id,
             "zone": None,
             "timezone": None,
