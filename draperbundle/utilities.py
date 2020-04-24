@@ -261,12 +261,10 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         embed.description = box(desc, lang="md")
         await author.send(embed=embed)
         timezone = None
-        print(valid_timezone_list)
         pred_check = MessagePredicate.contained_in(valid_timezone_list, ctx=new_ctx)
         while not timezone:
             with contextlib.suppress(asyncio.TimeoutError):
                 await bot.wait_for("message", timeout=30.0, check=pred_check)
-            print("pred_check.result", pred_check.result)
             timezone = (
                 valid_timezone_list[pred_check.result] if pred_check.result is not None else None
             )
