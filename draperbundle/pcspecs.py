@@ -6,7 +6,7 @@ from operator import itemgetter
 
 import discord
 import regex
-from discord.ext.commands.converter import Greedy  # @UnusedImport
+from discord.ext.commands.converter import Greedy
 from redbot.core import commands
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
@@ -291,7 +291,10 @@ class PCSpecs(commands.Cog):
             header += f"{activity}\n"
         description += header
 
-        embed = discord.Embed(title=f"{discord_user_name}'{'s' if not discord_user_name.endswith('s') else ''} rig", description=description)
+        embed = discord.Embed(
+            title=f"{discord_user_name}'{'s' if not discord_user_name.endswith('s') else ''} rig",
+            description=description,
+        )
         footer = ""
         if last_seen_datetime:
             if last_seen_text == "Now":

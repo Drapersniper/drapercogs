@@ -180,37 +180,30 @@ async def get_supported_platforms(lists: bool = True, supported: bool = False):
 async def account_adder(bot, author: discord.User):  # @UnusedVariable
     platforms = await get_supported_platforms()
     platform_prompt = [name for _, name in platforms]
-    platform_prompt = {str(counter): name for counter, name in enumerate(platform_prompt)}
+    platform_prompt = {str(counter): name for counter, name in enumerate(platform_prompt, start=1)}
     accounts = await smart_prompt(bot, author, platform_prompt, platforms)
     return accounts
 
 
 async def update_profile(bot, user_data: dict, author: discord.User):
-    def check(m):
-        return m.author == author and isinstance(m.channel, discord.DMChannel)
-
     msg = await author.send("What country are you from (Enter the number next to the country)?")
-    ctx = await bot.get_context(msg)
-    ctx.message.author = author
     country_data = WorldData.get("country", {})
     validcountries = sorted(list(value.get("name") for _, value in country_data.items()))
     desc = ""
-    number_list = []
+    valid_county_list = []
     for index, value in enumerate(validcountries, start=1):
         desc += f"{index}. {value}\n"
-        number_list.append(str(index))
+        valid_county_list.append(str(index))
     pages = [box(page, lang="md") for page in list(pagify(desc, shorten_by=20))]
-    ctx = namedtuple("Context", "author me bot send")
-    ctx = ctx(author, bot.user, bot, author.send)
-    menu_task = asyncio.create_task(menu(ctx, pages, DEFAULT_CONTROLS, timeout=180))
+    ctx = namedtuple("Context", "author me bot send channel")
+    new_ctx = ctx(author, bot.user, bot, author.send, msg.channel)
+    menu_task = asyncio.create_task(menu(new_ctx, pages, DEFAULT_CONTROLS, timeout=180))
     country = None
-    pred_check = MessagePredicate.contained_in(
-        number_list, channel=author
-    )
+    pred_check = MessagePredicate.contained_in(valid_county_list, ctx=new_ctx)
     while not country:
         with contextlib.suppress(asyncio.TimeoutError):
             await bot.wait_for("message", timeout=30.0, check=pred_check)
-        country = number_list[pred_check.result] if pred_check and pred_check.result else None
+        country = valid_county_list[pred_check.result] if pred_check.result is not None else None
     with contextlib.suppress(Exception):
         menu_task.cancel()
     user_data["country"] = validcountries[int(country) - 1]
@@ -231,20 +224,20 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         await author.send("Which zone are you from?")
         embed = discord.Embed(title="Pick a number that matches your zone")
         desc = ""
-        number_list = []
+        valid_continent_list = []
         for index, value in enumerate(continent_data, start=1):
             desc += f"{index}. {value.title()}\n"
-            number_list.append(str(index))
+            valid_continent_list.append(str(index))
         embed.description = box(desc, lang="md")
         await author.send(embed=embed)
         zone = None
-        pred_check = MessagePredicate.contained_in(
-            number_list, ctx=ctx, channel=ctx.channel, user=author
-        )
+        pred_check = MessagePredicate.contained_in(valid_continent_list, ctx=new_ctx)
         while not zone:
             with contextlib.suppress(asyncio.TimeoutError):
                 await bot.wait_for("message", timeout=30.0, check=pred_check)
-            zone = number_list[pred_check.result] if pred_check and pred_check.result else None
+            zone = (
+                valid_continent_list[pred_check.result] if pred_check.result is not None else None
+            )
         user_data["zone"] = continent_data[int(zone) - 1]
     else:
         user_data["zone"] = country_data.get(cached_country, {}).get("region", None)
@@ -260,21 +253,23 @@ async def update_profile(bot, user_data: dict, author: discord.User):
         )
         embed = discord.Embed(title="Pick a number that matches your timezone")
         desc = ""
-        number_list = []
+        valid_timezone_list = []
         for index, value in enumerate(country_timezones, start=1):
             desc += f"{index}. {value.upper()}\n"
-            number_list.append(str(index))
+            valid_timezone_list.append(str(index))
 
         embed.description = box(desc, lang="md")
         await author.send(embed=embed)
         timezone = None
-        pred_check = MessagePredicate.contained_in(
-            number_list, ctx=ctx, channel=ctx.channel, user=author
-        )
+        print(valid_timezone_list)
+        pred_check = MessagePredicate.contained_in(valid_timezone_list, ctx=new_ctx)
         while not timezone:
             with contextlib.suppress(asyncio.TimeoutError):
                 await bot.wait_for("message", timeout=30.0, check=pred_check)
-            timezone = number_list[pred_check.result] if pred_check and pred_check.result else None
+            print("pred_check.result", pred_check.result)
+            timezone = (
+                valid_timezone_list[pred_check.result] if pred_check.result is not None else None
+            )
         user_data["timezone"] = country_timezones[int(timezone) - 1]
     elif len(country_timezones) == 1:
         user_data["timezone"] = country_timezones[0]
@@ -683,24 +678,22 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
             m.author == author and isinstance(m.channel, discord.DMChannel) and len(m.content) < 33
         )
 
-    def remove_old(prompt_data: dict, key_to_remove: str):
-        newdict = prompt_data
-        if key_to_remove:
-            newdict.pop(key_to_remove, None)
-        return newdict
-
     data = {}
     key = None
-    original_len = len(prompt_data)
+    original_len = len(prompt_data) + 1
     await author.send(f"Pick number {original_len} to finish this part.")
     while True:
         if "finish" not in prompt_data.values() and "Finish" not in prompt_data.values():
             prompt_data.update({str(original_len): "finish"})
-        prompt_data = remove_old(prompt_data, key)
         embed = discord.Embed(title="Pick a number that matches the service you want to add")
-        for key, value in prompt_data.items():
-            embed.add_field(name=value, value=key)
+        valid_account_list = []
+        desc = ""
+        for index, value in enumerate(prompt_data.values(), start=1):
+            desc += f"{index}. {value}\n"
+            valid_account_list.append(str(index))
+        embed.description = box(desc, lang="md")
         await author.send(embed=embed)
+
         if "finish" in prompt_data.values() or "Finish" in prompt_data.values():
             valid_keys = map(str, list(prompt_data.keys())[:-1])
         else:

@@ -3,6 +3,7 @@ import asyncio
 import contextlib
 import json
 import logging
+from collections import defaultdict
 from datetime import timedelta
 from typing import Union, Dict
 
@@ -62,6 +63,7 @@ class CustomChannels(commands.Cog):
         self.config = ConfigHolder.CustomChannels
         self.task = self.bot.loop.create_task(self.clean_up_custom_channels())
         self.antispam: Dict[int, Dict[int, AntiSpam]] = {}
+        self.config_cache = defaultdict(dict)
 
     def cog_unload(self):
         if self.task:
@@ -82,6 +84,9 @@ class CustomChannels(commands.Cog):
             blacklisted_users = blacklist["blacklist"]
             blacklisted_users.expand([u.id for u in users])
             blacklist["blacklist"] = list(set(blacklisted_users))
+        self.config_cache[ctx.guild.id]["blacklist"] = await self.config.guild(
+            ctx.guild
+        ).blacklist()
         await ctx.tick()
 
     @_button.command(name="blacklistremove")
@@ -92,6 +97,9 @@ class CustomChannels(commands.Cog):
             blacklisted_users = blacklist["blacklist"]
             blacklisted_users = [u for u in blacklisted_users if u not in [m.id for m in users]]
             blacklist["blacklist"] = list(set(blacklisted_users))
+        self.config_cache[ctx.guild.id]["blacklist"] = await self.config.guild(
+            ctx.guild
+        ).blacklist()
         await ctx.tick()
 
     @_button.command(name="add")
@@ -207,13 +215,28 @@ class CustomChannels(commands.Cog):
         if guild.id not in self.antispam:
             self.antispam[guild.id] = {}
 
+        if "blacklist" not in self.config_cache[member.guild.id]:
+            self.config_cache[member.guild.id]["blacklist"] = await self.config.guild(
+                member.guild
+            ).blacklist()
+
         if member.id not in self.antispam[guild.id]:
             self.antispam[guild.id][member.id] = AntiSpam([(timedelta(seconds=600), 1)])
-
-        if member.id in await self.config.guild(member.guild).blacklist():
+        if member.id in self.config_cache[member.guild.id]["blacklist"]:
             return
-        whitelist = await self.config.guild(member.guild).category_with_button()
-        user_created_channels = await self.config.guild(member.guild).user_created_voice_channels()
+
+        if "category_with_button" not in self.config_cache[member.guild.id]:
+            self.config_cache[member.guild.id]["category_with_button"] = await self.config.guild(
+                member.guild
+            ).category_with_button()
+        if "user_created_voice_channels" not in self.config_cache[member.guild.id]:
+            self.config_cache[member.guild.id][
+                "user_created_voice_channels"
+            ] = await self.config.guild(member.guild).user_created_voice_channels()
+
+        whitelist = self.config_cache[member.guild.id]["category_with_button"]
+        user_created_channels = self.config_cache[member.guild.id]["user_created_voice_channels"]
+
         if (
             after
             and not self.antispam[guild.id][member.id].spammy
@@ -247,6 +270,9 @@ class CustomChannels(commands.Cog):
                     f"Adding {created_channel.name} to the database ({created_channel.id})"
                 )
                 user_voice.update({created_channel.id: created_channel.id})
+            self.config_cache[member.guild.id][
+                "user_created_voice_channels"
+            ] = await self.config.guild(member.guild).user_created_voice_channels()
             member_group = self.config.member(member)
             async with member_group.currentRooms() as user_voice:
                 logger.info(f"Adding {created_channel.name} to user rooms ({created_channel.id})")
@@ -283,9 +309,12 @@ class CustomChannels(commands.Cog):
             logger.info(
                 f"{before.channel.name} was a user created room checking if it needs to be deleted"
             )
+            if "user_created_voice_channels" not in self.config_cache[guild.id]:
+                self.config_cache[guild.id][
+                    "user_created_voice_channels"
+                ] = await self.config.guild(guild).user_created_voice_channels()
             delete_id = {}
-            data = await self.config.guild(guild).user_created_voice_channels()
-
+            data = self.config_cache[guild.id]["user_created_voice_channels"]
             for index, (channel_id_str, channel_id) in enumerate(data.items(), 1):
                 if index % 5 == 0:
                     await asyncio.sleep(5)
@@ -308,11 +337,12 @@ class CustomChannels(commands.Cog):
                         if room in user_voice:
                             del user_voice[room]
 
-            custom_channels = await self.config.guild(guild).user_created_voice_channels()
+            custom_channels = self.config_cache[guild.id]["user_created_voice_channels"]
             custom_channels_to_keep = {
                 k: v for k, v in custom_channels.items() if k not in delete_id
             }
             await self.config.guild(guild).user_created_voice_channels.set(custom_channels_to_keep)
+            self.config_cache[guild.id]["user_created_voice_channels"] = custom_channels_to_keep
 
     async def clean_up_custom_channels(self):
         with contextlib.suppress(asyncio.CancelledError):
@@ -324,7 +354,11 @@ class CustomChannels(commands.Cog):
                 guilds = self.bot.guilds
                 for guild in guilds:
                     keep_id = {}
-                    data = await self.config.guild(guild).user_created_voice_channels()
+                    if "user_created_voice_channels" not in self.config_cache[guild.id]:
+                        self.config_cache[guild.id][
+                            "user_created_voice_channels"
+                        ] = await self.config.guild(guild).user_created_voice_channels()
+                    data = self.config_cache[guild.id]["user_created_voice_channels"]
                     has_perm = guild.me.guild_permissions.manage_channels
                     for channel_id_str, channel_id in data.items():
                         channel = guild.get_channel(channel_id)
@@ -342,6 +376,7 @@ class CustomChannels(commands.Cog):
                                 logger.info(f"{channel.name} is not empty")
                                 keep_id.update({channel_id_str: channel_id})
                     await self.config.guild(guild).user_created_voice_channels.set(keep_id)
+                    self.config_cache[guild.id]["user_created_voice_channels"] = keep_id
                 logger.info(
                     f"clean_up_custom_channels scheduled has finished sleeping for {timer}s"
                 )

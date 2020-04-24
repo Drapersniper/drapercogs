@@ -3,6 +3,7 @@ import asyncio
 import contextlib
 import json
 import logging
+from collections import defaultdict
 from datetime import timedelta
 from operator import itemgetter
 from typing import Union, Optional, Dict
@@ -24,6 +25,7 @@ class DynamicChannels(commands.Cog):
         self.config = ConfigHolder.DynamicChannels
         self.task = self.bot.loop.create_task(self.clean_up_dynamic_channels())
         self.antispam: Dict[int, Dict[int, AntiSpam]] = {}
+        self.config_cache = defaultdict(dict)
 
     def cog_unload(self):
         if self.task:
@@ -44,6 +46,10 @@ class DynamicChannels(commands.Cog):
             blacklisted_users = blacklist["blacklist"]
             blacklisted_users.expand([u.id for u in users])
             blacklist["blacklist"] = list(set(blacklisted_users))
+
+        self.config_cache[ctx.guild.id]["blacklist"] = await self.config.guild(
+            ctx.guild
+        ).blacklist()
         await ctx.tick()
 
     @_button.command(name="blacklistremove")
@@ -54,6 +60,10 @@ class DynamicChannels(commands.Cog):
             blacklisted_users = blacklist["blacklist"]
             blacklisted_users = [u for u in blacklisted_users if u not in [m.id for m in users]]
             blacklist["blacklist"] = list(set(blacklisted_users))
+
+        self.config_cache[ctx.guild.id]["blacklist"] = await self.config.guild(
+            ctx.guild
+        ).blacklist()
         await ctx.tick()
 
     @_button.command(name="add")
@@ -91,6 +101,9 @@ class DynamicChannels(commands.Cog):
                 f"Added {category_id} to the whitelist\n"
                 f"Rooms will be called {room_name} and have a size of {size}"
             )
+        self.config_cache[ctx.guild.id]["dynamic_channels"] = await self.config.guild(
+            ctx.guild
+        ).dynamic_channels()
 
     @_button.command(name="append")
     async def multiple_dynamic_channel_whistelist_append(
@@ -136,6 +149,9 @@ class DynamicChannels(commands.Cog):
                 f"Added {category_id} to the whitelist\nRooms will be called "
                 f"{room_name} and have a size of {size}"
             )
+        self.config_cache[ctx.guild.id]["dynamic_channels"] = await self.config.guild(
+            ctx.guild
+        ).dynamic_channels()
 
     @_button.command(name="remove")
     async def multiple_dynamic_channel_whistelist_delete(
@@ -149,6 +165,9 @@ class DynamicChannels(commands.Cog):
                 await ctx.send(f"Removed {category_id} from the whitelist")
             else:
                 await ctx.send(f"Error: {category_id} is not a whitelisted category")
+        self.config_cache[ctx.guild.id]["dynamic_channels"] = await self.config.guild(
+            ctx.guild
+        ).dynamic_channels()
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(
@@ -157,12 +176,15 @@ class DynamicChannels(commands.Cog):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
-
+        if "dynamic_channels" not in self.config_cache[channel.guild.id]:
+            self.config_cache[channel.guild.id]["dynamic_channels"] = await self.config.guild(
+                channel.guild
+            ).dynamic_channels()
         if (
             isinstance(channel, discord.VoiceChannel)
             and channel.category
             and f"{channel.category.id}"
-            in (await self.config.guild(channel.guild).dynamic_channels())
+            in (self.config_cache[channel.guild.id]["dynamic_channels"])
         ):
             log.debug(
                 f"Dynamic Channel ({channel.id}) has been deleted checking if it exist in database"
@@ -180,11 +202,15 @@ class DynamicChannels(commands.Cog):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
+        if "dynamic_channels" not in self.config_cache[channel.guild.id]:
+            self.config_cache[channel.guild.id]["dynamic_channels"] = await self.config.guild(
+                channel.guild
+            ).dynamic_channels()
         if (
             isinstance(channel, discord.VoiceChannel)
             and channel.category
             and f"{channel.category.id}"
-            in (await self.config.guild(channel.guild).dynamic_channels())
+            in (self.config_cache[channel.guild.id]["dynamic_channels"])
         ):
             log.debug(f"Dynamic Channel ({channel.id}) has been created adding to database")
             channel_group = self.config.guild(channel.guild)
@@ -201,7 +227,17 @@ class DynamicChannels(commands.Cog):
             return
         if member.bot:
             return
-        if member.id in await self.config.guild(member.guild).blacklist():
+        if "dynamic_channels" not in self.config_cache[member.guild.id]:
+            self.config_cache[member.guild.id]["dynamic_channels"] = await self.config.guild(
+                member.guild
+            ).dynamic_channels()
+        if not self.config_cache[member.guild.id]["dynamic_channels"]:
+            return
+        if "blacklist" not in self.config_cache[member.guild.id]:
+            self.config_cache[member.guild.id]["blacklist"] = await self.config.guild(
+                member.guild
+            ).blacklist()
+        if member.id in self.config_cache[member.guild.id]["blacklist"]:
             return
         if guild.id not in self.antispam:
             self.antispam[guild.id] = {}
@@ -326,7 +362,6 @@ class DynamicChannels(commands.Cog):
             try:
                 await self.bot.wait_until_ready()
                 guilds = self.bot.guilds
-                timer = 60
                 while guilds and True:
                     guilds = self.bot.guilds
                     for guild in guilds:
@@ -348,6 +383,6 @@ class DynamicChannels(commands.Cog):
                                 else:
                                     keep_id.update({channel_id: channel_id})
                         await self.config.guild(guild).user_created_voice_channels.set(keep_id)
-                    await asyncio.sleep(timer)
+                    await asyncio.sleep(60)
             except Exception as e:
                 log.exception("Error on channel cleanup", exc_info=e)

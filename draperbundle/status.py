@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # Standard Library
 from copy import copy
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 from typing import List
 
 # Cog Dependencies
 import discord
 
 from redbot.core import commands
-from redbot.core.utils.chat_formatting import pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 from .config_holder import ConfigHolder

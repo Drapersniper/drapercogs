@@ -3,6 +3,7 @@ import asyncio
 import contextlib
 import logging
 import time
+from collections import defaultdict
 from datetime import datetime
 from operator import itemgetter
 from typing import Union
@@ -41,6 +42,7 @@ class GamingProfile(commands.Cog):
         self.config = ConfigHolder.AccountManager
         self._cache = {}
         self._task = self.bot.loop.create_task(self._save_to_config())
+        self.config_cache = defaultdict(dict)
 
     @commands.group(name="gprofile")
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
@@ -70,6 +72,7 @@ class GamingProfile(commands.Cog):
         async with self.profileConfig.guild(ctx.guild).all() as guild_data:
             current_role_management = guild_data["role_management"]
             guild_data["role_management"] = not current_role_management
+            self.config_cache[ctx.guild.id] = not current_role_management
 
         if not current_role_management:
             await ctx.send(
@@ -153,6 +156,7 @@ class GamingProfile(commands.Cog):
                 await update_member_atomically(
                     ctx=ctx, member=author, give=role_to_add, remove=role_to_remove
                 )
+            await author.send("Done.")
 
     @_profile.command(name="update")
     async def _profile_update(self, ctx: commands.Context):
@@ -304,7 +308,9 @@ class GamingProfile(commands.Cog):
         guild = after.guild
         role_to_remove = []
         role_to_add = []
-        if not await self.profileConfig.guild(guild).role_management():
+        if self.config_cache[guild.id] == {}:
+            self.config_cache[guild.id] = await self.profileConfig.guild(guild).role_management()
+        if not self.config_cache[guild.id]:
             return
         if guild and guild.me.guild_permissions.manage_roles:
             continent_role = await self.profileConfig.user(after).zone()
