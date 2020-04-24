@@ -91,7 +91,6 @@ class GamingProfile(commands.Cog):
         author = ctx.author
         user_data = {
             "country": None,
-            "discord_user_id": author.id,
             "identifier": author.id,
             "zone": None,
             "timezone": None,
@@ -387,11 +386,10 @@ class GamingProfile(commands.Cog):
             "seen",
             "trial",
             "nickname_extas",
-            "identifier",
         )
         data = await self.profileConfig.user(member).get_raw()
         last_seen = None
-        if data.get("discord_user_id"):
+        if data.get("identifier"):
             if member:
                 last_seen = (
                     self._cache.get(member.id) or await self.profileConfig.user(member).seen()
