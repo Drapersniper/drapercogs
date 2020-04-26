@@ -76,7 +76,7 @@ class MixinMeta(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_active_player_count(self) -> Tuple[str, int]:
+    async def get_active_player_count(self) -> Tuple[str, int]:
         raise NotImplementedError()
 
     @abstractmethod
@@ -180,7 +180,7 @@ class MixinMeta(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_track_description_unformatted(
+    async def get_track_description_unformatted(
         self, track: Union[lavalink.rest_api.Track, "Query"], local_folder_current_path: Path
     ) -> Optional[str]:
         raise NotImplementedError()

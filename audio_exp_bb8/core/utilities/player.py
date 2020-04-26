@@ -42,7 +42,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         self._error_timer[guild] = now
         return self._error_counter[guild] >= 5
 
-    def get_active_player_count(self) -> Tuple[Optional[str], int]:
+    async def get_active_player_count(self) -> Tuple[Optional[str], int]:
         try:
             current = next(
                 (

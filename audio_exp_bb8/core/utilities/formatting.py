@@ -336,7 +336,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             string = f'**{escape(f"{string}", formatting=True)}**'
         return string
 
-    def get_track_description_unformatted(self, track, local_folder_current_path) -> Optional[str]:
+    async def get_track_description_unformatted(self, track, local_folder_current_path) -> Optional[str]:
         """Get the user facing unformatted track name"""
         if track and hasattr(track, "uri"):
             query = Query.process_input(track.uri, local_folder_current_path)
