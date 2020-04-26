@@ -314,7 +314,13 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
                         string = "{}...".format((string[:40]).rstrip(" "))
                     string = f'**{escape(f"{string}", formatting=True)}**'
             else:
-                if track.author.lower() not in track.title.lower():
+                if track.is_stream:
+                    icy = await self.icyparser(track.uri)
+                    if icy:
+                        title = icy
+                    else:
+                        title = f"{track.title} - {track.author}"
+                elif track.author.lower() not in track.title.lower():
                     title = f"{track.title} - {track.author}"
                 else:
                     title = track.title
@@ -347,7 +353,13 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 else:
                     return query.to_string_user()
             else:
-                if track.author.lower() not in track.title.lower():
+                if track.is_stream:
+                    icy = await self.icyparser(track.uri)
+                    if icy:
+                        title = icy
+                    else:
+                        title = f"{track.title} - {track.author}"
+                elif track.author.lower() not in track.title.lower():
                     title = f"{track.title} - {track.author}"
                 else:
                     title = track.title

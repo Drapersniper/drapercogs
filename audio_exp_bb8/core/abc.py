@@ -512,3 +512,7 @@ class MixinMeta(ABC):
     @abstractmethod
     async def command_prev(self, ctx: commands.Context):
         raise NotImplementedError()
+
+    @abstractmethod
+    async def icyparser(self, url: str) -> Optional[str]:
+        raise NotImplementedError()

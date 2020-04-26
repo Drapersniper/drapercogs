@@ -10,6 +10,7 @@ import lavalink
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
 from .api_utils import QueueFetchResult
@@ -83,11 +84,8 @@ class QueueInterface:
                     debug_exc_log(log, exc, "Failed to completed playlist fetch from database")
                     return []
 
-        for index, row in enumerate(row_result, start=1):
-            if index % 50 == 0:
-                await asyncio.sleep(0.01)
+        async for index, row in AsyncIter(row_result).enumerate(start=1):
             output.append(QueueFetchResult(*row))
-            await asyncio.sleep(0)
         return output
 
     async def played(self, guild_id: int, track_id: str) -> None:

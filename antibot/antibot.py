@@ -57,7 +57,7 @@ class AntiBot(commands.Cog):
 
     @commands.Cog.listener()
     async def on_red_api_tokens_update(
-            self, service_name: str, api_tokens: Mapping[str, str]
+        self, service_name: str, api_tokens: Mapping[str, str]
     ) -> None:
         if service_name == "ksoft":
             self.ban_api = api_tokens

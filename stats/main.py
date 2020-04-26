@@ -494,7 +494,8 @@ class Stats(commands.Cog):
         data.add_field(
             name=_("Bot Extensions:"),
             value=_(
-                "Available Cogs: {cogs}\n" "Loaded Cogs: {loaded}\n" 
+                "Available Cogs: {cogs}\n"
+                "Loaded Cogs: {loaded}\n"
                 "Unloaded Cogs: {unloaded}\nCommands: {commands}"
             ).format(
                 cogs=bold(humanize_number(len(all_cogs))),
