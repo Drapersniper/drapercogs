@@ -171,7 +171,7 @@ class MixinMeta(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_track_description(
+    async def get_track_description(
         self,
         track: Union[lavalink.rest_api.Track, "Query"],
         local_folder_current_path: Path,

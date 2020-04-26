@@ -129,7 +129,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         except IndexError:
             search_choice = tracks[-1]
         if not hasattr(search_choice, "is_local") and getattr(search_choice, "uri", None):
-            description = self.get_track_description(search_choice, self.local_folder_current_path)
+            description = await self.get_track_description(search_choice, self.local_folder_current_path)
         else:
             search_choice = Query.process_input(search_choice, self.local_folder_current_path)
             if search_choice.is_local:
@@ -206,9 +206,9 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             await player.play()
         return await self.send_embed_msg(ctx, embed=songembed)
 
-    def _format_search_options(self, search_choice):
+    async def _format_search_options(self, search_choice):
         query = Query.process_input(search_choice, self.local_folder_current_path)
-        description = self.get_track_description(search_choice, self.local_folder_current_path)
+        description = await self.get_track_description(search_choice, self.local_folder_current_path)
         return description, query
 
     async def _build_search_page(
@@ -274,7 +274,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         )
         return embed
 
-    def get_track_description(
+    async def get_track_description(
         self, track, local_folder_current_path, shorten=False
     ) -> Optional[str]:
         """Get the user facing formatted track name"""

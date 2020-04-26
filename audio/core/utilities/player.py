@@ -52,7 +52,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 ),
                 None,
             )
-            get_single_title = self.get_track_description_unformatted(
+            get_single_title = await self.get_track_description_unformatted(
                 current, self.local_folder_current_path
             )
             playing_servers = len(lavalink.active_players())
@@ -149,7 +149,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         elif autoplay and not player.queue:
             embed = discord.Embed(
                 title=_("Track Skipped"),
-                description=self.get_track_description(
+                description=await self.get_track_description(
                     player.current, self.local_folder_current_path
                 ),
             )
@@ -186,7 +186,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         else:
             embed = discord.Embed(
                 title=_("Track Skipped"),
-                description=self.get_track_description(
+                description=await self.get_track_description(
                     player.current, self.local_folder_current_path
                 ),
             )
@@ -569,7 +569,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=title, description=desc)
-            description = self.get_track_description(single_track, self.local_folder_current_path)
+            description = await self.get_track_description(single_track, self.local_folder_current_path)
             embed = discord.Embed(title=_("Track Enqueued"), description=description)
             if not guild_data["shuffle"] and queue_dur > 0:
                 embed.set_footer(

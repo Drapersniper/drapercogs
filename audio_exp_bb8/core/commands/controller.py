@@ -99,7 +99,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 dur = "LIVE"
             else:
                 dur = self.format_time(player.current.length)
-            song = self.get_track_description(player.current, self.local_folder_current_path) or ""
+            song = await self.get_track_description(player.current, self.local_folder_current_path) or ""
             song += _("\n Requested by: **{track.requester}**")
             song += "\n\n{arrow}`{pos}`/`{dur}`"
             song = song.format(track=player.current, arrow=arrow, pos=pos, dur=dur)
@@ -218,7 +218,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         if not player.current:
             return await self.send_embed_msg(ctx, title=_("Nothing playing."))
-        description = self.get_track_description(player.current, self.local_folder_current_path)
+        description = await self.get_track_description(player.current, self.local_folder_current_path)
 
         if player.current and not player.paused:
             await player.pause()
@@ -288,7 +288,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             player.queue.insert(0, bump_song)
             player.queue.pop(queue_len)
             await player.skip()
-            description = self.get_track_description(
+            description = await self.get_track_description(
                 player.current, self.local_folder_current_path
             )
             embed = discord.Embed(title=_("Replaying Track"), description=description)
@@ -797,7 +797,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.api_interface.persistent_queue_api.played(
                 ctx.guild.id, removed.extras.get("enqueue_time")
             )
-            removed_title = self.get_track_description(removed, self.local_folder_current_path)
+            removed_title = await self.get_track_description(removed, self.local_folder_current_path)
             await self.send_embed_msg(
                 ctx,
                 title=_("Removed track from queue"),
@@ -867,7 +867,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
         bump_song.extras["bumped"] = True
         player.queue.insert(0, bump_song)
         removed = player.queue.pop(index)
-        description = self.get_track_description(removed, self.local_folder_current_path)
+        description = await self.get_track_description(removed, self.local_folder_current_path)
         await self.send_embed_msg(
             ctx, title=_("Moved track to the top of the queue."), description=description
         )

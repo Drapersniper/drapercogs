@@ -30,7 +30,7 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
         notify = guild_data["notify"]
         disconnect = guild_data["disconnect"]
         autoplay = guild_data["auto_play"]
-        description = self.get_track_description(current_track, self.local_folder_current_path)
+        description = await self.get_track_description(current_track, self.local_folder_current_path)
         status = await self.config.status()
         log.debug(f"Received a new lavalink event for {guild_id}: {event_type}: {extra}")
         prev_song: lavalink.Track = player.fetch("prev_song")

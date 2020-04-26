@@ -46,7 +46,7 @@ class QueueUtilities(MixinMeta, metaclass=CompositeMetaClass):
             dur = self.format_time(player.current.length)
 
         query = Query.process_input(player.current, self.local_folder_current_path)
-        current_track_description = self.get_track_description(
+        current_track_description = await self.get_track_description(
             player.current, self.local_folder_current_path
         )
         if query.is_stream:
@@ -65,7 +65,7 @@ class QueueUtilities(MixinMeta, metaclass=CompositeMetaClass):
         ):
             req_user = track.requester
             track_idx = i + 1
-            track_description = self.get_track_description(
+            track_description = await self.get_track_description(
                 track, self.local_folder_current_path, shorten=True
             )
             queue_list += f"`{track_idx}.` {track_description}, "

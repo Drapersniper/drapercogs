@@ -312,7 +312,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             self.bot.dispatch(
                 "red_audio_track_enqueue", player.channel.guild, single_track, ctx.author
             )
-        description = self.get_track_description(single_track, self.local_folder_current_path)
+        description = await self.get_track_description(single_track, self.local_folder_current_path)
         footer = None
         if not play_now and not guild_data["shuffle"] and queue_dur > 0:
             footer = _("{time} until track playback: #1 in queue").format(
