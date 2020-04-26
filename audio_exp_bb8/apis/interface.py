@@ -12,6 +12,7 @@ import aiohttp
 import discord
 import lavalink
 from lavalink.rest_api import LoadResult, LoadType
+from redbot.core.utils import AsyncIter
 
 from redbot.core import Config, commands
 from redbot.core.bot import Red
@@ -167,8 +168,8 @@ class AudioAPIInterface:
                 log.debug("Running pending writes to database")
             try:
                 tasks: MutableMapping = {"update": [], "insert": [], "global": []}
-                for (k, task) in self._tasks.items():
-                    for t, args in task.items():
+                async for k, task in AsyncIter(self._tasks.items()):
+                    async for t, args in AsyncIter(task.items()):
                         tasks[t].append(args)
                 self._tasks = {}
                 await asyncio.gather(
@@ -207,7 +208,7 @@ class AudioAPIInterface:
         track_count = 0
         time_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
         youtube_cache = CacheLevel.set_youtube().is_subset(current_cache_level)
-        for track in tracks:
+        async for track in AsyncIter(tracks):
             if isinstance(track, str):
                 break
             elif isinstance(track, dict) and track.get("error", {}).get("message") == "invalid id":
@@ -256,7 +257,6 @@ class AudioAPIInterface:
                     youtube_urls.append(val)
             else:
                 youtube_urls.append(track_info)
-            await asyncio.sleep(0)
             track_count += 1
             if notifier is not None and ((track_count % 2 == 0) or (track_count == total_tracks)):
                 await notifier.notify_user(current=track_count, total=total_tracks, key="youtube")
@@ -978,8 +978,7 @@ class AudioAPIInterface:
         self, ctx: commands.Context, db_entries: List[LavalinkCacheFetchForGlobalResult]
     ) -> None:
         tasks = []
-        for i, entry in enumerate(db_entries, start=1):
-            await asyncio.sleep(0)
+        async for i, entry in AsyncIter(db_entries).enumerate(start=1):
             query = entry.query
             data = entry.data
             _raw_query = Query.process_input(query, self.cog.local_folder_current_path)

@@ -1,4 +1,3 @@
-import asyncio
 import contextlib
 import datetime
 import logging
@@ -9,6 +8,7 @@ from typing import MutableMapping, Optional
 import discord
 import lavalink
 from discord.embeds import EmptyEmbed
+from redbot.core.utils import AsyncIter
 
 from redbot.core import commands
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
@@ -474,12 +474,11 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(ctx, title=_("No categories found, try again later."))
         len_folder_pages = math.ceil(len(category_list) / 5)
         category_search_page_list = []
-        for page_num in range(1, len_folder_pages + 1):
+        async for page_num in AsyncIter(range(1, len_folder_pages + 1)):
             embed = await self._build_genre_search_page(
                 ctx, category_list, page_num, _("Categories")
             )
             category_search_page_list.append(embed)
-            await asyncio.sleep(0)
         cat_menu_output = await menu(ctx, category_search_page_list, category_search_controls)
         if not cat_menu_output:
             return await self.send_embed_msg(
@@ -493,7 +492,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(ctx, title=_("No categories found, try again later."))
         len_folder_pages = math.ceil(len(playlists_list) / 5)
         playlists_search_page_list = []
-        for page_num in range(1, len_folder_pages + 1):
+        async for page_num in AsyncIter(range(1, len_folder_pages + 1)):
             embed = await self._build_genre_search_page(
                 ctx,
                 playlists_list,
@@ -502,7 +501,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 playlist=True,
             )
             playlists_search_page_list.append(embed)
-            await asyncio.sleep(0)
         playlists_pick = await menu(ctx, playlists_search_page_list, playlist_search_controls)
         query = Query.process_input(playlists_pick, self.local_folder_current_path)
         if not query.valid:
@@ -765,9 +763,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     )
                 track_len = 0
                 empty_queue = not player.queue
-                for i, track in enumerate(tracks, start=1):
-                    if i % 500 == 0:  # TODO: Improve when Toby menu's are merged
-                        await asyncio.sleep(0.1)
+                async for track in AsyncIter(tracks):
                     if len(player.queue) >= 10000:
                         continue
                     if not await self.is_query_allowed(
@@ -810,7 +806,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                         )
                     if not player.current:
                         await player.play()
-                    await asyncio.sleep(0)
                 player.maybe_shuffle(0 if empty_queue else 1)
                 if len(tracks) > track_len:
                     maxlength_msg = " {bad_tracks} tracks cannot be queued.".format(
@@ -885,10 +880,9 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         len_search_pages = math.ceil(len(tracks) / 5)
         search_page_list = []
-        for page_num in range(1, len_search_pages + 1):
+        async for page_num in AsyncIter(range(1, len_search_pages + 1)):
             embed = await self._build_search_page(ctx, tracks, page_num)
             search_page_list.append(embed)
-            await asyncio.sleep(0)
 
         if dj_enabled and not can_skip:
             return await menu(ctx, search_page_list, DEFAULT_CONTROLS)

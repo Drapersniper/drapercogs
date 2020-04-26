@@ -7,6 +7,7 @@ from typing import Optional, Tuple, Union
 
 import discord
 import lavalink
+from redbot.core.utils import AsyncIter
 
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import humanize_number
@@ -789,7 +790,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
         else:
             clean_tracks = []
             removed_tracks = 0
-            for track in player.queue:
+            async for track in AsyncIter(player.queue):
                 if track.uri != index_or_url:
                     clean_tracks.append(track)
                 else:
@@ -797,7 +798,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
                         ctx.guild.id, track.extras.get("enqueue_time")
                     )
                     removed_tracks += 1
-                await asyncio.sleep(0)
             player.queue = clean_tracks
             if removed_tracks == 0:
                 await self.send_embed_msg(

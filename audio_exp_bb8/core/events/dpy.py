@@ -4,7 +4,7 @@ import logging
 import re
 from collections import OrderedDict
 from pathlib import Path
-from typing import Final
+from typing import Final, Pattern
 
 import discord
 import lavalink
@@ -21,7 +21,7 @@ from ...errors import TrackEnqueueError
 
 log = logging.getLogger("red.cogs.Audio.cog.Events.dpy")
 
-RE_CONVERSION: Final[re.Pattern] = re.compile('Converting to "(.*)" failed for parameter "(.*)".')
+RE_CONVERSION: Final[Pattern] = re.compile('Converting to "(.*)" failed for parameter "(.*)".')
 
 
 class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
