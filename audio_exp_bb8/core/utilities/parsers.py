@@ -29,5 +29,5 @@ class ParsingUtilities(MixinMeta, metaclass=CompositeMetaClass):
                             return title
                     else:
                         return None
-        except (KeyError, aiohttp.ClientConnectionError):
+        except (KeyError, aiohttp.ClientConnectionError, aiohttp.ClientResponseError):
             return None
