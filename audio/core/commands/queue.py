@@ -23,6 +23,7 @@ from redbot.core.utils.predicates import ReactionPredicate
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 
+
 log = logging.getLogger("red.cogs.Audio.cog.Commands.queue")
 
 
