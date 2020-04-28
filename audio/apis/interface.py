@@ -406,7 +406,7 @@ class AudioAPIInterface:
         lock: Callable,
         notifier: Optional[Notifier] = None,
         forced: bool = False,
-        query_global: bool = False,
+        query_global: bool = True,
     ) -> List[lavalink.Track]:
         """Queries the Database then falls back to Spotify and YouTube APIs then Enqueued matched tracks.
 
