@@ -466,7 +466,7 @@ class AudioAPIInterface:
 
             youtube_cache = CacheLevel.set_youtube().is_subset(current_cache_level)
             spotify_cache = CacheLevel.set_spotify().is_subset(current_cache_level)
-            for track_count, track in enumerate(tracks_from_spotify):
+            for track_count, track in enumerate(tracks_from_spotify, start=1):
                 (
                     song_url,
                     track_info,
@@ -515,7 +515,7 @@ class AudioAPIInterface:
                     task = ("update", ("youtube", {"track": track_info}))
                     self.append_task(ctx, *task)
 
-                if llresponse is not None:
+                if isinstance(llresponse, LoadResult):
                     track_object = llresponse.tracks
                 elif val:
                     try:
