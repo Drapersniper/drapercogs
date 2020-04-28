@@ -1067,6 +1067,12 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 global_cache=_("Enabled") if global_data["global_db_enabled"] else _("Disabled"),
                 num_seconds=self.get_time_string(global_data["global_db_get_timeout"]),
             )
+        msg += (
+                "\n---"
+                + _("User Settings")
+                + "---        \n"
+                + _("Spotify search:   [{country_code}]\n")
+        ).format(country_code=await self.config.user(ctx.author).country_code())
 
         msg += _(
             "\n---" + _("Lavalink Settings") + "---        \n"
@@ -1202,6 +1208,28 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         )
 
         await self.config.guild(ctx.guild).country_code.set(country)
+
+    @command_audioset.command(name="mycountrycode")
+    @commands.guild_only()
+    async def command_audioset_countrycode_user(self, ctx: commands.Context, country: str):
+        """Set the country code for Spotify searches."""
+        if len(country) != 2:
+            return await self.send_embed_msg(
+                ctx,
+                title=_("Invalid Country Code"),
+                description=_(
+                    "Please use an official [ISO 3166-1 alpha-2]"
+                    "(https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) code."
+                ),
+            )
+        country = country.upper()
+        await self.send_embed_msg(
+            ctx,
+            title=_("Setting Changed"),
+            description=_("Country Code set to {country}.").format(country=country),
+        )
+
+        await self.config.user(ctx.author).country_code.set(country)
 
     @command_audioset.command(name="cache")
     @commands.is_owner()
