@@ -17,7 +17,7 @@ from ..audio_logging import IS_DEBUG, debug_exc_log
 if TYPE_CHECKING:
     from .. import Audio
 
-_API_URL = "https://redbot.app/"
+_API_URL = "http://172.40.0.5:8000/"
 
 log = logging.getLogger("red.cogs.Audio.api.GlobalDB")
 
