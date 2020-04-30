@@ -244,7 +244,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
 
     user_data["language"] = None
 
-    if len(country_timezones) > 1:
+    if country_timezones and len(country_timezones) > 1:
         country_timezones_dict = {str(i): key for i, key in enumerate(country_timezones, start=1)}
         country_timezones = sorted(country_timezones_dict.values())
 
@@ -269,7 +269,7 @@ async def update_profile(bot, user_data: dict, author: discord.User):
                 valid_timezone_list[pred_check.result] if pred_check.result is not None else None
             )
         user_data["timezone"] = country_timezones[int(timezone) - 1]
-    elif len(country_timezones) == 1:
+    elif country_timezones and len(country_timezones) == 1:
         user_data["timezone"] = country_timezones[0]
 
     return user_data
