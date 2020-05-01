@@ -313,7 +313,7 @@ class LavalinkTableWrapper(BaseWrapper):
         self.statement.get_random = LAVALINK_QUERY_LAST_FETCHED_RANDOM
         self.statement.get_all_global = LAVALINK_FETCH_ALL_ENTRIES_GLOBAL
         self.fetch_result = LavalinkCacheFetchResult
-        self.fetch_for_global: Optional[Callable] = None
+        self.fetch_for_global: Optional[Callable] = LavalinkCacheFetchForGlobalResult
 
     async def fetch_one(
         self, values: MutableMapping
