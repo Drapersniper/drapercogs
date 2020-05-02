@@ -175,13 +175,13 @@ class CustomChannels(commands.Cog):
             and f"{channel.category.id}"
             in (await self.config.guild(channel.guild).category_with_button())
         ):
-            logger.info(
+            logger.debug(
                 f"Custom Channel ({channel.id}) has been deleted checking if it exist in database"
             )
             channel_group = self.config.guild(channel.guild)
             async with channel_group.custom_channels() as channel_data:
                 if f"{channel.id}" in channel_data:
-                    logger.info(f"Custom Channel ({channel.id}) has been deleted from database")
+                    logger.debug(f"Custom Channel ({channel.id}) has been deleted from database")
                     del channel_data[f"{channel.id}"]
 
     @commands.Cog.listener()
@@ -197,7 +197,7 @@ class CustomChannels(commands.Cog):
             and f"{channel.category.id}"
             in (await self.config.guild(channel.guild).category_with_button())
         ):
-            logger.info(f"Custom Channel ({channel.id}) has been created adding to database")
+            logger.debug(f"Custom Channel ({channel.id}) has been created adding to database")
             channel_group = self.config.guild(channel.guild)
             async with channel_group.custom_channels() as channel_data:
                 data = {channel.id: channel.name}
@@ -246,10 +246,10 @@ class CustomChannels(commands.Cog):
             and after.channel.id == whitelist[f"{after.channel.category.id}"]
         ):
             self.antispam[guild.id][member.id].stamp()
-            logger.info(f"User joined {after.channel.name} creating a new room")
+            logger.debug(f"User joined {after.channel.name} creating a new room")
             max_position = max([channel.position for channel in after.channel.category.channels])
             overwrites = await self._get_overrides(after.channel or before.channel, member)
-            logger.info(f"Creating channel: Rename me - {member}")
+            logger.debug(f"Creating channel: Rename me - {member}")
             created_channel = await member.guild.create_voice_channel(
                 name=f"Rename me - {member}",
                 category=after.channel.category,
@@ -258,15 +258,15 @@ class CustomChannels(commands.Cog):
                 reason=f"{member.display_name} created a custom voice room",
                 bitrate=member.guild.bitrate_limit,
             )
-            logger.info(f"Moving {member.display_name} to : Rename me - {member}")
+            logger.debug(f"Moving {member.display_name} to : Rename me - {member}")
             await member.edit(
                 voice_channel=created_channel,
                 reason=f"Moving {member.display_name} to newly created custom room",
             )
-            logger.info(f"User {member.display_name} has been moved to: Rename me - {member}")
+            logger.debug(f"User {member.display_name} has been moved to: Rename me - {member}")
             guild_group = self.config.guild(member.guild)
             async with guild_group.user_created_voice_channels() as user_voice:
-                logger.info(
+                logger.debug(
                     f"Adding {created_channel.name} to the database ({created_channel.id})"
                 )
                 user_voice.update({created_channel.id: created_channel.id})
@@ -275,7 +275,7 @@ class CustomChannels(commands.Cog):
             ] = await self.config.guild(member.guild).user_created_voice_channels()
             member_group = self.config.member(member)
             async with member_group.currentRooms() as user_voice:
-                logger.info(f"Adding {created_channel.name} to user rooms ({created_channel.id})")
+                logger.debug(f"Adding {created_channel.name} to user rooms ({created_channel.id})")
                 user_voice.update({created_channel.id: created_channel.id})
 
         await self.channel_cleaner(before, after, member.guild, user_created_channels)
@@ -299,14 +299,14 @@ class CustomChannels(commands.Cog):
         return overwrites
 
     async def channel_cleaner(self, before, after, guild, user_created_channels):
-        logger.info("Running channel_cleaner")
+        logger.debug("Running channel_cleaner")
         if (
             before
             and before.channel
             and before.channel != after.channel
             and f"{before.channel.id}" in user_created_channels
         ):
-            logger.info(
+            logger.debug(
                 f"{before.channel.name} was a user created room checking if it needs to be deleted"
             )
             if "user_created_voice_channels" not in self.config_cache[guild.id]:
@@ -321,12 +321,12 @@ class CustomChannels(commands.Cog):
 
                 channel = guild.get_channel(channel_id)
                 if channel and sum(1 for _ in channel.members) < 1:
-                    logger.info(f"{channel.name} is empty trying to delete it")
+                    logger.debug(f"{channel.name} is empty trying to delete it")
                     try:
                         await channel.delete(reason="User created room is empty cleaning up")
-                        logger.info(f"{channel.name} has been removed")
+                        logger.debug(f"{channel.name} has been removed")
                     except discord.NotFound:
-                        logger.info(f"{channel.name} does not exist and couldn't be deleted")
+                        logger.debug(f"{channel.name} does not exist and couldn't be deleted")
                     delete_id.update({channel_id_str: channel_id})
 
             for player in await self.config.all_members(guild):
@@ -350,7 +350,7 @@ class CustomChannels(commands.Cog):
             guilds = self.bot.guilds
             timer = 7200
             while guilds and True:
-                logger.info(f"clean_up_custom_channels scheduled run started")
+                logger.debug(f"clean_up_custom_channels scheduled run started")
                 guilds = self.bot.guilds
                 for guild in guilds:
                     keep_id = {}
@@ -363,21 +363,21 @@ class CustomChannels(commands.Cog):
                     for channel_id_str, channel_id in data.items():
                         channel = guild.get_channel(channel_id)
                         if channel:
-                            logger.info(f"Checking if {channel.name} is empty")
+                            logger.debug(f"Checking if {channel.name} is empty")
                             if sum(1 for _ in channel.members) < 1:
-                                logger.info(f"{channel.name} is empty queueing it for deletion")
+                                logger.debug(f"{channel.name} is empty queueing it for deletion")
                                 if has_perm:
                                     await asyncio.sleep(5)
                                     await channel.delete(
                                         reason="User created channel was empty during cleanup cycle"
                                     )
-                                    logger.info(f"{channel.name} has been deleted")
+                                    logger.debug(f"{channel.name} has been deleted")
                             else:
-                                logger.info(f"{channel.name} is not empty")
+                                logger.debug(f"{channel.name} is not empty")
                                 keep_id.update({channel_id_str: channel_id})
                     await self.config.guild(guild).user_created_voice_channels.set(keep_id)
                     self.config_cache[guild.id]["user_created_voice_channels"] = keep_id
-                logger.info(
+                logger.debug(
                     f"clean_up_custom_channels scheduled has finished sleeping for {timer}s"
                 )
                 await asyncio.sleep(timer)
