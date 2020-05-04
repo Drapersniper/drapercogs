@@ -1390,6 +1390,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         pred = ReactionPredicate.yes_or_no(info, ctx.author)
         await ctx.bot.wait_for("reaction_add", check=pred)
         if not pred.result:
+            await info.delete()
             return await self.send_embed_msg(ctx, title=_("Cancelled."))
         await self.api_interface.contribute_to_global(ctx, db_entries)
 
