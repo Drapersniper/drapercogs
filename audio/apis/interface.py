@@ -1003,6 +1003,7 @@ class AudioAPIInterface:
                     tasks = []
                     if IS_DEBUG:
                         log.debug("Pending writes to database have finished")
+                    await asyncio.sleep(5)
         with contextlib.suppress(Exception):
             if tasks:
                 if IS_DEBUG:
