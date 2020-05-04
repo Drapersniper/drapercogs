@@ -979,7 +979,7 @@ class AudioAPIInterface:
         return await self.local_cache_api.lavalink.fetch_all_for_global()
 
     async def contribute_to_global(
-        self, ctx: commands.Context, db_entries: List[LavalinkCacheFetchForGlobalResult]
+            self, ctx: commands.Context, db_entries: List[LavalinkCacheFetchForGlobalResult]
     ) -> None:
         tasks = []
         async for i, entry in AsyncIter(db_entries).enumerate(start=1):
@@ -989,13 +989,11 @@ class AudioAPIInterface:
             if data.get("loadType") == "V2_COMPACT":
                 data["loadType"] = "V2_COMPAT"
             results = LoadResult(data)
-            await asyncio.sleep(0)
             with contextlib.suppress(Exception):
                 if not _raw_query.is_local and not results.has_error and len(results.tracks) >= 1:
                     global_task = dict(llresponse=results, query=_raw_query)
                     tasks.append(global_task)
-                    await asyncio.sleep(0)
-                if i % 100 == 0:
+                if i % 500 == 0:
                     if IS_DEBUG:
                         log.debug("Running pending writes to database")
                     await asyncio.gather(
@@ -1005,6 +1003,14 @@ class AudioAPIInterface:
                     tasks = []
                     if IS_DEBUG:
                         log.debug("Pending writes to database have finished")
-            if i % 250 == 0:
-                await asyncio.sleep(5)
+        with contextlib.suppress(Exception):
+            if tasks:
+                if IS_DEBUG:
+                    log.debug("Running pending writes to database")
+                await asyncio.gather(
+                    *[self.global_cache_api.update_global(**a) for a in tasks],
+                    return_exceptions=True,
+                )
+                if IS_DEBUG:
+                    log.debug("Pending writes to database have finished")
         await ctx.tick()

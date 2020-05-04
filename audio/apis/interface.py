@@ -1003,4 +1003,14 @@ class AudioAPIInterface:
                     tasks = []
                     if IS_DEBUG:
                         log.debug("Pending writes to database have finished")
+        with contextlib.suppress(Exception):
+            if tasks:
+                if IS_DEBUG:
+                    log.debug("Running pending writes to database")
+                await asyncio.gather(
+                    *[self.global_cache_api.update_global(**a) for a in tasks],
+                    return_exceptions=True,
+                )
+                if IS_DEBUG:
+                    log.debug("Pending writes to database have finished")
         await ctx.tick()
