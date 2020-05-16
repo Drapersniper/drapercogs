@@ -1,38 +1,14 @@
-import asyncio
 import datetime
 from collections import Counter, defaultdict
-from typing import AsyncIterable, Sequence
 
 import discord
 from redbot.core import commands
 from redbot.core.bot import Red
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import bold, humanize_number, humanize_timedelta
 import lavalink
 
 _ = lambda s: s
-
-
-class AsyncGen(AsyncIterable):
-    """Yield entry every `delay` seconds."""
-
-    def __init__(self, contents: Sequence, delay: float = 0.0, steps: int = 1):
-        self.delay = delay
-        self.content = contents
-        self.i = 0
-        self.steps = steps
-        self.to = len(contents)
-
-    def __aiter__(self):
-        return self
-
-    async def __anext__(self):
-        if self.i >= self.to:
-            raise StopAsyncIteration
-        i = self.content[self.i]
-        self.i += 1
-        if self.i % self.steps == 0:
-            await asyncio.sleep(self.delay)
-        return i
 
 
 class Stats(commands.Cog):
@@ -114,12 +90,12 @@ class Stats(commands.Cog):
             region_count = Counter()
             verif_count = Counter()
             features_count = Counter()
-            async for s in AsyncGen(self.bot.guilds):
+            async for s in AsyncIter(self.bot.guilds, steps=1000, delay=0.2):
                 if s.unavailable:
                     temp_data["unavailable"].add(s.id)
                     continue
 
-                async for f in AsyncGen(s.features):
+                async for f in AsyncIter(s.features, steps=1000, delay=0.2):
                     features_count[f] += 1
 
                 verif_count[f"{s.verification_level}"] += 1
@@ -145,7 +121,7 @@ class Stats(commands.Cog):
                 elif s.premium_tier == 3:
                     temp_data["tier_3_count"].add(s.id)
 
-                async for c in AsyncGen(s.text_channels):
+                async for c in AsyncIter(s.text_channels, steps=1000, delay=0.2):
                     if c.is_nsfw():
                         temp_data["nsfw_text_channel_count"].add(c.id)
                     if c.is_news():
@@ -153,23 +129,23 @@ class Stats(commands.Cog):
                     if c.type is discord.ChannelType.store:
                         temp_data["store_text_channel_count"].add(c.id)
 
-                async for vc in AsyncGen(s.voice_channels):
+                async for vc in AsyncIter(s.voice_channels, steps=1000, delay=0.2):
                     counter["user_voice_channel_count"] += len(vc.members)
 
                     if s.me in vc.members:
                         counter["user_voice_channel_with_me_count"] += len(vc.members) - 1
 
-                    async for vcm in AsyncGen(vc.members):
+                    async for vcm in AsyncIter(vc.members, steps=1000, delay=0.2):
                         if vcm.is_on_mobile():
                             temp_data["user_voice_channel_mobile_count"].add(vcm.id)
 
-                async for e in AsyncGen(s.emojis):
+                async for e in AsyncIter(s.emojis, steps=1000, delay=0.2):
                     if e.animated:
                         counter["animated_emojis"] += 1
                     else:
                         counter["static_emojis"] += 1
 
-                async for m in AsyncGen(s.members):
+                async for m in AsyncIter(s.members, steps=1000, delay=0.2):
                     if m.bot:
                         temp_data["bots"].add(m.id)
                     else:
@@ -180,7 +156,7 @@ class Stats(commands.Cog):
                         temp_data["mobile_users"].add(m.id)
                     streaming = False
 
-                    async for a in AsyncGen(m.activities):
+                    async for a in AsyncIter(m.activities, steps=1000, delay=0.2):
                         if a.type is discord.ActivityType.streaming:
                             temp_data["streaming_users"].add(m.id)
                             if m.bot:
