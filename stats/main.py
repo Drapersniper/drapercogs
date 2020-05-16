@@ -90,12 +90,12 @@ class Stats(commands.Cog):
             region_count = Counter()
             verif_count = Counter()
             features_count = Counter()
-            async for s in AsyncIter(self.bot.guilds, steps=1000, delay=0.2):
+            async for s in AsyncIter(self.bot.guilds, steps=1000, delay=0):
                 if s.unavailable:
                     temp_data["unavailable"].add(s.id)
                     continue
 
-                async for f in AsyncIter(s.features, steps=1000, delay=0.2):
+                async for f in AsyncIter(s.features, steps=1000, delay=0):
                     features_count[f] += 1
 
                 verif_count[f"{s.verification_level}"] += 1
@@ -121,7 +121,7 @@ class Stats(commands.Cog):
                 elif s.premium_tier == 3:
                     temp_data["tier_3_count"].add(s.id)
 
-                async for c in AsyncIter(s.text_channels, steps=1000, delay=0.2):
+                async for c in AsyncIter(s.text_channels, steps=1000, delay=0):
                     if c.is_nsfw():
                         temp_data["nsfw_text_channel_count"].add(c.id)
                     if c.is_news():
@@ -129,23 +129,23 @@ class Stats(commands.Cog):
                     if c.type is discord.ChannelType.store:
                         temp_data["store_text_channel_count"].add(c.id)
 
-                async for vc in AsyncIter(s.voice_channels, steps=1000, delay=0.2):
+                async for vc in AsyncIter(s.voice_channels, steps=1000, delay=0):
                     counter["user_voice_channel_count"] += len(vc.members)
 
                     if s.me in vc.members:
                         counter["user_voice_channel_with_me_count"] += len(vc.members) - 1
 
-                    async for vcm in AsyncIter(vc.members, steps=1000, delay=0.2):
+                    async for vcm in AsyncIter(vc.members, steps=1000, delay=0):
                         if vcm.is_on_mobile():
                             temp_data["user_voice_channel_mobile_count"].add(vcm.id)
 
-                async for e in AsyncIter(s.emojis, steps=1000, delay=0.2):
+                async for e in AsyncIter(s.emojis, steps=1000, delay=0):
                     if e.animated:
                         counter["animated_emojis"] += 1
                     else:
                         counter["static_emojis"] += 1
 
-                async for m in AsyncIter(s.members, steps=1000, delay=0.2):
+                async for m in AsyncIter(s.members, steps=1000, delay=0):
                     if m.bot:
                         temp_data["bots"].add(m.id)
                     else:
@@ -156,7 +156,7 @@ class Stats(commands.Cog):
                         temp_data["mobile_users"].add(m.id)
                     streaming = False
 
-                    async for a in AsyncIter(m.activities, steps=1000, delay=0.2):
+                    async for a in AsyncIter(m.activities, steps=1000, delay=0):
                         if a.type is discord.ActivityType.streaming:
                             temp_data["streaming_users"].add(m.id)
                             if m.bot:
