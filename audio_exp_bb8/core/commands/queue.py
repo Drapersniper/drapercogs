@@ -1,15 +1,19 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import datetime
 import logging
 import math
-from typing import MutableMapping, Optional, Union, Tuple
 
+from typing import MutableMapping, Optional, Tuple, Union
+
+# Cog Dependencies
 import discord
 import lavalink
-from redbot.core.utils import AsyncIter
 
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import (
     DEFAULT_CONTROLS,
     close_menu,
@@ -20,6 +24,7 @@ from redbot.core.utils.menus import (
 )
 from redbot.core.utils.predicates import ReactionPredicate
 
+# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 

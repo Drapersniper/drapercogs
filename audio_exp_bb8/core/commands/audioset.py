@@ -92,7 +92,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Global Whitelist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Global Whitelist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -186,7 +186,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Global Blacklist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Global Blacklist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -282,7 +282,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Whitelist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Whitelist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -375,7 +375,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Blacklist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Blacklist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -417,11 +417,6 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                     blacklisted=keyword
                 ),
             )
-
-    @command_audioset.group(name="globaldb", enabled=False, hidden=True)
-    @commands.is_owner()
-    async def command_audioset_audiodb(self, ctx: commands.Context):
-        """Change global db settings."""
 
     @command_audioset.group(name="autoplay")
     @commands.mod_or_permissions(manage_guild=True)
@@ -1026,11 +1021,11 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pid = autoplaylist["id"]
                 pscope = autoplaylist["scope"]
                 if pscope == PlaylistScope.GUILD.value:
-                    pscope = f"Server"
+                    pscope = _("Server")
                 elif pscope == PlaylistScope.USER.value:
-                    pscope = f"User"
+                    pscope = _("User")
                 else:
-                    pscope = "Global"
+                    pscope = _("Global")
             elif cache_enabled:
                 pname = _("Cached")
                 pid = _("Cached")
@@ -1067,22 +1062,23 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 global_cache=_("Enabled") if global_data["global_db_enabled"] else _("Disabled"),
                 num_seconds=self.get_time_string(global_data["global_db_get_timeout"]),
             )
-
         msg += (
-                "\n---"
-                + _("User Settings")
-                + "---        \n"
-                + _("Spotify search:   [{country_code}]\n")
+            "\n---"
+            + _("User Settings")
+            + "---        \n"
+            + _("Spotify search:   [{country_code}]\n")
         ).format(country_code=await self.config.user(ctx.author).country_code())
 
-        msg += _(
-            "\n---" + _("Lavalink Settings") + "---        \n"
-            "Cog version:      [{version}]\n"
-            "Red-Lavalink:     [{redlava}]\n"
-            "External server:  [{use_external_lavalink}]\n"
+        msg += (
+            "\n---"
+            + _("Lavalink Settings")
+            + "---        \n"
+            + _("Cog version:      [{version}]\n")
+            + _("Red-Lavalink:     [{lavalink_version}]\n")
+            + _("External server:  [{use_external_lavalink}]\n")
         ).format(
             version=__version__,
-            redlava=lavalink.__version__,
+            lavalink_version=lavalink.__version__,
             use_external_lavalink=_("Enabled")
             if global_data["use_external_lavalink"]
             else _("Disabled"),
@@ -1391,6 +1387,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         pred = ReactionPredicate.yes_or_no(info, ctx.author)
         await ctx.bot.wait_for("reaction_add", check=pred)
         if not pred.result:
+            await info.delete()
             return await self.send_embed_msg(ctx, title=_("Cancelled."))
         await self.api_interface.contribute_to_global(ctx, db_entries)
 

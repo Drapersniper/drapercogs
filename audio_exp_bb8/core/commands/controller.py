@@ -70,6 +70,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             await player.disconnect()
             await self.api_interface.persistent_queue_api.drop(ctx.guild.id)
 
+
     @commands.command(name="now")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
