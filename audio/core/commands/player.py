@@ -468,7 +468,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(
                 ctx,
                 title=_("No categories found"),
-                description=_(error.message).format(prefix=ctx.prefix),
+                description=error.message.format(prefix=ctx.prefix),
             )
         if not category_list:
             return await self.send_embed_msg(ctx, title=_("No categories found, try again later."))
@@ -808,7 +808,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                         await player.play()
                 player.maybe_shuffle(0 if empty_queue else 1)
                 if len(tracks) > track_len:
-                    maxlength_msg = " {bad_tracks} tracks cannot be queued.".format(
+                    maxlength_msg = _(" {bad_tracks} tracks cannot be queued.").format(
                         bad_tracks=(len(tracks) - track_len)
                     )
                 else:

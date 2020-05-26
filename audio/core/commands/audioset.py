@@ -92,7 +92,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Global Whitelist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Global Whitelist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -186,7 +186,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Global Blacklist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Global Blacklist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -282,7 +282,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Whitelist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Whitelist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -375,7 +375,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(title="Blacklist", description=page, colour=embed_colour)
+            discord.Embed(title=_("Blacklist"), description=page, colour=embed_colour)
             for page in pages
         )
         await menu(ctx, pages, DEFAULT_CONTROLS)
@@ -1026,11 +1026,11 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pid = autoplaylist["id"]
                 pscope = autoplaylist["scope"]
                 if pscope == PlaylistScope.GUILD.value:
-                    pscope = f"Server"
+                    pscope = _("Server")
                 elif pscope == PlaylistScope.USER.value:
-                    pscope = f"User"
+                    pscope = _("User")
                 else:
-                    pscope = "Global"
+                    pscope = _("Global")
             elif cache_enabled:
                 pname = _("Cached")
                 pid = _("Cached")
@@ -1074,14 +1074,16 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 + _("Spotify search:   [{country_code}]\n")
         ).format(country_code=await self.config.user(ctx.author).country_code())
 
-        msg += _(
-            "\n---" + _("Lavalink Settings") + "---        \n"
-            "Cog version:      [{version}]\n"
-            "Red-Lavalink:     [{redlava}]\n"
-            "External server:  [{use_external_lavalink}]\n"
+        msg += (
+            "\n---"
+            + _("Lavalink Settings")
+            + "---        \n"
+            + _("Cog version:      [{version}]\n")
+            + _("Red-Lavalink:     [{lavalink_version}]\n")
+            + _("External server:  [{use_external_lavalink}]\n")
         ).format(
             version=__version__,
-            redlava=lavalink.__version__,
+            lavalink_version=lavalink.__version__,
             use_external_lavalink=_("Enabled")
             if global_data["use_external_lavalink"]
             else _("Disabled"),
@@ -1334,101 +1336,3 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         msg += _("I've set the cache age to {age} days").format(age=age)
         await self.config.cache_age.set(age)
         await self.send_embed_msg(ctx, title=_("Setting Changed"), description=msg)
-
-    @commands.is_owner()
-    @command_audioset.group(name="audiodb")
-    async def command_audioset_audiodb(self, ctx: commands.Context):
-        """Change audiodb settings."""
-
-    @command_audioset_audiodb.command(name="toggle")
-    async def command_audioset_audiodb_toggle(self, ctx: commands.Context):
-        """Toggle the server settings.
-
-        Default is ON
-        """
-        state = await self.config.global_db_enabled()
-        await self.config.global_db_enabled.set(not state)
-        await ctx.send(
-            _("Global DB is {status}").format(status=_("enabled") if not state else _("disabled"))
-        )
-
-    @command_audioset_audiodb.command(name="timeout")
-    async def command_audioset_audiodb_timeout(
-        self, ctx: commands.Context, timeout: Union[float, int]
-    ):
-        """Set GET request timeout.
-
-        Example: 0.1 = 100ms 1 = 1 second
-        """
-
-        await self.config.global_db_get_timeout.set(timeout)
-        await ctx.send(_("Request timeout set to {time} second(s)").format(time=timeout))
-
-    @command_audioset_audiodb.command(name="contribute")
-    async def command_audioset_audiodb_ontribute(self, ctx: commands.Context):
-        """Send your local DB upstream."""
-        tokens = await self.bot.get_shared_api_tokens("audiodb")
-        api_key = tokens.get("api_key", None)
-        if api_key is None:
-            return await self.send_embed_msg(
-                ctx,
-                description=_(
-                    "Hey! Thanks for showing interest into contributing, "
-                    "currently you don't have access to this, "
-                    "if you wish to contribute please DM Draper#6666"
-                ),
-            )
-        db_entries = await self.api_interface.fetch_all_contribute()
-        info = await self.send_embed_msg(
-            ctx,
-            description=_(
-                "Sending {entries} entries to the global DB. "
-                "are you sure about this (It may take a very long time...)?"
-            ).format(entries=len(db_entries)),
-        )
-        start_adding_reactions(info, ReactionPredicate.YES_OR_NO_EMOJIS)
-        pred = ReactionPredicate.yes_or_no(info, ctx.author)
-        await ctx.bot.wait_for("reaction_add", check=pred)
-        if not pred.result:
-            await info.delete()
-            return await self.send_embed_msg(ctx, title=_("Cancelled."))
-        await self.api_interface.contribute_to_global(ctx, db_entries)
-
-    @command_audioset.command(name="persistqueue")
-    @commands.admin()
-    async def command_audioset_persist_queue(self, ctx: commands.Context):
-        """Toggle persistent queues.
-
-        Persistent queues allows the current queue to be restored when the queue closes.
-        """
-        persist_cache = self._persist_queue_cache.setdefault(
-            ctx.guild.id, await self.config.guild(ctx.guild).persist_queue()
-        )
-        await self.config.guild(ctx.guild).persist_queue.set(not persist_cache)
-        self._persist_queue_cache[ctx.guild.id] = not persist_cache
-        await self.send_embed_msg(
-            ctx,
-            title=_("Setting Changed"),
-            description=_("Persisting queues: {true_or_false}.").format(
-                true_or_false=_("Enabled") if not persist_cache else _("Disabled")
-            ),
-        )
-
-    @command_audioset.command(name="restart")
-    @commands.is_owner()
-    async def command_audioset_restart(self, ctx: commands.Context):
-        """Restarts the lavalink connection."""
-        async with ctx.typing():
-            lavalink.unregister_event_listener(self.lavalink_event_handler)
-            await lavalink.close()
-            if self.player_manager is not None:
-                await self.player_manager.shutdown()
-
-            self.lavalink_restart_connect()
-            lavalink.register_event_listener(self.lavalink_event_handler)
-            await self.restore_players()
-            await self.send_embed_msg(
-                ctx,
-                title=_("Restarting Lavalink"),
-                description=_("It can take a couple of minutes for Lavalink to fully start up."),
-            )

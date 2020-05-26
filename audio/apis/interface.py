@@ -291,7 +291,7 @@ class AudioAPIInterface:
         try:
             if results["error"]["status"] == 401 and not recursive:
                 raise SpotifyFetchError(
-                    (
+                    _(
                         "The Spotify API key or client secret has not been set properly. "
                         "\nUse `{prefix}audioset spotifyapi` for instructions."
                     )
@@ -333,7 +333,7 @@ class AudioAPIInterface:
                     break
             except KeyError:
                 raise SpotifyFetchError(
-                    "This doesn't seem to be a valid Spotify playlist/album URL or code."
+                    _("This doesn't seem to be a valid Spotify playlist/album URL or code.")
                 )
         return tracks
 
@@ -632,12 +632,12 @@ class AudioAPIInterface:
                         "or you may be rate limited on YouTube's search service.\n"
                         "Check the YouTube API key again and follow the instructions "
                         "at `{prefix}audioset youtubeapi`."
-                    ).format(prefix=ctx.prefix)
+                    )
                 )
             player.maybe_shuffle()
             if enqueue and tracks_from_spotify:
                 if total_tracks > enqueued_tracks:
-                    maxlength_msg = " {bad_tracks} tracks cannot be queued.".format(
+                    maxlength_msg = _(" {bad_tracks} tracks cannot be queued.").format(
                         bad_tracks=(total_tracks - enqueued_tracks)
                     )
                 else:
