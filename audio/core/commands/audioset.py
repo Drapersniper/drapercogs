@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import logging
+
 from typing import Union
 
+# Cog Dependencies
 import discord
 import lavalink
 
@@ -12,6 +16,7 @@ from redbot.core.utils.chat_formatting import box, humanize_number
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 
+# Cog Relative Imports
 from ...audio_dataclasses import LocalPath
 from ...converters import ScopeParser
 from ...errors import MissingGuild, TooManyMatches
@@ -417,11 +422,6 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                     blacklisted=keyword
                 ),
             )
-
-    @command_audioset.group(name="globaldb", enabled=False, hidden=True)
-    @commands.is_owner()
-    async def command_audioset_audiodb(self, ctx: commands.Context):
-        """Change global db settings."""
 
     @command_audioset.group(name="autoplay")
     @commands.mod_or_permissions(manage_guild=True)
@@ -1068,10 +1068,10 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 num_seconds=self.get_time_string(global_data["global_db_get_timeout"]),
             )
         msg += (
-                "\n---"
-                + _("User Settings")
-                + "---        \n"
-                + _("Spotify search:   [{country_code}]\n")
+            "\n---"
+            + _("User Settings")
+            + "---        \n"
+            + _("Spotify search:   [{country_code}]\n")
         ).format(country_code=await self.config.user(ctx.author).country_code())
 
         msg += (
@@ -1336,3 +1336,101 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         msg += _("I've set the cache age to {age} days").format(age=age)
         await self.config.cache_age.set(age)
         await self.send_embed_msg(ctx, title=_("Setting Changed"), description=msg)
+
+    @commands.is_owner()
+    @command_audioset.group(name="audiodb")
+    async def command_audioset_audiodb(self, ctx: commands.Context):
+        """Change audiodb settings."""
+
+    @command_audioset_audiodb.command(name="toggle")
+    async def command_audioset_audiodb_toggle(self, ctx: commands.Context):
+        """Toggle the server settings.
+
+        Default is ON
+        """
+        state = await self.config.global_db_enabled()
+        await self.config.global_db_enabled.set(not state)
+        await ctx.send(
+            _("Global DB is {status}").format(status=_("enabled") if not state else _("disabled"))
+        )
+
+    @command_audioset_audiodb.command(name="timeout")
+    async def command_audioset_audiodb_timeout(
+        self, ctx: commands.Context, timeout: Union[float, int]
+    ):
+        """Set GET request timeout.
+
+        Example: 0.1 = 100ms 1 = 1 second
+        """
+
+        await self.config.global_db_get_timeout.set(timeout)
+        await ctx.send(_("Request timeout set to {time} second(s)").format(time=timeout))
+
+    @command_audioset_audiodb.command(name="contribute")
+    async def command_audioset_audiodb_ontribute(self, ctx: commands.Context):
+        """Send your local DB upstream."""
+        tokens = await self.bot.get_shared_api_tokens("audiodb")
+        api_key = tokens.get("api_key", None)
+        if api_key is None:
+            return await self.send_embed_msg(
+                ctx,
+                description=_(
+                    "Hey! Thanks for showing interest into contributing, "
+                    "currently you don't have access to this, "
+                    "if you wish to contribute please DM Draper#6666"
+                ),
+            )
+        db_entries = await self.api_interface.fetch_all_contribute()
+        info = await self.send_embed_msg(
+            ctx,
+            description=_(
+                "Sending {entries} entries to the global DB. "
+                "are you sure about this (It may take a very long time...)?"
+            ).format(entries=len(db_entries)),
+        )
+        start_adding_reactions(info, ReactionPredicate.YES_OR_NO_EMOJIS)
+        pred = ReactionPredicate.yes_or_no(info, ctx.author)
+        await ctx.bot.wait_for("reaction_add", check=pred)
+        if not pred.result:
+            await info.delete()
+            return await self.send_embed_msg(ctx, title=_("Cancelled."))
+        await self.api_interface.contribute_to_global(ctx, db_entries)
+
+    @command_audioset.command(name="persistqueue")
+    @commands.admin()
+    async def command_audioset_persist_queue(self, ctx: commands.Context):
+        """Toggle persistent queues.
+
+        Persistent queues allows the current queue to be restored when the queue closes.
+        """
+        persist_cache = self._persist_queue_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).persist_queue()
+        )
+        await self.config.guild(ctx.guild).persist_queue.set(not persist_cache)
+        self._persist_queue_cache[ctx.guild.id] = not persist_cache
+        await self.send_embed_msg(
+            ctx,
+            title=_("Setting Changed"),
+            description=_("Persisting queues: {true_or_false}.").format(
+                true_or_false=_("Enabled") if not persist_cache else _("Disabled")
+            ),
+        )
+
+    @command_audioset.command(name="restart")
+    @commands.is_owner()
+    async def command_audioset_restart(self, ctx: commands.Context):
+        """Restarts the lavalink connection."""
+        async with ctx.typing():
+            lavalink.unregister_event_listener(self.lavalink_event_handler)
+            await lavalink.close()
+            if self.player_manager is not None:
+                await self.player_manager.shutdown()
+
+            self.lavalink_restart_connect()
+            lavalink.register_event_listener(self.lavalink_event_handler)
+            await self.restore_players()
+            await self.send_embed_msg(
+                ctx,
+                title=_("Restarting Lavalink"),
+                description=_("It can take a couple of minutes for Lavalink to fully start up."),
+            )
