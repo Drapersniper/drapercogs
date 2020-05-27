@@ -203,7 +203,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         if not player.current:
             return await self.send_embed_msg(ctx, title=_("Nothing playing."))
-        description = self.get_track_description(player.current, self.local_folder_current_path)
+        description = await self.get_track_description(player.current, self.local_folder_current_path)
 
         if player.current and not player.paused:
             await player.pause()
