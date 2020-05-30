@@ -20,7 +20,13 @@ from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_pag
 # Cog Relative Imports
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query
 from ...audio_logging import IS_DEBUG
-from ...errors import DatabaseError, QueryUnauthorized, SpotifyFetchError, TrackEnqueueError
+from ...errors import (
+    DatabaseError,
+    PHNSFWError,
+    QueryUnauthorized,
+    SpotifyFetchError,
+    TrackEnqueueError,
+)
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 
@@ -34,6 +40,8 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_play(self, ctx: commands.Context, *, query: str):
         """Play a URL or search for a track."""
         query = Query.process_input(query, self.local_folder_current_path)
+        if query.is_pornhub and not ctx.channel.is_nsfw():
+            raise PHNSFWError
         guild_data = await self.config.guild(ctx.guild).all()
         restrict = await self.config.restrict()
         if restrict and self.match_url(str(query)):
@@ -132,6 +140,8 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     ):
         """Force play a URL or search for a track."""
         query = Query.process_input(query, self.local_folder_current_path)
+        if query.is_pornhub and not ctx.channel.is_nsfw():
+            raise PHNSFWError
         if not query.single_track:
             return await self.send_embed_msg(
                 ctx,
@@ -624,9 +634,13 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_search(self, ctx: commands.Context, *, query: str):
         """Pick a track with a search.
 
-        Use `[p]search list <search term>` to queue all tracks found on YouTube. Use `[p]search
-        sc<search term>` will search SoundCloud instead of YouTube.
+        Use `[p]search list <search term>` to queue all tracks found on YouTube. Use `[p]search sc
+        <search term>` will search SoundCloud instead of YouTube. Use `[p]search ph <search term>`
+        will search Pornhub instead of YouTube.
         """
+
+        if query.startswith("ph ") and not ctx.channel.is_nsfw():
+            raise PHNSFWError
 
         async def _search_menu(
             ctx: commands.Context,

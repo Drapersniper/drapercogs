@@ -766,7 +766,7 @@ class AudioAPIInterface:
         val = None
         query = Query.process_input(query, self.cog.local_folder_current_path)
         if query.is_pornhub and not ctx.channel.is_nsfw():
-            raise PHNSFWError(ctx.channel, "You need to be in a NSFW to use NSFW queries")
+            raise PHNSFWError
         query_string = str(query)
         globaldb_toggle = await self.config.global_db_enabled()
         valid_global_entry = False

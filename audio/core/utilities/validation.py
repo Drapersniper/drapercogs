@@ -1,12 +1,17 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import logging
 import re
-from typing import Final, List, Set, Pattern
+
+from typing import Final, List, Pattern, Set
 from urllib.parse import urlparse
 
+# Cog Dependencies
 import discord
 
 from redbot.core import Config
 
+# Cog Relative Imports
 from ...audio_dataclasses import Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
@@ -56,12 +61,14 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
     async def is_query_allowed(
         self, config: Config, guild: discord.Guild, query: str, query_obj: Query = None
     ) -> bool:
-        """Checks if the query is allowed in this server or globally"""
+        """Checks if the query is allowed in this server or globally."""
 
         query = query.lower().strip()
         if query_obj is not None:
-            query = query_obj.lavalink_query.replace("ytsearch:", "youtubesearch").replace(
-                "scsearch:", "soundcloudsearch"
+            query = (
+                query_obj.lavalink_query.replace("ytsearch:", "youtubesearch")
+                .replace("scsearch:", "soundcloudsearch")
+                .replace("phsearch:", "pornhubsearch")
             )
         global_whitelist = set(await config.url_keyword_whitelist())
         global_whitelist = [i.lower() for i in global_whitelist]

@@ -491,10 +491,13 @@ class Query:
                         returning["start_time"] = (int(match.group(1)) * 60) + int(match.group(2))
                 returning["uri"] = track
                 return returning
-            if track.startswith("sc ") or track.startswith("list "):
+            if track.startswith("sc ") or track.startswith("ph ") or track.startswith("list "):
                 if track.startswith("sc "):
                     returning["invoked_from"] = "sc search"
                     returning["soundcloud"] = True
+                elif track.startswith("ph "):
+                    returning["invoked_from"] = "ph search"
+                    returning["pornhub"] = True
                 elif track.startswith("list "):
                     returning["invoked_from"] = "search list"
                 track = _RE_REMOVE_START.sub("", track, 1)
