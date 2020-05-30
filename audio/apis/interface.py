@@ -108,7 +108,7 @@ class AudioAPIInterface:
                 query = Query.process_input(
                     query=track, _local_folder_current_path=self.cog.local_folder_current_path
                 )
-                if query.is_pornhub:
+                if query.is_nsfw:
                     return await self.get_random_track_from_db()
         except Exception as exc:
             debug_exc_log(log, exc, "Failed to fetch a random track from database")
@@ -767,7 +767,7 @@ class AudioAPIInterface:
         cache_enabled = CacheLevel.set_lavalink().is_subset(current_cache_level)
         val = None
         query = Query.process_input(query, self.cog.local_folder_current_path)
-        if query.is_pornhub and not ctx.channel.is_nsfw():
+        if query.is_nsfw and not ctx.channel.is_nsfw():
             raise PHNSFWError
         query_string = str(query)
         globaldb_toggle = await self.config.global_db_enabled()

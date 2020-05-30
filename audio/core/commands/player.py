@@ -40,7 +40,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_play(self, ctx: commands.Context, *, query: str):
         """Play a URL or search for a track."""
         query = Query.process_input(query, self.local_folder_current_path)
-        if query.is_pornhub and not ctx.channel.is_nsfw():
+        if query.is_nsfw and not ctx.channel.is_nsfw():
             raise PHNSFWError
         guild_data = await self.config.guild(ctx.guild).all()
         restrict = await self.config.restrict()
@@ -140,7 +140,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     ):
         """Force play a URL or search for a track."""
         query = Query.process_input(query, self.local_folder_current_path)
-        if query.is_pornhub and not ctx.channel.is_nsfw():
+        if query.is_nsfw and not ctx.channel.is_nsfw():
             raise PHNSFWError
         if not query.single_track:
             return await self.send_embed_msg(

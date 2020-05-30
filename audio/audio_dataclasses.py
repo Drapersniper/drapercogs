@@ -362,7 +362,7 @@ class Query:
 
         self.start_time: int = kwargs.get("start_time", 0)
         self.track_index: Optional[int] = kwargs.get("track_index", None)
-
+        self.is_nsfw = any([self.is_pornhub])
         if self.invoked_from == "sc search":
             self.is_youtube = False
             self.is_soundcloud = True

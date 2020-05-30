@@ -56,6 +56,7 @@ class Audio(
         self._daily_playlist_cache = {}
         self._daily_global_playlist_cache = {}
         self._persist_queue_cache = {}
+        self._nsfw_cache = {}
         self._dj_status_cache = {}
         self._dj_role_cache = {}
         self.skip_votes = {}
@@ -121,6 +122,7 @@ class Audio(
             url_keyword_blacklist=[],
             url_keyword_whitelist=[],
             country_code="US",
+            nsfw_queries=False
         )
         _playlist: Mapping = dict(id=None, author=None, name=None, playlist_url=None, tracks=[])
 

@@ -111,6 +111,9 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
         self._daily_playlist_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).daily_playlists()
         )
+        self._nsfw_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).nsfw_queries()
+        )
         self._persist_queue_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).persist_queue()
         )

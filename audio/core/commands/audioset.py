@@ -38,6 +38,24 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_audioset_perms(self, ctx: commands.Context):
         """Manages the keyword whitelist and blacklist."""
 
+    @commands.guild_only()
+    @command_audioset.command(name="nsfw")
+    @commands.admin_or_permissions(manage_guild=True)
+    async def command_audioset_nsfw(self, ctx: commands.Context):
+        """Toggle whether NSFW are allowed in the server."""
+        nsfw = self._nsfw_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).nsfw_queries()
+        )
+        await self.config.guild(ctx.guild).nsfw_queries.set(not nsfw)
+        self._nsfw_cache[ctx.guild.id] = not nsfw
+        await self.send_embed_msg(
+            ctx,
+            title=_("Setting Changed"),
+            description=_("NSFW Queries: {true_or_false}.").format(
+                true_or_false=_("Enabled") if not nsfw else _("Disabled")
+            ),
+        )
+
     @commands.is_owner()
     @command_audioset_perms.group(name="global")
     async def command_audioset_perms_global(self, ctx: commands.Context):

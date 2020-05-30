@@ -47,6 +47,7 @@ class MixinMeta(ABC):
     _persist_queue_cache: MutableMapping[int, bool]
     _dj_status_cache: MutableMapping[int, Optional[bool]]
     _dj_role_cache: MutableMapping[int, Optional[int]]
+    _nsfw_cache: MutableMapping[int, bool]
     _error_timer: MutableMapping[int, float]
     _disconnected_players: MutableMapping[int, bool]
 
@@ -162,7 +163,7 @@ class MixinMeta(ABC):
 
     @abstractmethod
     async def is_query_allowed(
-        self, config: Config, ctx_or_channel: Union[Context, discord.TextChannel], query: str, query_obj: "Query" = None
+        self, config: Config, ctx_or_channel: Union[Context, discord.TextChannel], query: str, query_obj: "Query"
     ) -> bool:
         raise NotImplementedError()
 
