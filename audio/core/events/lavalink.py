@@ -1,11 +1,15 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import logging
 
+# Cog Dependencies
 import discord
 import lavalink
 
-from ...errors import DatabaseError
+# Cog Relative Imports
+from ...errors import DatabaseError, TrackEnqueueError
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 
@@ -30,7 +34,9 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
         notify = guild_data["notify"]
         disconnect = guild_data["disconnect"]
         autoplay = guild_data["auto_play"]
-        description = await self.get_track_description(current_track, self.local_folder_current_path)
+        description = await self.get_track_description(
+            current_track, self.local_folder_current_path
+        )
         status = await self.config.status()
         log.debug(f"Received a new lavalink event for {guild_id}: {event_type}: {extra}")
         prev_song: lavalink.Track = player.fetch("prev_song")
@@ -68,10 +74,23 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                     await self.api_interface.autoplay(player, self.playlist_api)
                 except DatabaseError:
                     notify_channel = player.fetch("channel")
+                    notify_channel = self.bot.get_channel(notify_channel)
                     if notify_channel:
-                        notify_channel = self.bot.get_channel(notify_channel)
                         await self.send_embed_msg(
                             notify_channel, title=_("Couldn't get a valid track.")
+                        )
+                    return
+                except TrackEnqueueError:
+                    notify_channel = player.fetch("channel")
+                    notify_channel = self.bot.get_channel(notify_channel)
+                    if notify_channel:
+                        await self.send_embed_msg(
+                            notify_channel,
+                            title=_("Unable to Get Track"),
+                            description=_(
+                                "I'm unable get a track from Lavalink at the moment, try again in a few "
+                                "minutes."
+                            ),
                         )
                     return
         if event_type == lavalink.LavalinkEvents.TRACK_START and notify:

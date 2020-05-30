@@ -1,18 +1,23 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import contextlib
 import datetime
 import logging
 import math
 import time
+
 from typing import MutableMapping, Optional
 
+# Cog Dependencies
 import discord
 import lavalink
-from discord.embeds import EmptyEmbed
-from redbot.core.utils import AsyncIter
 
+from discord.embeds import EmptyEmbed
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
 
+# Cog Relative Imports
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query
 from ...audio_logging import IS_DEBUG
 from ...errors import DatabaseError, QueryUnauthorized, SpotifyFetchError, TrackEnqueueError
@@ -312,7 +317,9 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             self.bot.dispatch(
                 "red_audio_track_enqueue", player.channel.guild, single_track, ctx.author
             )
-        description = await self.get_track_description(single_track, self.local_folder_current_path)
+        description = await self.get_track_description(
+            single_track, self.local_folder_current_path
+        )
         footer = None
         if not play_now and not guild_data["shuffle"] and queue_dur > 0:
             footer = _("{time} until track playback: #1 in queue").format(
@@ -591,6 +598,16 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 notify_channel = self.bot.get_channel(notify_channel)
                 await self.send_embed_msg(notify_channel, title=_("Couldn't get a valid track."))
             return
+        except TrackEnqueueError:
+            self.update_player_lock(ctx, False)
+            return await self.send_embed_msg(
+                ctx,
+                title=_("Unable to Get Track"),
+                description=_(
+                    "I'm unable get a track from Lavalink at the moment, try again in a few "
+                    "minutes."
+                ),
+            )
 
         if not guild_data["auto_play"]:
             await ctx.invoke(self.command_audioset_autoplay_toggle)
@@ -607,8 +624,8 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_search(self, ctx: commands.Context, *, query: str):
         """Pick a track with a search.
 
-        Use `[p]search list <search term>` to queue all tracks found on YouTube.
-        Use `[p]search sc<search term>` will search SoundCloud instead of YouTube.
+        Use `[p]search list <search term>` to queue all tracks found on YouTube. Use `[p]search
+        sc<search term>` will search SoundCloud instead of YouTube.
         """
 
         async def _search_menu(

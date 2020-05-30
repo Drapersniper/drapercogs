@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import asyncio.subprocess  # disables for # https://github.com/PyCQA/pylint/issues/1469
 import itertools
@@ -9,13 +11,16 @@ import shutil
 import sys
 import tempfile
 import time
-from typing import ClassVar, Final, List, Optional, Tuple, Pattern
 
+from typing import ClassVar, Final, List, Optional, Pattern, Tuple
+
+# Cog Dependencies
 import aiohttp
-from tqdm import tqdm
 
 from redbot.core import data_manager
+from tqdm import tqdm
 
+# Cog Relative Imports
 from .errors import LavalinkDownloadFailed
 
 log = logging.getLogger("red.audio.manager")
@@ -94,8 +99,10 @@ class ServerManager:
     @classmethod
     async def _get_jar_args(cls) -> List[str]:
         (java_available, java_version) = await cls._has_java()
+
         if not java_available:
-            raise RuntimeError("You must install Java 1.8+ for Lavalink to run.")
+            raise RuntimeError("You must install Java 11 for Lavalink to run.")
+
         return ["java", "-Djdk.tls.client.protocols=TLSv1.2", "-jar", str(LAVALINK_JAR_FILE)]
 
     @classmethod

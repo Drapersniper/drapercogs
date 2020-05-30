@@ -1,20 +1,25 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import datetime
 import itertools
 import logging
+
 from typing import Optional
 
+# Cog Dependencies
 import aiohttp
 import lavalink
 
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
+# Cog Relative Imports
 from ...apis.interface import AudioAPIInterface
 from ...apis.playlist_wrapper import PlaylistWrapper
+from ...audio_logging import debug_exc_log
 from ..abc import MixinMeta
 from ..cog_utils import _SCHEMA_VERSION, CompositeMetaClass
-from ...audio_logging import debug_exc_log
 
 log = logging.getLogger("red.cogs.Audio.cog.Tasks.startup")
 
@@ -24,8 +29,6 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
         # There has to be a task since this requires the bot to be ready
         # If it waits for ready in startup, we cause a deadlock during initial load
         # as initial load happens before the bot can ever be ready.
-        self.session = aiohttp.ClientSession()
-        self.cog_ready_event = asyncio.Event()
         self.cog_init_task = self.bot.loop.create_task(self.initialize())
 
     async def initialize(self) -> None:

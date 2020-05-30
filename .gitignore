@@ -192,3 +192,70 @@ redbot/.pydevproject
 /build/
 redbot/.settings/
 /.API
+!audio*/classes/cache/
+!/audiorw/classes/cache/
+audio - Copy/__init__.py
+audio - Copy/apis/__init__.py
+audio - Copy/apis/api_utils.py
+audio - Copy/apis/global_db.py
+audio - Copy/apis/interface.py
+audio - Copy/apis/local_db.py
+audio - Copy/apis/local_tracks.py
+audio - Copy/apis/playlist_interface.py
+audio - Copy/apis/playlist_wrapper.py
+audio - Copy/apis/spotify.py
+audio - Copy/apis/youtube.py
+audio - Copy/audio_dataclasses.py
+audio - Copy/audio_logging.py
+audio - Copy/converters.py
+audio - Copy/core/__init__.py
+audio - Copy/core/abc.py
+audio - Copy/core/cog_utils.py
+audio - Copy/core/commands/__init__.py
+audio - Copy/core/commands/audioset.py
+audio - Copy/core/commands/controller.py
+audio - Copy/core/commands/equalizer.py
+audio - Copy/core/commands/llset.py
+audio - Copy/core/commands/localtracks.py
+audio - Copy/core/commands/miscellaneous.py
+audio - Copy/core/commands/player.py
+audio - Copy/core/commands/playlists.py
+audio - Copy/core/commands/queue.py
+audio - Copy/core/events/__init__.py
+audio - Copy/core/events/cog.py
+audio - Copy/core/events/dpy.py
+audio - Copy/core/events/lavalink.py
+audio - Copy/core/events/red.py
+audio - Copy/core/tasks/__init__.py
+audio - Copy/core/tasks/lavalink.py
+audio - Copy/core/tasks/player.py
+audio - Copy/core/tasks/startup.py
+audio - Copy/core/utilities/__init__.py
+audio - Copy/core/utilities/equalizer.py
+audio - Copy/core/utilities/formatting.py
+audio - Copy/core/utilities/local_tracks.py
+audio - Copy/core/utilities/menus/__init__.py
+audio - Copy/core/utilities/miscellaneous.py
+audio - Copy/core/utilities/player.py
+audio - Copy/core/utilities/playlists.py
+audio - Copy/core/utilities/queue.py
+audio - Copy/core/utilities/validation.py
+audio - Copy/data/
+audio - Copy/equalizer.py
+audio - Copy/errors.py
+audio - Copy/locales/
+audio - Copy/manager.py
+audio - Copy/sql_statements.py
+audio - Copy/utils.py
+audiorw/locales/
+evolution_kenny/__init__.py
+evolution_kenny/evolution.py
+evolution_kenny/info.json
+nsfw/
+rndstatus/info.json
+rndstatus/rndstatus.py
+timeseries/__init__.py
+timeseries/main.py
+timeseries/statements.py
+timeseries_tsdb/
+/audiorw/classes/cache/

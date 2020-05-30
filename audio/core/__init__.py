@@ -1,6 +1,12 @@
+# -*- coding: utf-8 -*-
+# Standard Library
+import asyncio
+
 from collections import Counter
 from typing import Mapping
 
+# Cog Dependencies
+import aiohttp
 import discord
 
 from redbot.core import Config
@@ -9,6 +15,7 @@ from redbot.core.commands import Cog
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import cog_i18n
 
+# Cog Relative Imports
 from ..utils import PlaylistScope
 from . import abc, cog_utils, commands, events, tasks, utilities
 from .cog_utils import CompositeMetaClass, _
@@ -65,6 +72,10 @@ class Audio(
             read_message_history=True,
             add_reactions=True,
         )
+
+        self.session = aiohttp.ClientSession()
+        self.cog_ready_event = asyncio.Event()
+        self.cog_init_task = None
 
         default_global = dict(
             schema_version=1,

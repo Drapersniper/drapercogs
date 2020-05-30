@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
+# Cog Dependencies
 import aiohttp
+
+from discord.ext.commands import CheckFailure, NSFWChannelRequired
 
 
 class AudioError(Exception):
@@ -110,3 +114,11 @@ class InvalidLocalTrack(LocalTrackError):
 
 class InvalidLocalTrackFolder(LocalTrackError):
     """Base exception for local track errors."""
+
+
+class PHNSFWError(CheckFailure):
+    """Raised when PR queries are done outside of a NSFW Channel."""
+
+    def __init__(self, channel):
+        self.channel = channel
+        super().__init__("Channel '{}' needs to be NSFW for to use NSFW Audio.".format(channel))

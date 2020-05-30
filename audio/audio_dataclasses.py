@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import contextlib
 import glob
 import logging
@@ -5,21 +7,24 @@ import ntpath
 import os
 import posixpath
 import re
+
 from pathlib import Path, PosixPath, WindowsPath
 from typing import (
     AsyncIterator,
+    Callable,
     Final,
     Iterator,
     MutableMapping,
     Optional,
+    Pattern,
     Tuple,
     Union,
-    Callable,
-    Pattern,
 )
 from urllib.parse import urlparse
 
+# Cog Dependencies
 import lavalink
+
 from redbot.core.utils import AsyncIter
 
 _RE_REMOVE_START: Final[Pattern] = re.compile(r"^(sc|list) ")
@@ -29,6 +34,12 @@ _RE_SPOTIFY_URL: Final[Pattern] = re.compile(r"(http[s]?://)?(open.spotify.com)/
 _RE_SPOTIFY_TIMESTAMP: Final[Pattern] = re.compile(r"#(\d+):(\d+)")
 _RE_SOUNDCLOUD_TIMESTAMP: Final[Pattern] = re.compile(r"#t=(\d+):(\d+)s?")
 _RE_TWITCH_TIMESTAMP: Final[Pattern] = re.compile(r"\?t=(\d+)h(\d+)m(\d+)s")
+_RE_PORNHUB: Final[Pattern] = re.compile(
+    r"https?://(?:(?:[^/]+\.)?(?P<host>pornhub(?:premium)?\.(?:com|net))/"
+    r"(?:(?:view_video\.php|video/show)\?viewkey=|embed/)|"
+    r"(?:www\.)?thumbzilla\.com/video/)(?P<id>[\da-z]+)",
+    flags=re.X,
+)
 _PATH_SEPS: Final[Tuple[str, str]] = (posixpath.sep, ntpath.sep)
 
 _FULLY_SUPPORTED_MUSIC_EXT: Final[Tuple[str, ...]] = (".mp3", ".flac", ".ogg")
@@ -80,8 +91,8 @@ log = logging.getLogger("red.cogs.Audio.audio_dataclasses")
 class LocalPath:
     """Local tracks class.
 
-    Used to handle system dir trees in a cross system manner.
-    The only use of this class is for `localtracks`.
+    Used to handle system dir trees in a cross system manner. The only use of this class is for
+    `localtracks`.
     """
 
     _all_music_ext = _FULLY_SUPPORTED_MUSIC_EXT + _PARTIALLY_SUPPORTED_MUSIC_EXT
@@ -335,6 +346,7 @@ class Query:
         self.is_mixer: bool = kwargs.get("mixer", False)
         self.is_twitch: bool = kwargs.get("twitch", False)
         self.is_other: bool = kwargs.get("other", False)
+        self.is_pornhub: bool = kwargs.get("pornhub", False)
         self.is_playlist: bool = kwargs.get("playlist", False)
         self.is_album: bool = kwargs.get("album", False)
         self.is_search: bool = kwargs.get("search", False)
@@ -354,6 +366,11 @@ class Query:
         if self.invoked_from == "sc search":
             self.is_youtube = False
             self.is_soundcloud = True
+            self.is_pornhub = False
+        elif self.invoked_from == "ph search":
+            self.is_youtube = False
+            self.is_soundcloud = False
+            self.is_pornhub = True
 
         if (_localtrack.is_file() or _localtrack.is_dir()) and _localtrack.exists():
             self.local_track_path: Optional[LocalPath] = _localtrack
@@ -380,6 +397,7 @@ class Query:
                 self.is_mixer,
                 self.is_twitch,
                 self.is_other,
+                self.is_pornhub,
                 self.is_playlist,
                 self.is_album,
                 self.is_search,
@@ -403,8 +421,7 @@ class Query:
         _local_folder_current_path: Path,
         **kwargs,
     ) -> "Query":
-        """
-        Process the input query into its type
+        """Process the input query into its type.
 
         Parameters
         ----------
@@ -442,7 +459,7 @@ class Query:
 
     @staticmethod
     def _parse(track, _local_folder_current_path: Path, **kwargs) -> MutableMapping:
-        """Parse a track into all the relevant metadata"""
+        """Parse a track into all the relevant metadata."""
         returning: MutableMapping = {}
         if (
             type(track) == type(LocalPath)
@@ -503,7 +520,11 @@ class Query:
                     url_domain = ".".join(query_url.netloc.split(".")[-2:])
                     if not query_url.netloc:
                         url_domain = ".".join(query_url.path.split("/")[0].split(".")[-2:])
-                    if url_domain in ["youtube.com", "youtu.be"]:
+                    match = re.match(_RE_PORNHUB, track)
+                    if match:
+                        returning["single"] = True
+                        returning["pornhub"] = True
+                    elif url_domain in ["youtube.com", "youtu.be"]:
                         returning["youtube"] = True
                         _has_index = "&index=" in track
                         if "&t=" in track or "?t=" in track:
@@ -593,7 +614,9 @@ class Query:
                         returning["other"] = True
                         returning["single"] = True
                 else:
-                    if kwargs.get("soundcloud", False):
+                    if kwargs.get("pornhub", False):
+                        returning["pornhub"] = True
+                    elif kwargs.get("soundcloud", False):
                         returning["soundcloud"] = True
                     else:
                         returning["youtube"] = True
@@ -614,6 +637,8 @@ class Query:
             return f"ytsearch:{self.track}"
         elif self.is_search and self.is_soundcloud:
             return f"scsearch:{self.track}"
+        elif self.is_search and self.is_pornhub:
+            return f"phsearch:{self.track}"
         return self.track
 
     def to_string_user(self):

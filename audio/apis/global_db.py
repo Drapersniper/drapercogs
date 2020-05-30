@@ -1,16 +1,21 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import logging
 import urllib.parse
-from typing import Mapping, Optional, TYPE_CHECKING, Union
 
+from typing import TYPE_CHECKING, Mapping, Optional, Union
+
+# Cog Dependencies
 import aiohttp
-from lavalink.rest_api import LoadResult
 
+from lavalink.rest_api import LoadResult
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 
+# Cog Relative Imports
 from ..audio_dataclasses import Query
 from ..audio_logging import IS_DEBUG, debug_exc_log
 
@@ -46,9 +51,7 @@ class GlobalCacheWrapper:
             self._token = await self.bot.get_shared_api_tokens("audiodb")
         self.api_key = self._token.get("api_key", None)
         self.has_api_key = self.api_key is not None
-        id_list = list(self.bot._co_owners)
-        id_list.append(self.bot.owner_id)
-        id_list = list(set(id_list))
+        id_list = list(self.bot.owner_ids)
         self._handshake_token = "||".join(map(str, id_list))
         return self.api_key
 
@@ -129,7 +132,7 @@ class GlobalCacheWrapper:
                 headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                 params={"query": urllib.parse.quote(query)},
             ) as r:
-                output = await r.read()
+                await r.read()
                 if IS_DEBUG and "x-process-time" in r.headers:
                     log.debug(
                         f"POST || Ping {r.headers.get('x-process-time')} ||"

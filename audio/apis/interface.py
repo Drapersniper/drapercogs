@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import datetime
@@ -5,24 +7,28 @@ import json
 import logging
 import random
 import time
-from collections import namedtuple
-from typing import Callable, List, MutableMapping, Optional, TYPE_CHECKING, Tuple, Union, cast
 
+from collections import namedtuple
+from typing import TYPE_CHECKING, Callable, List, MutableMapping, Optional, Tuple, Union, cast
+
+# Cog Dependencies
 import aiohttp
 import discord
 import lavalink
-from lavalink.rest_api import LoadResult, LoadType
-from redbot.core.utils import AsyncIter
 
+from lavalink import Track
+from lavalink.rest_api import LoadResult, LoadType
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 from redbot.core.commands import Cog, Context
 from redbot.core.i18n import Translator
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
+# Cog Relative Imports
 from ..audio_dataclasses import Query
 from ..audio_logging import IS_DEBUG, debug_exc_log
-from ..errors import DatabaseError, SpotifyFetchError, TrackEnqueueError
+from ..errors import DatabaseError, PHNSFWError, SpotifyFetchError, TrackEnqueueError
 from ..utils import CacheLevel, Notifier
 from .api_utils import LavalinkCacheFetchForGlobalResult
 from .global_db import GlobalCacheWrapper
@@ -70,16 +76,16 @@ class AudioAPIInterface:
         self._lock: asyncio.Lock = asyncio.Lock()
 
     async def initialize(self) -> None:
-        """Initialises the Local Cache connection"""
+        """Initialises the Local Cache connection."""
         await self.local_cache_api.lavalink.init()
         await self.persistent_queue_api.init()
 
     def close(self) -> None:
-        """Closes the Local Cache connection"""
+        """Closes the Local Cache connection."""
         self.local_cache_api.lavalink.close()
 
     async def get_random_track_from_db(self) -> Optional[MutableMapping]:
-        """Get a random track from the local database and return it"""
+        """Get a random track from the local database and return it."""
         track: Optional[MutableMapping] = {}
         try:
             query_data = {}
@@ -98,6 +104,12 @@ class AudioAPIInterface:
                     track["loadType"] = "V2_COMPAT"
                 results = LoadResult(track)
                 track = random.choice(list(results.tracks))
+                assert isinstance(track, Track)
+                query = Query.process_input(
+                    query=track, _local_folder_current_path=self.cog.local_folder_current_path
+                )
+                if query.is_pornhub:
+                    return await self.get_random_track_from_db()
         except Exception as exc:
             debug_exc_log(log, exc, "Failed to fetch a random track from database")
             track = {}
@@ -108,11 +120,9 @@ class AudioAPIInterface:
         return track
 
     async def route_tasks(
-        self,
-        action_type: str = None,
-        data: Union[List[MutableMapping], MutableMapping] = None,
+        self, action_type: str = None, data: Union[List[MutableMapping], MutableMapping] = None,
     ) -> None:
-        """Separate the tasks and run them in the appropriate functions"""
+        """Separate the tasks and run them in the appropriate functions."""
 
         if not data:
             return
@@ -136,7 +146,7 @@ class AudioAPIInterface:
             await asyncio.gather(*[self.global_cache_api.update_global(**d) for d in data])
 
     async def run_tasks(self, ctx: Optional[commands.Context] = None, message_id=None) -> None:
-        """Run tasks for a specific context"""
+        """Run tasks for a specific context."""
         if message_id is not None:
             lock_id = message_id
         elif ctx is not None:
@@ -151,9 +161,7 @@ class AudioAPIInterface:
                 try:
                     tasks = self._tasks[lock_id]
                     tasks = [self.route_tasks(a, tasks[a]) for a in tasks]
-                    await asyncio.gather(
-                        *tasks, return_exceptions=False
-                    )
+                    await asyncio.gather(*tasks, return_exceptions=False)
                     del self._tasks[lock_id]
                 except Exception as exc:
                     debug_exc_log(
@@ -164,7 +172,7 @@ class AudioAPIInterface:
                         log.debug(f"Completed database writes for {lock_id} ({lock_author})")
 
     async def run_all_pending_tasks(self) -> None:
-        """Run all pending tasks left in the cache, called on cog_unload"""
+        """Run all pending tasks left in the cache, called on cog_unload."""
         async with self._lock:
             if IS_DEBUG:
                 log.debug("Running pending writes to database")
@@ -176,9 +184,7 @@ class AudioAPIInterface:
                 self._tasks = {}
                 coro_tasks = [self.route_tasks(a, tasks[a]) for a in tasks]
 
-                await asyncio.gather(
-                    *coro_tasks, return_exceptions=False
-                )
+                await asyncio.gather(*coro_tasks, return_exceptions=False)
 
             except Exception as exc:
                 debug_exc_log(log, exc, "Failed database writes")
@@ -187,7 +193,7 @@ class AudioAPIInterface:
                     log.debug("Completed pending writes to database have finished")
 
     def append_task(self, ctx: commands.Context, event: str, task: Tuple, _id: int = None) -> None:
-        """Add a task to the cache to be run later"""
+        """Add a task to the cache to be run later."""
         lock_id = _id or ctx.message.id
         if lock_id not in self._tasks:
             self._tasks[lock_id] = {"update": [], "insert": [], "global": []}
@@ -202,7 +208,7 @@ class AudioAPIInterface:
         skip_youtube: bool = False,
         current_cache_level: CacheLevel = CacheLevel.none(),
     ) -> List[str]:
-        """Return youtube URLS for the spotify URL provided"""
+        """Return youtube URLS for the spotify URL provided."""
         youtube_urls = []
         tracks = await self.fetch_from_spotify_api(
             query_type, uri, params=None, notifier=notifier, ctx=ctx
@@ -278,7 +284,7 @@ class AudioAPIInterface:
         notifier: Optional[Notifier] = None,
         ctx: Context = None,
     ) -> Union[List[MutableMapping], List[str]]:
-        """Gets track info from spotify API"""
+        """Gets track info from spotify API."""
 
         if recursive is False:
             (call, params) = self.spotify_api.spotify_format_call(query_type, uri)
@@ -408,7 +414,8 @@ class AudioAPIInterface:
         forced: bool = False,
         query_global: bool = True,
     ) -> List[lavalink.Track]:
-        """Queries the Database then falls back to Spotify and YouTube APIs then Enqueued matched tracks.
+        """Queries the Database then falls back to Spotify and YouTube APIs then Enqueued matched
+        tracks.
 
         Parameters
         ----------
@@ -678,9 +685,7 @@ class AudioAPIInterface:
         track_info: str,
         current_cache_level: CacheLevel = CacheLevel.none(),
     ) -> Optional[str]:
-        """
-        Call the Youtube API and returns the youtube URL that the query matched
-        """
+        """Call the Youtube API and returns the youtube URL that the query matched."""
         track_url = await self.youtube_api.get_call(track_info)
         if CacheLevel.set_youtube().is_subset(current_cache_level) and track_url:
             time_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
@@ -704,9 +709,7 @@ class AudioAPIInterface:
     async def fetch_from_youtube_api(
         self, ctx: commands.Context, track_info: str
     ) -> Optional[str]:
-        """
-        Gets an YouTube URL from for the query
-        """
+        """Gets an YouTube URL from for the query."""
         current_cache_level = CacheLevel(await self.config.cache_level())
         cache_enabled = CacheLevel.set_youtube().is_subset(current_cache_level)
         val = None
@@ -762,6 +765,8 @@ class AudioAPIInterface:
         cache_enabled = CacheLevel.set_lavalink().is_subset(current_cache_level)
         val = None
         query = Query.process_input(query, self.cog.local_folder_current_path)
+        if query.is_pornhub and not ctx.channel.is_nsfw():
+            raise PHNSFWError(ctx.channel, "You need to be in a NSFW to use NSFW queries")
         query_string = str(query)
         globaldb_toggle = await self.config.global_db_enabled()
         valid_global_entry = False
@@ -891,9 +896,7 @@ class AudioAPIInterface:
         return results, called_api
 
     async def autoplay(self, player: lavalink.Player, playlist_api: PlaylistWrapper):
-        """
-        Enqueue a random track
-        """
+        """Enqueue a random track."""
         autoplaylist = await self.config.guild(player.channel.guild).autoplaylist()
         current_cache_level = CacheLevel(await self.config.cache_level())
         cache_enabled = CacheLevel.set_lavalink().is_subset(current_cache_level)
