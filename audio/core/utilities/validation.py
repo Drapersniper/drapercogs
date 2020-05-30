@@ -3,7 +3,7 @@
 import logging
 import re
 
-from typing import Final, List, Pattern, Set
+from typing import Final, List, Pattern, Set, Union
 from urllib.parse import urlparse
 
 # Cog Dependencies
@@ -12,6 +12,8 @@ import discord
 from redbot.core import Config
 
 # Cog Relative Imports
+from redbot.core.commands import Context
+
 from ...audio_dataclasses import Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
@@ -48,6 +50,9 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
             "twitch.tv",
             "spotify.com",
             "localtracks",
+            "pornhub.com",
+            "pornhub.net",
+            "thumbzilla.com"
         ]
         query_url = urlparse(url)
         url_domain = ".".join(query_url.netloc.split(".")[-2:])
@@ -59,11 +64,14 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return not (channel.user_limit == 0 or channel.user_limit > len(channel.members))
 
     async def is_query_allowed(
-        self, config: Config, guild: discord.Guild, query: str, query_obj: Query = None
+        self, config: Config, ctx_or_channel: Union[Context, discord.TextChannel], query: str, query_obj: Query = None
     ) -> bool:
         """Checks if the query is allowed in this server or globally."""
-
+        guild = ctx_or_channel.guild
+        channel = ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
         query = query.lower().strip()
+        if not channel.is_nsfw() and query_obj.is_pornhub:
+            return False
         if query_obj is not None:
             query = (
                 query_obj.lavalink_query.replace("ytsearch:", "youtubesearch")

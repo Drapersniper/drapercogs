@@ -162,7 +162,7 @@ class MixinMeta(ABC):
 
     @abstractmethod
     async def is_query_allowed(
-        self, config: Config, guild: discord.Guild, query: str, query_obj: "Query" = None
+        self, config: Config, ctx_or_channel: Union[Context, discord.TextChannel], query: str, query_obj: "Query" = None
     ) -> bool:
         raise NotImplementedError()
 

@@ -355,7 +355,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         seek = 0
         if type(query) is not list:
             if not await self.is_query_allowed(
-                self.config, ctx.guild, f"{query}", query_obj=query
+                self.config, ctx, f"{query}", query_obj=query
             ):
                 raise QueryUnauthorized(
                     _("{query} is not an allowed query.").format(query=query.to_string_user())
@@ -423,13 +423,14 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
             async for track in AsyncIter(tracks):
                 if len(player.queue) >= 10000:
                     continue
+                query = Query.process_input(track, self.local_folder_current_path)
                 if not await self.is_query_allowed(
                     self.config,
-                    ctx.guild,
+                    ctx,
                     (
                         f"{track.title} {track.author} {track.uri} "
-                        f"{str(Query.process_input(track, self.local_folder_current_path))}"
-                    ),
+                        f"{str(query)}"
+                    ), query_obj=query
                 ):
                     if IS_DEBUG:
                         log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")
@@ -513,13 +514,14 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 )
                 if seek and seek > 0:
                     single_track.start_timestamp = seek * 1000
+                query = Query.process_input(single_track, self.local_folder_current_path)
                 if not await self.is_query_allowed(
                     self.config,
-                    ctx.guild,
+                    ctx,
                     (
                         f"{single_track.title} {single_track.author} {single_track.uri} "
-                        f"{str(Query.process_input(single_track, self.local_folder_current_path))}"
-                    ),
+                        f"{str(query)}"
+                    ),query_obj=query
                 ):
                     if IS_DEBUG:
                         log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")

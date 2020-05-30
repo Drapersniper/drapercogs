@@ -1471,13 +1471,14 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
             async for track in AsyncIter(tracks):
                 if len(player.queue) >= 10000:
                     continue
+                query = Query.process_input(track, self.local_folder_current_path)
                 if not await self.is_query_allowed(
                     self.config,
-                    ctx.guild,
+                    ctx,
                     (
                         f"{track.title} {track.author} {track.uri} "
-                        f"{str(Query.process_input(track, self.local_folder_current_path))}"
-                    ),
+                        f"{str(query)}"
+                    ),query_obj=query
                 ):
                     if IS_DEBUG:
                         log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")

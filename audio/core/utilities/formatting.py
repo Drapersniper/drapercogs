@@ -149,14 +149,14 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         queue_dur = await self.queue_duration(ctx)
         queue_total_duration = self.format_time(queue_dur)
         before_queue_length = len(player.queue)
-
+        query = Query.process_input(search_choice, self.local_folder_current_path)
         if not await self.is_query_allowed(
             self.config,
-            ctx.guild,
+            ctx,
             (
                 f"{search_choice.title} {search_choice.author} {search_choice.uri} "
-                f"{str(Query.process_input(search_choice, self.local_folder_current_path))}"
-            ),
+                f"{str(query)}"
+            ), query_obj=query
         ):
             if IS_DEBUG:
                 log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")

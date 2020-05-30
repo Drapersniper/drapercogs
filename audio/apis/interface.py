@@ -580,13 +580,15 @@ class AudioAPIInterface:
                     continue
                 consecutive_fails = 0
                 single_track = track_object[0]
+                query = Query.process_input(single_track, self.cog.local_folder_current_path)
                 if not await self.cog.is_query_allowed(
                     self.config,
-                    ctx.guild,
+                    ctx,
                     (
                         f"{single_track.title} {single_track.author} {single_track.uri} "
-                        f"{Query.process_input(single_track, self.cog.local_folder_current_path)}"
+                        f"{query}"
                     ),
+                    query_obj=query
                 ):
                     has_not_allowed = True
                     if IS_DEBUG:
@@ -948,13 +950,15 @@ class AudioAPIInterface:
                     and not query.local_track_path.exists()
                 ):
                     continue
+                query = Query.process_input(track, self.cog.local_folder_current_path)
                 if not await self.cog.is_query_allowed(
                     self.config,
-                    player.channel.guild,
+                    player.channel,
                     (
                         f"{track.title} {track.author} {track.uri} "
-                        f"{str(Query.process_input(track, self.cog.local_folder_current_path))}"
+                        f"{str(query)}"
                     ),
+                        query_obj=query
                 ):
                     if IS_DEBUG:
                         log.debug(
