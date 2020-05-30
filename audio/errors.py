@@ -116,9 +116,5 @@ class InvalidLocalTrackFolder(LocalTrackError):
     """Base exception for local track errors."""
 
 
-class PHNSFWError(CheckFailure):
+class PHNSFWError(AudioError):
     """Raised when PR queries are done outside of a NSFW Channel."""
-
-    def __init__(self, channel):
-        self.channel = channel
-        super().__init__("Channel '{}' needs to be NSFW for to use NSFW Audio.".format(channel))
