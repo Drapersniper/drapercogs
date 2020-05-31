@@ -1,18 +1,23 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import datetime
 import logging
 import math
 import re
 import time
+
 from typing import List, Optional
 
+# Cog Dependencies
 import discord
 import lavalink
-from discord.embeds import EmptyEmbed
-from redbot.core.utils import AsyncIter
 
+from discord.embeds import EmptyEmbed
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import box, escape
 
+# Cog Relative Imports
 from ...audio_dataclasses import LocalPath, Query
 from ...audio_logging import IS_DEBUG
 from ..abc import MixinMeta
@@ -129,7 +134,9 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         except IndexError:
             search_choice = tracks[-1]
         if not hasattr(search_choice, "is_local") and getattr(search_choice, "uri", None):
-            description = await self.get_track_description(search_choice, self.local_folder_current_path)
+            description = await self.get_track_description(
+                search_choice, self.local_folder_current_path
+            )
         else:
             search_choice = Query.process_input(search_choice, self.local_folder_current_path)
             if search_choice.is_local:
@@ -149,14 +156,12 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         queue_dur = await self.queue_duration(ctx)
         queue_total_duration = self.format_time(queue_dur)
         before_queue_length = len(player.queue)
-
+        query = Query.process_input(search_choice, self.local_folder_current_path)
         if not await self.is_query_allowed(
             self.config,
-            ctx.guild,
-            (
-                f"{search_choice.title} {search_choice.author} {search_choice.uri} "
-                f"{str(Query.process_input(search_choice, self.local_folder_current_path))}"
-            ),
+            ctx,
+            (f"{search_choice.title} {search_choice.author} {search_choice.uri} " f"{str(query)}"),
+            query_obj=query,
         ):
             if IS_DEBUG:
                 log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")
@@ -208,7 +213,9 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
 
     async def _format_search_options(self, search_choice):
         query = Query.process_input(search_choice, self.local_folder_current_path)
-        description = await self.get_track_description(search_choice, self.local_folder_current_path)
+        description = await self.get_track_description(
+            search_choice, self.local_folder_current_path
+        )
         return description, query
 
     async def _build_search_page(
@@ -277,7 +284,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
     async def get_track_description(
         self, track, local_folder_current_path, shorten=False
     ) -> Optional[str]:
-        """Get the user facing formatted track name"""
+        """Get the user facing formatted track name."""
         string = None
         if track and getattr(track, "uri", None):
             query = Query.process_input(track.uri, local_folder_current_path)
@@ -336,8 +343,10 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             string = f'**{escape(f"{string}", formatting=True)}**'
         return string
 
-    async def get_track_description_unformatted(self, track, local_folder_current_path) -> Optional[str]:
-        """Get the user facing unformatted track name"""
+    async def get_track_description_unformatted(
+        self, track, local_folder_current_path
+    ) -> Optional[str]:
+        """Get the user facing unformatted track name."""
         if track and hasattr(track, "uri"):
             query = Query.process_input(track.uri, local_folder_current_path)
             if query.is_local or "localtracks/" in track.uri:
@@ -369,7 +378,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return None
 
     def format_playlist_picker_data(self, pid, pname, ptracks, pauthor, scope) -> str:
-        """Format the values into a pretified codeblock"""
+        """Format the values into a pretified codeblock."""
         author = self.bot.get_user(pauthor) or pauthor or _("Unknown")
         line = _(
             " - Name:   <{pname}>\n"
@@ -392,7 +401,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         pos = player.position
         dur = player.current.length
         sections = 12
-        loc_time = round((pos / dur) * sections)
+        loc_time = round((pos / dur if dur != 0 else pos) * sections)
         bar = "\N{BOX DRAWINGS HEAVY HORIZONTAL}"
         hit_loc = False
         if paused:

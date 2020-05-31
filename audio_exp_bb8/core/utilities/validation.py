@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import logging
 import re
-from typing import Final, List, Set, Pattern
+
+from typing import Final, List, Optional, Pattern, Set, Union
 from urllib.parse import urlparse
 
+# Cog Dependencies
 import discord
 
 from redbot.core import Config
+from redbot.core.commands import Context
 
+# Cog Relative Imports
 from ...audio_dataclasses import Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
@@ -43,6 +49,9 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
             "twitch.tv",
             "spotify.com",
             "localtracks",
+            "pornhub.com",
+            "pornhub.net",
+            "thumbzilla.com",
         ]
         query_url = urlparse(url)
         url_domain = ".".join(query_url.netloc.split(".")[-2:])
@@ -54,14 +63,30 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return not (channel.user_limit == 0 or channel.user_limit > len(channel.members))
 
     async def is_query_allowed(
-        self, config: Config, guild: discord.Guild, query: str, query_obj: Query = None
+        self,
+        config: Config,
+        ctx_or_channel: Optional[Union[Context, discord.TextChannel]],
+        query: str,
+        query_obj: Query,
     ) -> bool:
-        """Checks if the query is allowed in this server or globally"""
-
-        query = query.lower().strip()
+        """Checks if the query is allowed in this server or globally."""
+        if ctx_or_channel:
+            guild = ctx_or_channel.guild
+            channel = (
+                ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
+            )
+            query = query.lower().strip()
+            if not channel.is_nsfw() and query_obj.is_nsfw:
+                return False
+            if query_obj.is_nsfw and not self._nsfw_cache[guild.id]:
+                return False
+        else:
+            guild = None
         if query_obj is not None:
-            query = query_obj.lavalink_query.replace("ytsearch:", "youtubesearch").replace(
-                "scsearch:", "soundcloudsearch"
+            query = (
+                query_obj.lavalink_query.replace("ytsearch:", "youtubesearch")
+                .replace("scsearch:", "soundcloudsearch")
+                .replace("phsearch:", "pornhubsearch")
             )
         global_whitelist = set(await config.url_keyword_whitelist())
         global_whitelist = [i.lower() for i in global_whitelist]

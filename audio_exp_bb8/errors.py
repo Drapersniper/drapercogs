@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Cog Dependencies
 import aiohttp
 
 
@@ -110,3 +112,7 @@ class InvalidLocalTrack(LocalTrackError):
 
 class InvalidLocalTrackFolder(LocalTrackError):
     """Base exception for local track errors."""
+
+
+class PHNSFWError(AudioError):
+    """Raised when PR queries are done outside of a NSFW Channel."""

@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import logging
+
 from typing import Union
 
+# Cog Dependencies
 import discord
 import lavalink
 
@@ -12,6 +16,7 @@ from redbot.core.utils.chat_formatting import box, humanize_number
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 
+# Cog Relative Imports
 from ...audio_dataclasses import LocalPath
 from ...converters import ScopeParser
 from ...errors import MissingGuild, TooManyMatches
@@ -32,6 +37,24 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.mod_or_permissions(manage_guild=True)
     async def command_audioset_perms(self, ctx: commands.Context):
         """Manages the keyword whitelist and blacklist."""
+
+    @commands.guild_only()
+    @command_audioset.command(name="nsfw")
+    @commands.admin_or_permissions(manage_guild=True)
+    async def command_audioset_nsfw(self, ctx: commands.Context):
+        """Toggle whether NSFW are allowed in the server."""
+        nsfw = self._nsfw_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).nsfw_queries()
+        )
+        await self.config.guild(ctx.guild).nsfw_queries.set(not nsfw)
+        self._nsfw_cache[ctx.guild.id] = not nsfw
+        await self.send_embed_msg(
+            ctx,
+            title=_("Setting Changed"),
+            description=_("NSFW Queries: {true_or_false}.").format(
+                true_or_false=_("Enabled") if not nsfw else _("Disabled")
+            ),
+        )
 
     @commands.is_owner()
     @command_audioset_perms.group(name="global")
@@ -727,14 +750,14 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_audioset.command(name="lyrics")
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
-    async def command_audioset_lryics(self, ctx: commands.Context):
+    async def command_audioset_lyrics(self, ctx: commands.Context):
         """Prioritise tracks with lyrics."""
         prefer_lyrics = await self.config.guild(ctx.guild).prefer_lyrics()
         await self.config.guild(ctx.guild).prefer_lyrics.set(not prefer_lyrics)
         await self.send_embed_msg(
             ctx,
             title=_("Setting Changed"),
-            description=_("Prefer tracks with lryics: {true_or_false}.").format(
+            description=_("Prefer tracks with lyrics: {true_or_false}.").format(
                 true_or_false=_("Enabled") if not prefer_lyrics else _("Disabled")
             ),
         )
@@ -1333,7 +1356,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.send_embed_msg(ctx, title=_("Setting Changed"), description=msg)
 
     @commands.is_owner()
-    @command_audioset.group(name="audiodb")
+    @command_audioset.group(name="globaldb")
     async def command_audioset_audiodb(self, ctx: commands.Context):
         """Change audiodb settings."""
 

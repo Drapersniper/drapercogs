@@ -71,7 +71,10 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
                 dur = "LIVE"
             else:
                 dur = self.format_time(player.current.length)
-            song = await self.get_track_description(player.current, self.local_folder_current_path) or ""
+            song = (
+                await self.get_track_description(player.current, self.local_folder_current_path)
+                or ""
+            )
             song += _("\n Requested by: **{track.requester}**")
             song += "\n\n{arrow}`{pos}`/`{dur}`"
             song = song.format(track=player.current, arrow=arrow, pos=pos, dur=dur)

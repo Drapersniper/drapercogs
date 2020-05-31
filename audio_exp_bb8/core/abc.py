@@ -1,11 +1,15 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
+# Standard Library
 import asyncio
+
 from abc import ABC, abstractmethod
 from collections import Counter
 from pathlib import Path
-from typing import Any, List, Mapping, MutableMapping, Optional, Tuple, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, List, Mapping, MutableMapping, Optional, Tuple, Union
 
+# Cog Dependencies
 import aiohttp
 import discord
 import lavalink
@@ -25,8 +29,7 @@ if TYPE_CHECKING:
 
 
 class MixinMeta(ABC):
-    """
-    Base class for well behaved type hint detection with composite class.
+    """Base class for well behaved type hint detection with composite class.
 
     Basically, to keep developers sane when not all attributes are defined in each mixin.
     """
@@ -47,6 +50,7 @@ class MixinMeta(ABC):
     _persist_queue_cache: MutableMapping[int, bool]
     _dj_status_cache: MutableMapping[int, Optional[bool]]
     _dj_role_cache: MutableMapping[int, Optional[int]]
+    _nsfw_cache: MutableMapping[int, bool]
     _error_timer: MutableMapping[int, float]
     _disconnected_players: MutableMapping[int, bool]
 
@@ -162,7 +166,11 @@ class MixinMeta(ABC):
 
     @abstractmethod
     async def is_query_allowed(
-        self, config: Config, guild: discord.Guild, query: str, query_obj: "Query" = None
+        self,
+        config: Config,
+        ctx_or_channel: Optional[Union[Context, discord.TextChannel]],
+        query: str,
+        query_obj: Query,
     ) -> bool:
         raise NotImplementedError()
 

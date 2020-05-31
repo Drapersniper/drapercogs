@@ -1,23 +1,28 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import logging
 import re
+
 from collections import OrderedDict
 from pathlib import Path
 from typing import Final, Pattern
 
+# Cog Dependencies
 import discord
 import lavalink
+
 from aiohttp import ClientConnectorError
 from discord.ext.commands import CheckFailure
-
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import box, humanize_list
 
-from ..abc import MixinMeta
-from ..cog_utils import CompositeMetaClass, HUMANIZED_PERM, _
+# Cog Relative Imports
 from ...audio_logging import debug_exc_log
-from ...errors import TrackEnqueueError
+from ...errors import PHNSFWError, TrackEnqueueError
+from ..abc import MixinMeta
+from ..cog_utils import HUMANIZED_PERM, CompositeMetaClass, _
 
 log = logging.getLogger("red.cogs.Audio.cog.Events.dpy")
 
@@ -92,20 +97,26 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             if not notify_channel:
                 player.store("channel", ctx.channel.id)
 
+        self._daily_global_playlist_cache.setdefault(
+            self.bot.user.id, await self.config.daily_playlists()
+        )
+        if self.local_folder_current_path is None:
+            self.local_folder_current_path = Path(await self.config.localpath())
+        if not ctx.guild:
+            return
+
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()
         )
         self._daily_playlist_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).daily_playlists()
         )
-        self._daily_global_playlist_cache.setdefault(
-            self.bot.user.id, await self.config.daily_playlists()
+        self._nsfw_cache.setdefault(
+            ctx.guild.id, await self.config.guild(ctx.guild).nsfw_queries()
         )
         self._persist_queue_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).persist_queue()
         )
-        if self.local_folder_current_path is None:
-            self.local_folder_current_path = Path(await self.config.localpath())
         if dj_enabled:
             dj_role = self._dj_role_cache.setdefault(
                 ctx.guild.id, await self.config.guild(ctx.guild).dj_role()
@@ -186,6 +197,18 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 error=True,
             )
             debug_exc_log(log, error, "This is a handled error")
+        elif isinstance(error, PHNSFWError):
+            handled = True
+            await self.send_embed_msg(
+                ctx,
+                title=_("Unable to Get Track"),
+                description=_("You can only perform NSFW queries in a NSFW channel."),
+                error=True,
+            )
+            debug_exc_log(log, error, "This is a handled error")
+            self.update_player_lock(ctx, False)
+            if self.api_interface is not None:
+                await self.api_interface.run_tasks(ctx)
         if not isinstance(
             error,
             (
