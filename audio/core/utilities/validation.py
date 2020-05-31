@@ -3,7 +3,7 @@
 import logging
 import re
 
-from typing import Final, List, Pattern, Set, Union
+from typing import Final, List, Pattern, Set, Union, Optional
 from urllib.parse import urlparse
 
 # Cog Dependencies
@@ -64,16 +64,19 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return not (channel.user_limit == 0 or channel.user_limit > len(channel.members))
 
     async def is_query_allowed(
-        self, config: Config, ctx_or_channel: Union[Context, discord.TextChannel], query: str, query_obj: Query
+        self, config: Config, ctx_or_channel: Optional[Union[Context, discord.TextChannel]], query: str, query_obj: Query
     ) -> bool:
         """Checks if the query is allowed in this server or globally."""
-        guild = ctx_or_channel.guild
-        channel = ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
-        query = query.lower().strip()
-        if not channel.is_nsfw() and query_obj.is_nsfw:
-            return False
-        if query_obj.is_nsfw and not self._nsfw_cache[guild.id]:
-            return False
+        if ctx_or_channel:
+            guild = ctx_or_channel.guild
+            channel = ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
+            query = query.lower().strip()
+            if not channel.is_nsfw() and query_obj.is_nsfw:
+                return False
+            if query_obj.is_nsfw and not self._nsfw_cache[guild.id]:
+                return False
+        else:
+            guild = None
         if query_obj is not None:
             query = (
                 query_obj.lavalink_query.replace("ytsearch:", "youtubesearch")

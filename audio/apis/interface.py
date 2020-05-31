@@ -84,7 +84,7 @@ class AudioAPIInterface:
         """Closes the Local Cache connection."""
         self.local_cache_api.lavalink.close()
 
-    async def get_random_track_from_db(self) -> Optional[MutableMapping]:
+    async def get_random_track_from_db(self, tries=0) -> Optional[MutableMapping]:
         """Get a random track from the local database and return it."""
         track: Optional[MutableMapping] = {}
         try:
@@ -105,11 +105,12 @@ class AudioAPIInterface:
                 results = LoadResult(track)
                 track = random.choice(list(results.tracks))
                 assert isinstance(track, Track)
-                query = Query.process_input(
-                    query=track, _local_folder_current_path=self.cog.local_folder_current_path
-                )
+                query = Query.process_input(track.uri, self.cog.local_folder_current_path)
                 if query.is_nsfw:
-                    return await self.get_random_track_from_db()
+                    tries += 1
+                    if tries > 3:
+                        return None
+                    return await self.get_random_track_from_db(tries)
         except Exception as exc:
             debug_exc_log(log, exc, "Failed to fetch a random track from database")
             track = {}
@@ -950,10 +951,10 @@ class AudioAPIInterface:
                     and not query.local_track_path.exists()
                 ):
                     continue
-                query = Query.process_input(track, self.cog.local_folder_current_path)
+                notify_channel = self.bot.get_channel(player.fetch("channel"))
                 if not await self.cog.is_query_allowed(
                     self.config,
-                    player.channel,
+                    notify_channel,
                     (
                         f"{track.title} {track.author} {track.uri} "
                         f"{str(query)}"

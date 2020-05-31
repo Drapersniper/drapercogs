@@ -2,8 +2,6 @@
 # Cog Dependencies
 import aiohttp
 
-from discord.ext.commands import CheckFailure, NSFWChannelRequired
-
 
 class AudioError(Exception):
     """Base exception for errors in the Audio cog."""

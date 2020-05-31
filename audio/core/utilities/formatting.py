@@ -388,7 +388,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         pos = player.position
         dur = player.current.length
         sections = 12
-        loc_time = round((pos / dur) * sections)
+        loc_time = round((pos / dur if dur != 0 else pos) * sections)
         bar = "\N{BOX DRAWINGS HEAVY HORIZONTAL}"
         seek = "\N{RADIO BUTTON}"
         if paused:
