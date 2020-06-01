@@ -974,6 +974,8 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         song_notify = _("Enabled") if data["notify"] else _("Disabled")
         song_status = _("Enabled") if global_data["status"] else _("Disabled")
         persist_queue = _("Enabled") if data["persist_queue"] else _("Disabled")
+        nsfwrequests = _("Enabled") if data["nsfw_queries"] else _("Disabled")
+
         countrycode = data["country_code"]
 
         spotify_cache = CacheLevel.set_spotify()
@@ -1017,6 +1019,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             "Songs as status:  [{status}]\n"
             "Persist queue:    [{persist_queue}]\n"
             "Spotify search:   [{countrycode}]\n"
+            "NSFW Requests:    [{nsfwrequests}]\n"
         ).format(
             countrycode=countrycode,
             repeat=song_repeat,
@@ -1025,6 +1028,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             status=song_status,
             bumpped_shuffle=bumpped_shuffle,
             persist_queue=persist_queue,
+            nsfwrequests=nsfwrequests,
         )
         if thumbnail:
             msg += _("Thumbnails:       [{0}]\n").format(
