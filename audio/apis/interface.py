@@ -945,7 +945,7 @@ class AudioAPIInterface:
                 track = random.choice(tracks)
                 query = Query.process_input(track, self.cog.local_folder_current_path)
                 await asyncio.sleep(0.001)
-                if not query.valid or (
+                if (not query.valid) or query.is_nsfw or (
                     query.is_local
                     and query.local_track_path is not None
                     and not query.local_track_path.exists()
