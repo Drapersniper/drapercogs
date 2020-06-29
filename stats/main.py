@@ -359,7 +359,7 @@ class Stats(commands.Cog):
                         self.bot.stats.bot, "Users in Do Not Disturb", 0
                     ),
                     "\N{MEDIUM WHITE CIRCLE}": getattr(self.bot.stats.bot, "Users Offline", 0),
-                    "\N{LARGE PURPLE CIRCLE}": getattr(self.bot.stats.bot, "Users Online", 0),
+                    "\N{LARGE PURPLE CIRCLE}": getattr(self.bot.stats.bot, "Users Streaming", 0),
                     "\N{MOBILE PHONE}": getattr(self.bot.stats.bot, "Users Online on Mobile", 0),
                     "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Users Streaming", 0
