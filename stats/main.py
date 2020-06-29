@@ -5,6 +5,8 @@ import datetime
 from collections import Counter, defaultdict
 
 # Cog Dependencies
+from types import SimpleNamespace
+
 import discord
 import lavalink
 
@@ -19,6 +21,27 @@ _ = lambda s: s
 class Stats(commands.Cog):
     def __init__(self, bot: Red):
         self.bot = bot
+
+        if hasattr(self.bot, "stats"):
+            if not hasattr(self.bot.stats, "guilds"):
+                self.bot.stats.guilds = SimpleNamespace()
+            if not hasattr(self.bot.stats, "bot"):
+                self.bot.stats.bot = SimpleNamespace()
+            if not hasattr(self.bot.stats, "shards"):
+                self.bot.stats.shards = SimpleNamespace()
+            if not hasattr(self.bot.stats, "audio"):
+                self.bot.stats.audio = SimpleNamespace()
+            if not hasattr(self.bot.stats, "currency"):
+                self.bot.stats.currency = SimpleNamespace()
+            if not hasattr(self.bot.stats, "guilds_regions"):
+                self.bot.stats.guilds_regions = SimpleNamespace()
+            if not hasattr(self.bot.stats, "guild_features"):
+                self.bot.stats.guild_features = SimpleNamespace()
+            if not hasattr(self.bot.stats, "guild_verification"):
+                self.bot.stats.guild_verification = SimpleNamespace()
+            if not hasattr(self.bot.stats, "adventure"):
+                self.bot.stats.adventure = SimpleNamespace()
+
 
     @commands.command()
     @commands.guild_only()
