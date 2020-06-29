@@ -546,8 +546,8 @@ class Stats(commands.Cog):
             ):
                 if value:
                     verif_data += f"{bold(humanize_number(value))} - {k}\n"
-
-        data.add_field(name=_("Server Verification:"), value=verif_data)
+        if verif_data:
+            data.add_field(name=_("Server Verification:"), value=verif_data)
         if not bot_has_stats:
             data.add_field(
                 name=_("Nitro boosts:"),
@@ -716,7 +716,8 @@ class Stats(commands.Cog):
                     ),
                 ),
             )
-        data.add_field(name=_("Members:"), value=member_msg)
+        if member_msg:
+            data.add_field(name=_("Members:"), value=member_msg)
 
         member_msg_web = ""
         count = 1
@@ -753,11 +754,16 @@ class Stats(commands.Cog):
                 "\n" if count % 2 == 0 else ""
             )
             count += 1
-        data.add_field(name=_("Human Statuses:"), value=member_msg_humans)
-        data.add_field(name=_("Bot Statuses:"), value=member_msg_bots)
-        data.add_field(name=_("Desktop Statuses:"), value=member_msg_desktop)
-        data.add_field(name=_("Web Statuses:"), value=member_msg_web)
-        data.add_field(name=_("Mobile Statuses:"), value=member_msg_mobile)
+        if member_msg_humans:
+            data.add_field(name=_("Human Statuses:"), value=member_msg_humans)
+        if member_msg_bots:
+            data.add_field(name=_("Bot Statuses:"), value=member_msg_bots)
+        if member_msg_desktop:
+            data.add_field(name=_("Desktop Statuses:"), value=member_msg_desktop)
+        if member_msg_web:
+            data.add_field(name=_("Web Statuses:"), value=member_msg_web)
+        if member_msg_mobile:
+            data.add_field(name=_("Mobile Statuses:"), value=member_msg_mobile)
         shard_latencies = ""
         count = 1
         for shard_id, latency in self.bot.latencies:
@@ -812,5 +818,6 @@ class Stats(commands.Cog):
                     ),
                 ),
             )
-        data.add_field(name=_("Shard Latencies:"), value=shard_latencies)
+        if shard_latencies:
+            data.add_field(name=_("Shard Latencies:"), value=shard_latencies)
         await ctx.send(embed=data)
