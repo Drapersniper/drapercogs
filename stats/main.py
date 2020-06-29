@@ -21,6 +21,7 @@ _ = lambda s: s
 class Stats(commands.Cog):
     def __init__(self, bot: Red):
         self.bot = bot
+        self.__version__ = "Nope"
 
         if hasattr(self.bot, "stats"):
             if not hasattr(self.bot.stats, "guilds"):
