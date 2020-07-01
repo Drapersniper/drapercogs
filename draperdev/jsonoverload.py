@@ -38,3 +38,18 @@ class DraperDevJson(commands.Cog):
 
         restore_stdlib()
         await ctx.tick()
+
+    @_hackydev.command(name="resetmodules")
+    async def _hackydev_resetmodules(self, ctx: commands.Context):
+        """Reset Libs."""
+        from .hackyjson import reset_modules
+
+        reset_modules()
+        await ctx.tick()
+
+    @_hackydev.command(name="which")
+    async def _hackydev_which(self, ctx: commands.Context):
+        """Reset Libs."""
+        from .hackyjson import mainjson
+
+        await ctx.send(f"You are using `{mainjson.__name__}`")

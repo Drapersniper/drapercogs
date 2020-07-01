@@ -29,11 +29,26 @@ for item in MODULES:
     with contextlib.suppress(ValueError):
         index = MODULES_NAME.index(item)
         mainjson = MODULES_IMPORTS[index]
+
         if mainjson:
             break
 if mainjson is None:
     mainjson = json
 
+
+def reset_modules():
+    global MODULES_IMPORTS, MODULES_NAME, mainjson
+    MODULES_IMPORTS = list(import_modules())
+    MODULES_NAME = [module.__name__ for module in MODULES_IMPORTS]
+    for item in MODULES:
+        with contextlib.suppress(ValueError):
+            index = MODULES_NAME.index(item)
+            mainjson = MODULES_IMPORTS[index]
+
+            if mainjson:
+                break
+    if mainjson is None:
+        mainjson = json
 
 def dumps(obj, **kw):
     output = mainjson.dumps(obj)
