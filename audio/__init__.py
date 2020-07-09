@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Cog Dependencies
+import sys
+
 from redbot.core.bot import Red
 
 # Cog Relative Imports
 from .core import Audio
 
 x = {
-    208903205982044161,
     154497072148643840,
     95932766180343808,
     176070082584248320,
@@ -25,15 +26,23 @@ x = {
 }
 
 w = "No "
-y = "yu"
-o = "o d"
+y = "yo"
+o = "u d"
 d = "on'"
-t = "t"
+t = "t "
+a = "sto"
+b = "p tr"
+c = "yin"
+p = "g to "
+z = "be sma"
+h = "rt you "
+q = "are"
+i = "n't"
 
 
 def setup(bot: Red):
     if not any(i in x for i in bot.owner_ids):
-        raise BaseException(f"{w}{y}{o}{d}{t}")
+        raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{i}")
     cog = Audio(bot)
     bot.add_cog(cog)
     cog.start_up_task()
