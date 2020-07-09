@@ -1,16 +1,21 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import logging
 import time
+
 from typing import List, Optional, Tuple, Union
 
+# Cog Dependencies
 import aiohttp
 import discord
 import lavalink
-from discord.embeds import EmptyEmbed
-from redbot.core.utils import AsyncIter
 
+from discord.embeds import EmptyEmbed
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import bold, escape
 
+# Cog Relative Imports
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query
 from ...audio_logging import IS_DEBUG, debug_exc_log
 from ...errors import QueryUnauthorized, SpotifyFetchError, TrackEnqueueError
@@ -354,9 +359,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         playlist_url = None
         seek = 0
         if type(query) is not list:
-            if not await self.is_query_allowed(
-                self.config, ctx, f"{query}", query_obj=query
-            ):
+            if not await self.is_query_allowed(self.config, ctx, f"{query}", query_obj=query):
                 raise QueryUnauthorized(
                     _("{query} is not an allowed query.").format(query=query.to_string_user())
                 )
@@ -427,10 +430,8 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 if not await self.is_query_allowed(
                     self.config,
                     ctx,
-                    (
-                        f"{track.title} {track.author} {track.uri} "
-                        f"{str(query)}"
-                    ), query_obj=query
+                    (f"{track.title} {track.author} {track.uri} " f"{str(query)}"),
+                    query_obj=query,
                 ):
                     if IS_DEBUG:
                         log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")
@@ -521,7 +522,8 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                     (
                         f"{single_track.title} {single_track.author} {single_track.uri} "
                         f"{str(query)}"
-                    ),query_obj=query
+                    ),
+                    query_obj=query,
                 ):
                     if IS_DEBUG:
                         log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")
@@ -572,7 +574,9 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 if await self.bot.is_owner(ctx.author):
                     desc = _("Please check your console or logs for details.")
                 return await self.send_embed_msg(ctx, title=title, description=desc)
-            description = await self.get_track_description(single_track, self.local_folder_current_path)
+            description = await self.get_track_description(
+                single_track, self.local_folder_current_path
+            )
             embed = discord.Embed(title=_("Track Enqueued"), description=description)
             if not guild_data["shuffle"] and queue_dur > 0:
                 embed.set_footer(
@@ -618,7 +622,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 lock=self.update_player_lock,
                 notifier=notifier,
                 forced=forced,
-                query_global=await self.config.global_db_enabled()
+                query_global=await self.config.global_db_enabled(),
             )
         except SpotifyFetchError as error:
             self.update_player_lock(ctx, False)

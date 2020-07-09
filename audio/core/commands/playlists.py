@@ -43,17 +43,11 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_playlist(self, ctx: commands.Context):
         """Playlist configuration options.
 
-        Scope info:
-        ​ ​ ​ ​ **Global**:
-        ​ ​ ​ ​ ​ ​ ​ ​ Visible to all users of this bot.
-        ​ ​ ​ ​ ​ ​ ​ ​ Only editable by bot owner.
-        ​ ​ ​ ​ **Guild**:
-        ​ ​ ​ ​ ​ ​ ​ ​ Visible to all users in this guild.
-        ​ ​ ​ ​ ​ ​ ​ ​ Editable by bot owner, guild owner, guild admins, guild mods, DJ role and playlist creator.
-        ​ ​ ​ ​ **User**:
-        ​ ​ ​ ​ ​ ​ ​ ​ Visible to all bot users, if --author is passed.
-        ​ ​ ​ ​ ​ ​ ​ ​ Editable by bot owner and creator.
-
+        Scope info: ​ ​ ​ ​ **Global**: ​ ​ ​ ​ ​ ​ ​ ​ Visible to all users of this bot. ​ ​ ​ ​ ​
+        ​ ​ ​ Only editable by bot owner. ​ ​ ​ ​ **Guild**: ​ ​ ​ ​ ​ ​ ​ ​ Visible to all users
+        in this guild. ​ ​ ​ ​ ​ ​ ​ ​ Editable by bot owner, guild owner, guild admins, guild
+        mods, DJ role and playlist creator. ​ ​ ​ ​ **User**: ​ ​ ​ ​ ​ ​ ​ ​ Visible to all bot
+        users, if --author is passed. ​ ​ ​ ​ ​ ​ ​ ​ Editable by bot owner and creator.
         """
 
     @command_playlist.command(
@@ -1481,10 +1475,8 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 if not await self.is_query_allowed(
                     self.config,
                     ctx,
-                    (
-                        f"{track.title} {track.author} {track.uri} "
-                        f"{str(query)}"
-                    ),query_obj=query
+                    (f"{track.title} {track.author} {track.uri} " f"{str(query)}"),
+                    query_obj=query,
                 ):
                     if IS_DEBUG:
                         log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")

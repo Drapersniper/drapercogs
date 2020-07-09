@@ -1,9 +1,15 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import logging
 import re
 import struct
+
 from typing import Final, Optional
 
+# Cog Dependencies
 import aiohttp
+
+# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
 
@@ -31,4 +37,3 @@ class ParsingUtilities(MixinMeta, metaclass=CompositeMetaClass):
                         return None
         except (KeyError, aiohttp.ClientConnectionError, aiohttp.ClientResponseError):
             return None
-

@@ -3,17 +3,16 @@
 import logging
 import re
 
-from typing import Final, List, Pattern, Set, Union, Optional
+from typing import Final, List, Optional, Pattern, Set, Union
 from urllib.parse import urlparse
 
 # Cog Dependencies
 import discord
 
 from redbot.core import Config
-
-# Cog Relative Imports
 from redbot.core.commands import Context
 
+# Cog Relative Imports
 from ...audio_dataclasses import Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
@@ -52,7 +51,7 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
             "localtracks",
             "pornhub.com",
             "pornhub.net",
-            "thumbzilla.com"
+            "thumbzilla.com",
         ]
         query_url = urlparse(url)
         url_domain = ".".join(query_url.netloc.split(".")[-2:])
@@ -64,14 +63,20 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return not (channel.user_limit == 0 or channel.user_limit > len(channel.members))
 
     async def is_query_allowed(
-        self, config: Config, ctx_or_channel: Optional[Union[Context, discord.TextChannel]], query: str, query_obj: Query
+        self,
+        config: Config,
+        ctx_or_channel: Optional[Union[Context, discord.TextChannel]],
+        query: str,
+        query_obj: Query,
     ) -> bool:
         """Checks if the query is allowed in this server or globally."""
         if ctx_or_channel:
             guild = ctx_or_channel.guild
-            channel = ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
+            channel = (
+                ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
+            )
             query = query.lower().strip()
-            if query_obj.is_nsfw and (not channel.is_nsfw()) :
+            if query_obj.is_nsfw and (not channel.is_nsfw()):
                 return False
             if query_obj.is_nsfw and not self._nsfw_cache[guild.id]:
                 return False

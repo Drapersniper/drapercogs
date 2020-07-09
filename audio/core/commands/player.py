@@ -277,11 +277,8 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
         if not await self.is_query_allowed(
             self.config,
             ctx,
-            (
-                f"{single_track.title} {single_track.author} {single_track.uri} "
-                f"{str(query)}"
-            ),
-            query_obj=query
+            (f"{single_track.title} {single_track.author} {single_track.uri} " f"{str(query)}"),
+            query_obj=query,
         ):
             if IS_DEBUG:
                 log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")
@@ -730,9 +727,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                         title=_("Unable To Play Tracks"),
                         description=_("That URL is not allowed."),
                     )
-            if not await self.is_query_allowed(
-                self.config, ctx, f"{query}", query_obj=query
-            ):
+            if not await self.is_query_allowed(self.config, ctx, f"{query}", query_obj=query):
                 return await self.send_embed_msg(
                     ctx,
                     title=_("Unable To Play Tracks"),
@@ -803,11 +798,8 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     if not await self.is_query_allowed(
                         self.config,
                         ctx,
-                        (
-                            f"{track.title} {track.author} {track.uri} "
-                            f"{str(query)}"
-                        ),
-                        query_obj=query
+                        (f"{track.title} {track.author} {track.uri} " f"{str(query)}"),
+                        query_obj=query,
                     ):
                         if IS_DEBUG:
                             log.debug(f"Query is not allowed in {ctx.guild} ({ctx.guild.id})")

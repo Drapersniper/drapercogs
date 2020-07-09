@@ -122,7 +122,7 @@ class Audio(
             url_keyword_blacklist=[],
             url_keyword_whitelist=[],
             country_code="US",
-            nsfw_queries=False
+            nsfw_queries=False,
         )
         _playlist: Mapping = dict(id=None, author=None, name=None, playlist_url=None, tracks=[])
 

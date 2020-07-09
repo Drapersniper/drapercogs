@@ -1,15 +1,19 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import datetime
 import logging
 import math
-from typing import MutableMapping, Optional, Union, Tuple
 
+from typing import MutableMapping, Optional, Tuple, Union
+
+# Cog Dependencies
 import discord
 import lavalink
-from redbot.core.utils import AsyncIter
 
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import (
     DEFAULT_CONTROLS,
     close_menu,
@@ -20,9 +24,9 @@ from redbot.core.utils.menus import (
 )
 from redbot.core.utils.predicates import ReactionPredicate
 
+# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
-
 
 log = logging.getLogger("red.cogs.Audio.cog.Commands.queue")
 
@@ -67,7 +71,10 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
                 dur = "LIVE"
             else:
                 dur = self.format_time(player.current.length)
-            song = await self.get_track_description(player.current, self.local_folder_current_path) or ""
+            song = (
+                await self.get_track_description(player.current, self.local_folder_current_path)
+                or ""
+            )
             song += _("\n Requested by: **{track.requester}**")
             song += "\n\n{arrow}`{pos}`/`{dur}`"
             song = song.format(track=player.current, arrow=arrow, pos=pos, dur=dur)

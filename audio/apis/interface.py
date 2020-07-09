@@ -585,11 +585,8 @@ class AudioAPIInterface:
                 if not await self.cog.is_query_allowed(
                     self.config,
                     ctx,
-                    (
-                        f"{single_track.title} {single_track.author} {single_track.uri} "
-                        f"{query}"
-                    ),
-                    query_obj=query
+                    (f"{single_track.title} {single_track.author} {single_track.uri} " f"{query}"),
+                    query_obj=query,
                 ):
                     has_not_allowed = True
                     if IS_DEBUG:
@@ -945,21 +942,22 @@ class AudioAPIInterface:
                 track = random.choice(tracks)
                 query = Query.process_input(track, self.cog.local_folder_current_path)
                 await asyncio.sleep(0.001)
-                if (not query.valid) or query.is_nsfw or (
-                    query.is_local
-                    and query.local_track_path is not None
-                    and not query.local_track_path.exists()
+                if (
+                    (not query.valid)
+                    or query.is_nsfw
+                    or (
+                        query.is_local
+                        and query.local_track_path is not None
+                        and not query.local_track_path.exists()
+                    )
                 ):
                     continue
                 notify_channel = self.bot.get_channel(player.fetch("channel"))
                 if not await self.cog.is_query_allowed(
                     self.config,
                     notify_channel,
-                    (
-                        f"{track.title} {track.author} {track.uri} "
-                        f"{str(query)}"
-                    ),
-                        query_obj=query
+                    (f"{track.title} {track.author} {track.uri} " f"{str(query)}"),
+                    query_obj=query,
                 ):
                     if IS_DEBUG:
                         log.debug(
