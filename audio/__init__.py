@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Standard Library
+import asyncio
 import sys
 
 # Cog Dependencies
@@ -41,13 +42,11 @@ h = "rt you "
 q = "are"
 i = "n't"
 
-ids = {
-406925865352560650,
-246917294461157376
-}
 
-def setup(bot: Red):
-    if not any(i in x for i in bot.owner_ids) or bot.user.id not in ids:
+async def setup(bot: Red):
+    while not bot.owner_ids:
+        await asyncio.sleep(1)
+    if not any(i in x for i in bot.owner_ids):
         raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{i}")
     cog = Audio(bot)
     bot.add_cog(cog)
