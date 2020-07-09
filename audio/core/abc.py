@@ -121,16 +121,13 @@ class MixinMeta(ABC):
 
     @abstractmethod
     async def lavalink_event_handler(
-        self, player: lavalink.Player,
-            event_type: lavalink.LavalinkEvents,
-            extra
+        self, player: lavalink.Player, event_type: lavalink.LavalinkEvents, extra
     ) -> None:
         raise NotImplementedError()
 
     @abstractmethod
     async def _clear_react(
-        self, message: discord.Message,
-            emoji: MutableMapping = None
+        self, message: discord.Message, emoji: MutableMapping = None
     ) -> asyncio.Task:
         raise NotImplementedError()
 
