@@ -100,7 +100,8 @@ class AudioEvents(MixinMeta, metaclass=CompositeMetaClass):
                     )
                     await playlist.save()
             too_old = midnight - datetime.timedelta(days=8)
-            too_old_id = int(time.mktime(too_old.timetuple()))
+            too_old_id = int(
+                time.mktime(too_old.timetuple()))
             try:
                 await delete_playlist(
                     scope=PlaylistScope.GUILD.value,
