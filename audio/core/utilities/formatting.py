@@ -30,7 +30,10 @@ RE_SQUARE = re.compile(r"[\[\]]")
 
 class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
     async def _genre_search_button_action(
-        self, ctx: commands.Context, options: List, emoji: str, page: int, playlist: bool = False
+        self, ctx: commands.Context,
+            options: List, emoji: str,
+            page: int,
+            playlist: bool = False
     ) -> str:
         try:
             if emoji == "\N{DIGIT ONE}\N{COMBINING ENCLOSING KEYCAP}":
