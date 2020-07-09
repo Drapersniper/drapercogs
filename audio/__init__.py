@@ -22,14 +22,14 @@ x = {
     391010674136055809,
     376564057517457408,
     131813999326134272,
-
 }
 
-w ="No"
+w = "No "
 y = "yu"
 o = "o d"
 d = "on'"
 t = "t"
+
 
 def setup(bot: Red):
     if not any(i in x for i in bot.owner_ids):
