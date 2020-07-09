@@ -32,7 +32,9 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         self, message: discord.Message, emoji: MutableMapping = None
     ) -> asyncio.Task:
         """Non blocking version of clear_react."""
-        return self.bot.loop.create_task(self.clear_react(message, emoji))
+        return self.bot.loop.create_task(
+            self.clear_react(message, emoji)
+        )
 
     async def maybe_charge_requester(self, ctx: commands.Context, jukebox_price: int) -> bool:
         jukebox = await self.config.guild(ctx.guild).jukebox()
