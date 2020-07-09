@@ -42,7 +42,10 @@ class Audio(
     def __init__(self, bot: Red):
         super().__init__()
         self.bot = bot
-        self.config = Config.get_conf(self, 2711759130, force_registration=True)
+        self.config = Config.get_conf(self,
+                                      2711759130,
+                                      force_registration=True
+                                      )
 
         self.api_interface = None
         self.player_manager = None
