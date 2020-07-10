@@ -263,5 +263,6 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             except (KeyError, AttributeError):
                 pass
             else:
-                await self.self_deafen(player)
+                if player.channel.id == channel.id:
+                    await self.self_deafen(player)
 
