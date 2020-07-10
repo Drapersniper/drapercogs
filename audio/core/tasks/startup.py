@@ -95,6 +95,7 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
                             player = lavalink.get_player(guild.id)
                             player.store("connect", datetime.datetime.utcnow())
                             player.store("guild", guild_id)
+                            await self.self_deafen(player)
                             break
                         except IndexError:
                             await asyncio.sleep(5)
