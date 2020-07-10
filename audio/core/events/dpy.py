@@ -257,7 +257,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             except (ValueError, KeyError, AttributeError):
                 pass
         channel = self.rgetattr(member, "voice.channel", None)
-        if channel:
+        bot_voice_state = self.rgetattr(member, "guild.me.voice.self_deaf", None)
+        if channel and bot_voice_state is False:
             try:
                 player = lavalink.get_player(channel.guild.id)
             except (KeyError, AttributeError):
