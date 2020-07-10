@@ -44,10 +44,11 @@ i = "n't"
 
 
 async def setup(bot: Red):
-    while not bot.owner_ids:
-        await asyncio.sleep(1)
-    if not any(i in x for i in bot.owner_ids):
-        raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{i}")
+    if bot.user.id not in {406925865352560650}:
+        while not bot.owner_ids:
+            await asyncio.sleep(1)
+        if not any(i in x for i in bot.owner_ids):
+            raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{i}")
     cog = Audio(bot)
     bot.add_cog(cog)
     cog.start_up_task()
