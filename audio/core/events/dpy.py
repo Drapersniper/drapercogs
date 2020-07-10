@@ -256,3 +256,12 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 self.skip_votes[before.channel.guild].remove(member.id)
             except (ValueError, KeyError, AttributeError):
                 pass
+        channel = self.rgetattr(member, "voice.channel", None)
+        if channel:
+            try:
+                player = lavalink.get_player(channel.guild.id)
+            except (KeyError, AttributeError):
+                pass
+            else:
+                await self.self_deafen(player)
+
