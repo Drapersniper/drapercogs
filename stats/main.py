@@ -43,7 +43,6 @@ class Stats(commands.Cog):
             if not hasattr(self.bot.stats, "adventure"):
                 self.bot.stats.adventure = SimpleNamespace()
 
-
     @commands.command()
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)

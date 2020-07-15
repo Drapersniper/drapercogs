@@ -50,6 +50,7 @@ def reset_modules():
     if mainjson is None:
         mainjson = json
 
+
 def dumps(obj, **kw):
     output = mainjson.dumps(obj)
     with contextlib.suppress(AttributeError):

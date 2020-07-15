@@ -70,7 +70,6 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             await player.disconnect()
             await self.api_interface.persistent_queue_api.drop(ctx.guild.id)
 
-
     @commands.command(name="now")
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True, add_reactions=True)
@@ -100,7 +99,10 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 dur = "LIVE"
             else:
                 dur = self.format_time(player.current.length)
-            song = await self.get_track_description(player.current, self.local_folder_current_path) or ""
+            song = (
+                await self.get_track_description(player.current, self.local_folder_current_path)
+                or ""
+            )
             song += _("\n Requested by: **{track.requester}**")
             song += "\n\n{arrow}`{pos}`/`{dur}`"
             song = song.format(track=player.current, arrow=arrow, pos=pos, dur=dur)
@@ -219,7 +221,9 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         if not player.current:
             return await self.send_embed_msg(ctx, title=_("Nothing playing."))
-        description = await self.get_track_description(player.current, self.local_folder_current_path)
+        description = await self.get_track_description(
+            player.current, self.local_folder_current_path
+        )
 
         if player.current and not player.paused:
             await player.pause()
@@ -798,7 +802,9 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.api_interface.persistent_queue_api.played(
                 ctx.guild.id, removed.extras.get("enqueue_time")
             )
-            removed_title = await self.get_track_description(removed, self.local_folder_current_path)
+            removed_title = await self.get_track_description(
+                removed, self.local_folder_current_path
+            )
             await self.send_embed_msg(
                 ctx,
                 title=_("Removed track from queue"),

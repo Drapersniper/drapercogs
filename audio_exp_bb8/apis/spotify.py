@@ -114,7 +114,14 @@ class SpotifyWrapper:
         self.client_secret = self._token.get("client_secret", "")
 
     async def get_country_code(self, ctx: Context = None) -> str:
-        return (await self.config.user(ctx.author).country_code() or await self.config.guild(ctx.guild).country_code()) if ctx else "US"
+        return (
+            (
+                await self.config.user(ctx.author).country_code()
+                or await self.config.guild(ctx.guild).country_code()
+            )
+            if ctx
+            else "US"
+        )
 
     async def request_access_token(self) -> MutableMapping:
         """Make a spotify call to get the auth token"""
