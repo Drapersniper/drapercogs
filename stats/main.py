@@ -183,6 +183,7 @@ class Stats(commands.Cog):
 
                         if s.me in vc.members:
                             counter["user_voice_channel_with_me_count"] += len(vc.members) - 1
+                            counter["bots_voice_channel_with_me_count"] += sum(1 for m in vc.members if m.bot) - 1
 
                         async for vcm in AsyncIter(vc.members, steps=1000, delay=0):
                             if vcm.is_on_mobile():
@@ -592,7 +593,9 @@ class Stats(commands.Cog):
                     "\N{SPEAKER WITH THREE SOUND WAVES} Voice Channels: {voice}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
-                    "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
+                    "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
+                    "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Bots in VC with me: {bot_with_me}\n"
+
                 ).format(
                     store=bold(humanize_number(counter["store_text_channel_count"])),
                     nsfw=bold(humanize_number(counter["nsfw_text_channel_count"])),
@@ -604,6 +607,7 @@ class Stats(commands.Cog):
                     users=bold(humanize_number(counter["user_voice_channel_count"])),
                     with_me=bold(humanize_number(counter["user_voice_channel_with_me_count"])),
                     categories=bold(humanize_number(counter["channel_categories_count"])),
+                    bot_with_me=bold(humanize_number(counter["bots_voice_channel_with_me_count"])),
                 ),
             )
         else:
@@ -619,7 +623,8 @@ class Stats(commands.Cog):
                     "\N{SPEAKER WITH THREE SOUND WAVES} Voice Channels: {voice}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
-                    "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
+                    "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
+                    "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Bots in VC with me: {bot_with_me}\n"
                 ).format(
                     store=bold(
                         humanize_number(getattr(self.bot.stats.bot, "Store Text Channels", 0))
@@ -649,6 +654,10 @@ class Stats(commands.Cog):
                     categories=bold(
                         humanize_number(getattr(self.bot.stats.guilds, "Channel Categories", 0))
                     ),
+                    bot_with_me=bold(
+                        humanize_number(getattr(self.bot.stats.guilds, "Bots in a VC with me", 0))
+                    ),
+
                 ),
             )
 
