@@ -593,7 +593,7 @@ class Stats(commands.Cog):
                     "\N{SPEAKER WITH THREE SOUND WAVES} Voice Channels: {voice}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
-                    "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
+                    "\N{BUST IN SILHOUETTE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
                     "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Bots in VC with me: {bot_with_me}\n"
 
                 ).format(
@@ -623,7 +623,7 @@ class Stats(commands.Cog):
                     "\N{SPEAKER WITH THREE SOUND WAVES} Voice Channels: {voice}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC: {users}\n"
                     "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16}\N{MOBILE PHONE} Users in VC on Mobile: {users_mobile}\n"
-                    "\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
+                    "\N{BUST IN SILHOUETTE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Users in VC with me: {with_me}\n"
                     "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Bots in VC with me: {bot_with_me}\n"
                 ).format(
                     store=bold(
