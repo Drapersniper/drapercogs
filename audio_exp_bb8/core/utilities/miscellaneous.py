@@ -32,7 +32,7 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         self, message: discord.Message, emoji: MutableMapping = None
     ) -> asyncio.Task:
         """Non blocking version of clear_react."""
-        task = self.bot.loop.create_task(self.clear_react(message, emoji), name=f"Audio._clear_react - Clear reaction on {message.id}")
+        task = self.bot.loop.create_task(self.clear_react(message, emoji))
         task.add_done_callback(task_callback)
         return task
 

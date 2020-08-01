@@ -30,7 +30,7 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
         # There has to be a task since this requires the bot to be ready
         # If it waits for ready in startup, we cause a deadlock during initial load
         # as initial load happens before the bot can ever be ready.
-        self.cog_init_task = self.bot.loop.create_task(self.initialize(), name="Audio init")
+        self.cog_init_task = self.bot.loop.create_task(self.initialize())
         self.cog_init_task.add_done_callback(task_callback)
 
     async def initialize(self) -> None:
@@ -53,7 +53,7 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
             await self.api_interface.persistent_queue_api.delete_scheduled()
             self.lavalink_restart_connect()
             self.player_automated_timer_task = self.bot.loop.create_task(
-                self.player_automated_timer(), name="Audio.player_automated_timer"
+                self.player_automated_timer()
             )
             self.player_automated_timer_task.add_done_callback(task_callback)
             lavalink.register_event_listener(self.lavalink_event_handler)

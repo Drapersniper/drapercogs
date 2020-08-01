@@ -240,7 +240,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
         if not self.cog_cleaned_up:
             self.bot.dispatch("red_audio_unload", self)
             self.session.detach()
-            self.bot.loop.create_task(self._close_database(), name="Audio._close_database")
+            self.bot.loop.create_task(self._close_database())
             if self.player_automated_timer_task:
                 self.player_automated_timer_task.cancel()
 
@@ -251,9 +251,9 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 self.cog_init_task.cancel()
 
             lavalink.unregister_event_listener(self.lavalink_event_handler)
-            self.bot.loop.create_task(lavalink.close(), name="Audio.lavalink.close")
+            self.bot.loop.create_task(lavalink.close())
             if self.player_manager is not None:
-                self.bot.loop.create_task(self.player_manager.shutdown(), name="Audio.player_manager.shutdown")
+                self.bot.loop.create_task(self.player_manager.shutdown())
 
             self.cog_cleaned_up = True
 
