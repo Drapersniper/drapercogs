@@ -442,6 +442,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
 
     @command_audioset.group(name="autoplay")
+    @commands.guild_only()
     @commands.mod_or_permissions(manage_guild=True)
     async def command_audioset_autoplay(self, ctx: commands.Context):
         """Change auto-play setting."""

@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import concurrent
 import json
 import logging
-
 from types import SimpleNamespace
 from typing import List, MutableMapping, Optional
 
@@ -13,7 +10,6 @@ from redbot.core.bot import Red
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
-# Cog Relative Imports
 from ..audio_logging import debug_exc_log
 from ..sql_statements import (
     PLAYLIST_CREATE_INDEX,

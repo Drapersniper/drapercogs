@@ -76,7 +76,7 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
             )
             query = query.lower().strip()
-            if not channel.is_nsfw() and query_obj.is_nsfw:
+            if query_obj.is_nsfw and (not channel.is_nsfw()):
                 return False
             if query_obj.is_nsfw and not self._nsfw_cache[guild.id]:
                 return False

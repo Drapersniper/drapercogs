@@ -16,7 +16,7 @@ class LavalinkTasks(MixinMeta, metaclass=CompositeMetaClass):
         if self.lavalink_connect_task:
             self.lavalink_connect_task.cancel()
 
-        self.lavalink_connect_task = self.bot.loop.create_task(self.lavalink_attempt_connect())
+        self.lavalink_connect_task = self.bot.loop.create_task(self.lavalink_attempt_connect(), "Audio.lavalink_attempt_connect")
 
     async def lavalink_attempt_connect(self, timeout: int = 50) -> None:
         self.lavalink_connection_aborted = False

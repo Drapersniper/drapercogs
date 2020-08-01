@@ -22,6 +22,7 @@ from tqdm import tqdm
 
 # Cog Relative Imports
 from .errors import LavalinkDownloadFailed
+from .utils import task_callback
 
 log = logging.getLogger("red.audio.manager")
 JAR_VERSION: Final[str] = "3.3.1"
@@ -94,7 +95,8 @@ class ServerManager:
         except asyncio.TimeoutError:
             log.warning("Timeout occurred whilst waiting for internal Lavalink server to be ready")
 
-        self._monitor_task = asyncio.create_task(self._monitor())
+        self._monitor_task = asyncio.create_task(self._monitor(), name="Audio._monitor_task")
+        self._monitor_task.add_done_callback(task_callback)
 
     @classmethod
     async def _get_jar_args(cls) -> List[str]:

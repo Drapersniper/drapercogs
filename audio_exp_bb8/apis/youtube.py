@@ -34,14 +34,14 @@ class YouTubeWrapper:
         self._token = new_token
 
     async def _get_api_key(self,) -> str:
-        """Get the stored youtube token"""
+        """Get the stored youtube token."""
         if not self._token:
             self._token = await self.bot.get_shared_api_tokens("youtube")
         self.api_key = self._token.get("api_key", "")
         return self.api_key if self.api_key is not None else ""
 
     async def get_call(self, query: str) -> Optional[str]:
-        """Make a Get call to youtube data api"""
+        """Make a Get call to youtube data api."""
         params = {
             "q": query,
             "part": "id",

@@ -22,6 +22,8 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
     ) -> None:
         current_track = player.current
         current_channel = player.channel
+        if not current_channel:
+            return
         guild = self.rgetattr(current_channel, "guild", None)
         guild_id = self.rgetattr(guild, "id", None)
         current_requester = self.rgetattr(current_track, "requester", None)

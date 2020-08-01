@@ -524,3 +524,6 @@ class MixinMeta(ABC):
     @abstractmethod
     async def icyparser(self, url: str) -> Optional[str]:
         raise NotImplementedError()
+
+    async def self_deafen(self, player: lavalink.Player) -> None:
+        raise NotImplementedError()

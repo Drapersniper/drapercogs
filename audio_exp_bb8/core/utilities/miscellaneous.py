@@ -72,7 +72,6 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         footer = kwargs.get("footer")
         thumbnail = kwargs.get("thumbnail")
         contents = dict(title=title, type=_type, url=url, description=description)
-        author = author
         if hasattr(kwargs.get("embed"), "to_dict"):
             embed = kwargs.get("embed")
             if embed is not None:

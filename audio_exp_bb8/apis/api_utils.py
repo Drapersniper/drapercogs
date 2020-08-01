@@ -90,7 +90,7 @@ class QueueFetchResult:
 
 
 def standardize_scope(scope: str) -> str:
-    """Convert any of the used scopes into one we are expecting"""
+    """Convert any of the used scopes into one we are expecting."""
     scope = scope.upper()
     valid_scopes = ["GLOBAL", "GUILD", "AUTHOR", "USER", "SERVER", "MEMBER", "BOT"]
 
@@ -118,7 +118,7 @@ def prepare_config_scope(
     author: Union[discord.abc.User, int] = None,
     guild: Union[discord.Guild, int] = None,
 ):
-    """Return the scope used by Playlists"""
+    """Return the scope used by Playlists."""
     scope = standardize_scope(scope)
     if scope == PlaylistScope.GLOBAL.value:
         config_scope = [PlaylistScope.GLOBAL.value, bot.user.id]
@@ -136,7 +136,7 @@ def prepare_config_scope(
 def prepare_config_scope_for_migration23(  # TODO: remove me in a future version ?
     scope, author: Union[discord.abc.User, int] = None, guild: discord.Guild = None
 ):
-    """Return the scope used by Playlists"""
+    """Return the scope used by Playlists."""
     scope = standardize_scope(scope)
 
     if scope == PlaylistScope.GLOBAL.value:

@@ -213,6 +213,13 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         except (IndexError, KeyError):
             return False
 
+    async def self_deafen(self, player: lavalink.Player) -> None:
+        guild_id = player.channel.guild.id
+        channel_id = player.channel.id
+        node = player.manager.node
+        voice_ws = node.get_voice_ws(guild_id)
+        await voice_ws.voice_state(guild_id, channel_id, self_deaf=True)
+
     async def _get_spotify_tracks(
         self, ctx: commands.Context, query: Query, forced: bool = False
     ) -> Union[discord.Message, List[lavalink.Track], lavalink.Track]:
@@ -692,16 +699,15 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 and len(player.queue) == 0
             ):
                 await player.move_to(user_channel)
+                await self.self_deafen(player)
                 return True
         else:
             return False
 
     def is_track_too_long(self, track: Union[lavalink.Track, int], maxlength: int) -> bool:
-        try:
-            length = round(track.length / 1000)
-        except AttributeError:
-            length = round(track / 1000)
-
-        if maxlength < length <= 92233720368547758070:  # livestreams return 9223372036854775807ms
+        if track.is_stream:
+            return True
+        length = track.length / 1000
+        if length > maxlength:
             return False
         return True

@@ -19,7 +19,7 @@ from redbot.core.utils.chat_formatting import humanize_number
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _, _SCHEMA_VERSION
 from ...apis.playlist_interface import get_all_playlist_for_migration23
-from ...utils import PlaylistScope
+from ...utils import PlaylistScope, task_callback
 
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.miscellaneous")
 
@@ -32,7 +32,9 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         self, message: discord.Message, emoji: MutableMapping = None
     ) -> asyncio.Task:
         """Non blocking version of clear_react."""
-        return self.bot.loop.create_task(self.clear_react(message, emoji))
+        task = self.bot.loop.create_task(self.clear_react(message, emoji), name=f"Audio._clear_react - Clear reaction on {message.id}")
+        task.add_done_callback(task_callback)
+        return task
 
     async def maybe_charge_requester(self, ctx: commands.Context, jukebox_price: int) -> bool:
         jukebox = await self.config.guild(ctx.guild).jukebox()
