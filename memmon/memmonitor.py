@@ -211,8 +211,9 @@ class MemMonitor(commands.Cog):
         await ctx.send("This may take a while, I'll ping you when it is done.")
         while not self.monitor_task.done():
             await asyncio.sleep(1)
-        await ctx.send(f"{ctx.author.mention}, here is your memory snapshot.")
+
         if _SEND_MESSAGE:
+            await ctx.send(f"{ctx.author.mention}, here is your memory snapshot.")
             await ctx.send_interactive(pagify(_SEND_MESSAGE, page_length=1900), box_lang="py")
         _SEND_MESSAGE = ""
         with contextlib.suppress(Exception):
