@@ -1,0 +1,11 @@
+{
+    "author": ["Draper"],
+    "install_msg": "This cog allows you to take a snapshot of your bots memory usage.",
+    "name": "MemMonitor",
+    "disabled": false,
+    "description":"This cog allows you to take a snapshot of your bots memory usage.",
+    "tags": [
+        "experimental"
+    ],
+    "requirements": []
+}
