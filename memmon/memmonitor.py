@@ -29,17 +29,14 @@ class AsyncSnapshot(tracemalloc.Snapshot):
     async def _filter_trace(self, include_filters, exclude_filters, trace) -> bool:
         if include_filters:
             if not any(
-                [
-                    trace_filter._match(trace)
-                    async for trace_filter in AsyncIter(include_filters, steps=5)
-                ]
+                [trace_filter._match(trace) async for trace_filter in AsyncIter(include_filters)]
             ):
                 return False
         if exclude_filters:
             if any(
                 [
                     not trace_filter._match(trace)
-                    async for trace_filter in AsyncIter(exclude_filters, steps=5)
+                    async for trace_filter in AsyncIter(exclude_filters)
                 ]
             ):
                 return False
@@ -57,17 +54,14 @@ class AsyncSnapshot(tracemalloc.Snapshot):
         if filters:
             include_filters = []
             exclude_filters = []
-            async for trace_filter in AsyncIter(filters, steps=5):
+            async for trace_filter in AsyncIter(filters):
                 if trace_filter.inclusive:
                     include_filters.append(trace_filter)
                 else:
                     exclude_filters.append(trace_filter)
-            total_traces = len(self.traces._traces)
             new_traces = [
                 trace
-                async for trace in AsyncIter(
-                    self.traces._traces, steps=int(total_traces * 0.01), delay=1.0
-                )
+                async for trace in AsyncIter(self.traces._traces)
                 if await self._filter_trace(include_filters, exclude_filters, trace)
             ]
         else:
@@ -83,10 +77,7 @@ class AsyncSnapshot(tracemalloc.Snapshot):
         stats = {}
         tracebacks = {}
         if not cumulative:
-            total_traces = len(self.traces._traces)
-            async for trace in AsyncIter(
-                self.traces._traces, steps=int(total_traces * 0.01), delay=0.5
-            ):
+            async for trace in AsyncIter(self.traces._traces):
                 domain, size, trace_traceback = trace
                 try:
                     traceback = tracebacks[trace_traceback]
@@ -107,15 +98,9 @@ class AsyncSnapshot(tracemalloc.Snapshot):
                     stats[traceback] = tracemalloc.Statistic(traceback, size, 1)
         else:
             # cumulative statistics
-            total_traces = len(self.traces._traces)
-            async for trace in AsyncIter(
-                self.traces._traces, steps=int(total_traces * 0.01), delay=0.5
-            ):
+            async for trace in AsyncIter(self.traces._traces):
                 domain, size, trace_traceback = trace
-                total_frame = len(trace_traceback)
-                async for frame in AsyncIter(
-                    trace_traceback, steps=int(total_frame * 0.01), delay=0.5
-                ):
+                async for frame in AsyncIter(trace_traceback):
                     try:
                         traceback = tracebacks[frame]
                     except KeyError:
