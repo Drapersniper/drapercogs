@@ -191,6 +191,7 @@ class MemMonitor(commands.Cog):
                 return
 
     def cog_unload(self) -> None:
+        tracemalloc.stop()
         if self.monitor_task is not None:
             self.monitor_task.cancel()
 
