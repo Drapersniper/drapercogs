@@ -80,11 +80,11 @@ class MentionPrefix(commands.Cog):
                 or not (await self.bot.ignored_channel_or_guild(message))
             ):
                 return
-        if not (await self.bot.allowed_by_whitelist_blacklist(message.author)):
+        if not (await self.bot.allowed_by_whitelist_blacklist(author)):
             return
 
         self.antispam[guild_id][author.id].stamp()
-        prefixes = await self.bot.get_valid_prefixes(guild=message.guild)
+        prefixes = await self.bot.get_valid_prefixes(guild=guild)
         prefixes = sorted(prefixes, key=len)
         counter = 0
         prefixes_string = humanize_list(
@@ -98,7 +98,7 @@ class MentionPrefix(commands.Cog):
             ]
         )
         single_prefix = discord.utils.escape_markdown(prefixes[0])
-        destination = channel if guild else message.author
+        destination = channel if guild else author
         help_command = self.bot.get_command("help")
         if help_command:
             view = StringView(message.content)
