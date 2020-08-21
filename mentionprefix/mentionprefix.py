@@ -87,6 +87,7 @@ class MentionPrefix(commands.Cog):
         prefixes = await self.bot.get_valid_prefixes(guild=guild)
         prefixes = sorted(prefixes, key=len)
         counter = 0
+        prefix_counter = 0
         prefixes_string = humanize_list(
             [
                 pf
@@ -95,34 +96,37 @@ class MentionPrefix(commands.Cog):
                 and len(pf) < 1800
                 and ((counter + len(pf)) < 1800)
                 and (counter := counter + len(pf))
+                and (prefix_counter := prefix_counter + 1)
             ]
         )
         single_prefix = discord.utils.escape_markdown(prefixes[0])
         destination = channel if guild else author
         help_command = self.bot.get_command("help")
+        verb = _("is") if prefix_counter == 1 else _("are")
         if help_command:
             view = StringView(message.content)
             ctx: Context = Context(prefix=None, view=view, bot=self.bot, message=message)
             if not await help_command.can_run(ctx):
                 return await destination.send(
-                    _("Hey there, my prefix here are the following:\n{p_list}").format(
-                        p_list=prefixes_string
+                    _("Hey there, my prefix here {verb} the following:\n{p_list}").format(
+                        p_list=prefixes_string, verb=verb
                     )
                 )
             else:
                 return await destination.send(
                     _(
-                        "Hey there, my prefix here are the following:\n{p_list}\n"
+                        "Hey there, my prefix here {verb} the following:\n{p_list}\n"
                         "Why don't you try `{p}{command}` to see everything I can do."
                     ).format(
                         p_list=prefixes_string,
                         p=single_prefix,
                         command=help_command.qualified_name,
+                        verb=verb,
                     )
                 )
         else:
             return await destination.send(
-                _("Hey there, my prefix here are the following:\n{p_list}").format(
-                    p_list=prefixes_string
+                _("Hey there, my prefix here {verb} the following:\n{p_list}").format(
+                    p_list=prefixes_string, verb=verb
                 )
             )
