@@ -95,6 +95,8 @@ class MentionPrefix(commands.Cog):
             and ((counter + len(pf)) < 1800)
             and (counter := counter + len(pf))
         ]
+        if not prefix_list:
+            return
         prefixes_string = humanize_list(prefix_list)
         single_prefix = prefix_list[0][1:-1]
         destination = channel if guild else author
