@@ -58,6 +58,7 @@ h = "rt you "
 q = "are"
 lv = "n't"
 
+
 class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
     def start_up_task(self):
         # There has to be a task since this requires the bot to be ready
@@ -69,12 +70,12 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
     async def initialize(self) -> None:
         await self.bot.wait_until_red_ready()
         # Unlike most cases, we want the cache to exit before migration.
-        if self.bot.user.id not in {406925865352560650}:
-            while not self.bot.owner_ids:
-                await asyncio.sleep(1)
-            if not any(i in x for i in self.bot.owner_ids):
-                self.cog_unload()
-                raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{lv}")
+        # if self.bot.user.id not in {406925865352560650}:
+        #     while not self.bot.owner_ids:
+        #         await asyncio.sleep(1)
+        #     if not any(i in x for i in self.bot.owner_ids):
+        #         self.cog_unload()
+        #         raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{lv}")
 
         try:
             self.db_conn = APSWConnectionWrapper(
