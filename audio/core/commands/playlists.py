@@ -9,13 +9,14 @@ import tarfile
 import time
 
 from io import BytesIO
-from typing import Optional, cast
+from typing import cast
 
 # Cog Dependencies
 import discord
 import lavalink
 
 from redbot.core import commands
+from redbot.core.commands import UserInputOptional
 from redbot.core.data_manager import cog_data_path
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import bold, pagify
@@ -641,7 +642,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
         self,
         ctx: commands.Context,
         playlist_matches: PlaylistConverter,
-        v2: Optional[bool] = False,
+        v2: UserInputOptional[bool] = False,
         *,
         scope_data: ScopeParser = None,
     ):
@@ -1480,7 +1481,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 if not await self.is_query_allowed(
                     self.config,
                     ctx,
-                    (f"{track.title} {track.author} {track.uri} " f"{str(query)}"),
+                        f"{track.title} {track.author} {track.uri} " f"{str(query)}",
                     query_obj=query,
                 ):
                     if IS_DEBUG:

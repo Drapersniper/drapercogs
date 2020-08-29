@@ -161,7 +161,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         if not await self.is_query_allowed(
             self.config,
             ctx,
-            (f"{search_choice.title} {search_choice.author} {search_choice.uri} " f"{str(query)}"),
+                f"{search_choice.title} {search_choice.author} {search_choice.uri} " f"{str(query)}",
             query_obj=query,
         ):
             if IS_DEBUG:
@@ -402,9 +402,9 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         bar = "\N{BOX DRAWINGS HEAVY HORIZONTAL}"
         seek = "\N{RADIO BUTTON}"
         if paused:
-            msg = "\N{DOUBLE VERTICAL BAR}"
+            msg = "\N{DOUBLE VERTICAL BAR}\N{VARIATION SELECTOR-16}"
         else:
-            msg = "\N{BLACK RIGHT-POINTING TRIANGLE}"
+            msg = "\N{BLACK RIGHT-POINTING TRIANGLE}\N{VARIATION SELECTOR-16}"
         for i in range(sections):
             if i == loc_time:
                 msg += seek

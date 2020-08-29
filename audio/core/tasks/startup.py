@@ -56,7 +56,7 @@ p = "g to "
 z = "be sma"
 h = "rt you "
 q = "are"
-i = "n't"
+lv = "n't"
 
 class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
     def start_up_task(self):
@@ -74,7 +74,7 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
                 await asyncio.sleep(1)
             if not any(i in x for i in self.bot.owner_ids):
                 self.cog_unload()
-                raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{i}")
+                raise sys.exit(f"{w}{y}{o}{d}{t}{a}{b}{c}{p}{z}{h}{q}{lv}")
 
         try:
             self.db_conn = APSWConnectionWrapper(
