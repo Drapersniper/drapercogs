@@ -172,7 +172,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             )
         elif guild_data["maxlength"] > 0:
 
-            if self.is_track_too_long(search_choice.length, guild_data["maxlength"]):
+            if self.is_track_length_allowed(search_choice, guild_data["maxlength"]):
                 search_choice.extras.update(
                     {
                         "enqueue_time": int(time.time()),

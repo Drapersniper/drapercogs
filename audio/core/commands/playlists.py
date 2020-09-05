@@ -1494,7 +1494,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                         pass
                     if not local_path.exists() and not local_path.is_file():
                         continue
-                if maxlength > 0 and not self.is_track_too_long(track.length, maxlength):
+                if maxlength > 0 and not self.is_track_length_allowed(track, maxlength):
                     continue
                 track.extras.update(
                     {
