@@ -172,7 +172,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
             )
         elif guild_data["maxlength"] > 0:
 
-            if self.is_track_length_allowed(search_choice.length, guild_data["maxlength"]):
+            if self.is_track_length_allowed(search_choice, guild_data["maxlength"]):
                 search_choice.extras.update(
                     {
                         "enqueue_time": int(time.time()),
@@ -399,7 +399,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         tiefighter = str(discord.utils.get(self.bot.emojis, id=632674535774355486))
         player = lavalink.get_player(ctx.guild.id)
         paused = player.paused
-        pos = player.position
+        pos = player.position or 1
         dur = player.current.length
         sections = 12
         loc_time = round((pos / dur if dur != 0 else pos) * sections)

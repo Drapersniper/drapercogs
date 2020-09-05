@@ -396,7 +396,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         player = lavalink.get_player(ctx.guild.id)
         paused = player.paused
         pos = player.position
-        dur = player.current.length
+        dur = getattr(player.current, "length", player.position or 1)
         sections = 12
         loc_time = round((pos / dur if dur != 0 else pos) * sections)
         bar = "\N{BOX DRAWINGS HEAVY HORIZONTAL}"

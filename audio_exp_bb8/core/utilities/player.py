@@ -704,7 +704,7 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
         else:
             return False
 
-    def is_track_length_allowed(self, track: Union[lavalink.Track, int], maxlength: int) -> bool:
+    def is_track_length_allowed(self, track: lavalink.Track, maxlength: int) -> bool:
         if track.is_stream:
             return True
         length = track.length / 1000
