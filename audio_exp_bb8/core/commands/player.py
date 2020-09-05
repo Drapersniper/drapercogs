@@ -6,7 +6,7 @@ import logging
 import math
 import time
 
-from typing import MutableMapping, Optional
+from typing import MutableMapping
 
 # Cog Dependencies
 import discord
@@ -14,6 +14,7 @@ import lavalink
 
 from discord.embeds import EmptyEmbed
 from redbot.core import commands
+from redbot.core.commands import UserInputOptional
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
 
@@ -137,7 +138,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     async def command_bumpplay(
-        self, ctx: commands.Context, play_now: Optional[bool] = False, *, query: str
+        self, ctx: commands.Context, play_now: UserInputOptional[bool] = False, *, query: str
     ):
         """Force play a URL or search for a track."""
         query = Query.process_input(query, self.local_folder_current_path)
@@ -279,7 +280,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
         if not await self.is_query_allowed(
             self.config,
             ctx,
-            (f"{single_track.title} {single_track.author} {single_track.uri} " f"{str(query)}"),
+            f"{single_track.title} {single_track.author} {single_track.uri} " f"{str(query)}",
             query_obj=query,
         ):
             if IS_DEBUG:
@@ -391,9 +392,9 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT THREE}\N{COMBINING ENCLOSING KEYCAP}": _category_search_menu,
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _category_search_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _category_search_menu,
-            "\N{LEFTWARDS BLACK ARROW}": prev_page,
+            "\N{LEFTWARDS BLACK ARROW}\N{VARIATION SELECTOR-16}": prev_page,
             self.get_cross_emoji(ctx): close_menu,
-            "\N{BLACK RIGHTWARDS ARROW}": next_page,
+            "\N{BLACK RIGHTWARDS ARROW}\N{VARIATION SELECTOR-16}": next_page,
         }
         playlist_search_controls = {
             "\N{DIGIT ONE}\N{COMBINING ENCLOSING KEYCAP}": _playlist_search_menu,
@@ -401,9 +402,9 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT THREE}\N{COMBINING ENCLOSING KEYCAP}": _playlist_search_menu,
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _playlist_search_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _playlist_search_menu,
-            "\N{LEFTWARDS BLACK ARROW}": prev_page,
+            "\N{LEFTWARDS BLACK ARROW}\N{VARIATION SELECTOR-16}": prev_page,
             self.get_cross_emoji(ctx): close_menu,
-            "\N{BLACK RIGHTWARDS ARROW}": next_page,
+            "\N{BLACK RIGHTWARDS ARROW}\N{VARIATION SELECTOR-16}": next_page,
         }
 
         api_data = await self._check_api_tokens()
@@ -666,9 +667,9 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\N{DIGIT THREE}\N{COMBINING ENCLOSING KEYCAP}": _search_menu,
             "\N{DIGIT FOUR}\N{COMBINING ENCLOSING KEYCAP}": _search_menu,
             "\N{DIGIT FIVE}\N{COMBINING ENCLOSING KEYCAP}": _search_menu,
-            "\N{LEFTWARDS BLACK ARROW}": prev_page,
+            "\N{LEFTWARDS BLACK ARROW}\N{VARIATION SELECTOR-16}": prev_page,
             self.get_cross_emoji(ctx): close_menu,
-            "\N{BLACK RIGHTWARDS ARROW}": next_page,
+            "\N{BLACK RIGHTWARDS ARROW}\N{VARIATION SELECTOR-16}": next_page,
         }
 
         if not self._player_check(ctx):
@@ -803,7 +804,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     if not await self.is_query_allowed(
                         self.config,
                         ctx,
-                        (f"{track.title} {track.author} {track.uri} " f"{str(query)}"),
+                        f"{track.title} {track.author} {track.uri} " f"{str(query)}",
                         query_obj=query,
                     ):
                         if IS_DEBUG:

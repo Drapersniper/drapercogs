@@ -1,19 +1,24 @@
+# -*- coding: utf-8 -*-
+# Standard Library
 import asyncio
 import contextlib
 import datetime
 import logging
 import time
-from typing import Optional, Tuple, Union
 
+from typing import Optional, Union
+
+# Cog Dependencies
 import discord
 import lavalink
-from redbot.core.utils import AsyncIter
 
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import ReactionPredicate
 
+# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 
@@ -77,20 +82,14 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Now playing."""
         if not self._player_check(ctx):
             return await self.send_embed_msg(ctx, title=_("Nothing playing."))
-        expected: Union[Tuple[str, ...]] = (
-            "⏮",
-            "⏹",
-            "⏯",
-            "⏭",
-            self.get_cross_emoji(ctx),
-        )
         emoji = {
-            "prev": "⏮",
-            "stop": "⏹",
-            "pause": "⏯",
-            "next": "⏭",
+            "prev": "\N{BLACK LEFT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\N{VARIATION SELECTOR-16}",
+            "stop": "\N{BLACK SQUARE FOR STOP}\N{VARIATION SELECTOR-16}",
+            "pause": "\N{BLACK RIGHT-POINTING TRIANGLE WITH DOUBLE VERTICAL BAR}\N{VARIATION SELECTOR-16}",
+            "next": "\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\N{VARIATION SELECTOR-16}",
             "close": self.get_cross_emoji(ctx),
         }
+        expected = tuple(emoji.values())
         player = lavalink.get_player(ctx.guild.id)
         if player.current:
             arrow = await self.draw_time(ctx)
@@ -159,7 +158,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return
 
         if not player.queue and not autoplay:
-            expected = ("⏹", "⏯", "\N{CROSS MARK}")
+            expected = (emoji["stop"], emoji["pause"], emoji["close"])
         task: Optional[asyncio.Task]
         if player.current:
             task = start_adding_reactions(message, expected[:5])
@@ -430,8 +429,8 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_shuffle_bumpped(self, ctx: commands.Context):
         """Toggle bumped track shuffle.
 
-        Set this to disabled if you wish to avoid bumped songs being shuffled.
-        This takes priority over `[p]shuffle`.
+        Set this to disabled if you wish to avoid bumped songs being shuffled. This takes priority
+        over `[p]shuffle`.
         """
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()

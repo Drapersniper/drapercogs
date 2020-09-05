@@ -1375,9 +1375,9 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.send_embed_msg(ctx, title=_("Setting Changed"), description=msg)
 
     @commands.is_owner()
-    @command_audioset.group(name="globaldb")
+    @command_audioset.group(name="globalapi")
     async def command_audioset_audiodb(self, ctx: commands.Context):
-        """Change audiodb settings."""
+        """Change globalapi settings."""
 
     @command_audioset_audiodb.command(name="toggle")
     async def command_audioset_audiodb_toggle(self, ctx: commands.Context):
@@ -1402,36 +1402,6 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         await self.config.global_db_get_timeout.set(timeout)
         await ctx.send(_("Request timeout set to {time} second(s)").format(time=timeout))
-
-    @command_audioset_audiodb.command(name="contribute")
-    async def command_audioset_audiodb_ontribute(self, ctx: commands.Context):
-        """Send your local DB upstream."""
-        tokens = await self.bot.get_shared_api_tokens("audiodb")
-        api_key = tokens.get("api_key", None)
-        if api_key is None:
-            return await self.send_embed_msg(
-                ctx,
-                description=_(
-                    "Hey! Thanks for showing interest into contributing, "
-                    "currently you don't have access to this, "
-                    "if you wish to contribute please DM Draper#6666"
-                ),
-            )
-        db_entries = await self.api_interface.fetch_all_contribute()
-        info = await self.send_embed_msg(
-            ctx,
-            description=_(
-                "Sending {entries} entries to the global DB. "
-                "are you sure about this (It may take a very long time...)?"
-            ).format(entries=len(db_entries)),
-        )
-        start_adding_reactions(info, ReactionPredicate.YES_OR_NO_EMOJIS)
-        pred = ReactionPredicate.yes_or_no(info, ctx.author)
-        await ctx.bot.wait_for("reaction_add", check=pred)
-        if not pred.result:
-            await info.delete()
-            return await self.send_embed_msg(ctx, title=_("Cancelled."))
-        await self.api_interface.contribute_to_global(ctx, db_entries)
 
     @command_audioset.command(name="persistqueue")
     @commands.admin()

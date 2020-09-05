@@ -121,7 +121,9 @@ class AudioAPIInterface:
         return track
 
     async def route_tasks(
-        self, action_type: str = None, data: Union[List[MutableMapping], MutableMapping] = None,
+        self,
+        action_type: str = None,
+        data: Union[List[MutableMapping], MutableMapping] = None,
     ) -> None:
         """Separate the tasks and run them in the appropriate functions."""
 
@@ -585,7 +587,7 @@ class AudioAPIInterface:
                 if not await self.cog.is_query_allowed(
                     self.config,
                     ctx,
-                        f"{single_track.title} {single_track.author} {single_track.uri} " f"{query}",
+                    f"{single_track.title} {single_track.author} {single_track.uri} " f"{query}",
                     query_obj=query,
                 ):
                     has_not_allowed = True
@@ -956,7 +958,7 @@ class AudioAPIInterface:
                 if not await self.cog.is_query_allowed(
                     self.config,
                     notify_channel,
-                        f"{track.title} {track.author} {track.uri} " f"{str(query)}",
+                    f"{track.title} {track.author} {track.uri} " f"{str(query)}",
                     query_obj=query,
                 ):
                     if IS_DEBUG:

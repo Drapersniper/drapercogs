@@ -1481,7 +1481,7 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
                 if not await self.is_query_allowed(
                     self.config,
                     ctx,
-                        f"{track.title} {track.author} {track.uri} " f"{str(query)}",
+                    f"{track.title} {track.author} {track.uri} " f"{str(query)}",
                     query_obj=query,
                 ):
                     if IS_DEBUG:

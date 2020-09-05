@@ -161,7 +161,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         if not await self.is_query_allowed(
             self.config,
             ctx,
-            (f"{search_choice.title} {search_choice.author} {search_choice.uri} " f"{str(query)}"),
+            f"{search_choice.title} {search_choice.author} {search_choice.uri} " f"{str(query)}",
             query_obj=query,
         ):
             if IS_DEBUG:

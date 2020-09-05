@@ -138,12 +138,16 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
         if isinstance(error, commands.ArgParserFailure):
             handled = True
             msg = _("`{user_input}` is not a valid value for `{command}`").format(
-                user_input=error.user_input, command=error.cmd,
+                user_input=error.user_input,
+                command=error.cmd,
             )
             if error.custom_help_msg:
                 msg += f"\n{error.custom_help_msg}"
             await self.send_embed_msg(
-                ctx, title=_("Unable To Parse Argument"), description=msg, error=True,
+                ctx,
+                title=_("Unable To Parse Argument"),
+                description=msg,
+                error=True,
             )
             if error.send_cmd_help:
                 await ctx.send_help()
@@ -161,7 +165,10 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                     )
                 else:
                     await self.send_embed_msg(
-                        ctx, title=_("Invalid Argument"), description=error.args[0], error=True,
+                        ctx,
+                        title=_("Invalid Argument"),
+                        description=error.args[0],
+                        error=True,
                     )
             else:
                 await ctx.send_help()
@@ -268,4 +275,3 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 if player.channel.id == channel.id:
                     await self.self_deafen(player)
-

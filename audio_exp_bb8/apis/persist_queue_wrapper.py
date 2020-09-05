@@ -76,7 +76,12 @@ class QueueInterface:
         output = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             for future in concurrent.futures.as_completed(
-                [executor.submit(self.database.cursor().execute, self.statement.get_all,)]
+                [
+                    executor.submit(
+                        self.database.cursor().execute,
+                        self.statement.get_all,
+                    )
+                ]
             ):
                 try:
                     row_result = future.result()

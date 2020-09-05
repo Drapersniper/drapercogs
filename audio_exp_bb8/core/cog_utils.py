@@ -9,7 +9,7 @@ from redbot.core.i18n import Translator
 from ..converters import get_lazy_converter, get_playlist_converter
 
 __version__ = VersionInfo.from_json(
-    {"major": 2, "minor": 1, "micro": 1, "dev_release": 1, "releaselevel": "final"}
+    {"major": 2, "minor": 2, "micro": 1, "dev_release": 1, "releaselevel": "final"}
 )
 
 __author__ = ["aikaterna", "Draper"]

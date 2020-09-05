@@ -46,7 +46,9 @@ class GlobalCacheWrapper:
     def update_token(self, new_token: Mapping[str, str]):
         self._token = new_token
 
-    async def _get_api_key(self,) -> Optional[str]:
+    async def _get_api_key(
+        self,
+    ) -> Optional[str]:
         if not self._token:
             self._token = await self.bot.get_shared_api_tokens("audiodb")
         self.api_key = self._token.get("api_key", None)

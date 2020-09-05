@@ -9,5 +9,6 @@
         "experimental"
     ],
     "requirements": [],
+    "min_bot_version": "3.3.6.dev1",
     "hidden": true
 }

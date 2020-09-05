@@ -17,7 +17,7 @@ from redbot.core.commands import Context
 from redbot.core.utils.chat_formatting import humanize_number
 
 from ..abc import MixinMeta
-from ..cog_utils import CompositeMetaClass, _, _SCHEMA_VERSION
+from ..cog_utils import CompositeMetaClass, _
 from ...apis.playlist_interface import get_all_playlist_for_migration23
 from ...utils import PlaylistScope, task_callback
 

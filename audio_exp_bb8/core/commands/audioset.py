@@ -975,6 +975,8 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         song_notify = _("Enabled") if data["notify"] else _("Disabled")
         song_status = _("Enabled") if global_data["status"] else _("Disabled")
         persist_queue = _("Enabled") if data["persist_queue"] else _("Disabled")
+        nsfwrequests = _("Enabled") if data["nsfw_queries"] else _("Disabled")
+
         countrycode = data["country_code"]
 
         spotify_cache = CacheLevel.set_spotify()
@@ -1018,6 +1020,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             "Songs as status:  [{status}]\n"
             "Persist queue:    [{persist_queue}]\n"
             "Spotify search:   [{countrycode}]\n"
+            "NSFW Requests:    [{nsfwrequests}]\n"
         ).format(
             countrycode=countrycode,
             repeat=song_repeat,
@@ -1026,6 +1029,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             status=song_status,
             bumpped_shuffle=bumpped_shuffle,
             persist_queue=persist_queue,
+            nsfwrequests=nsfwrequests,
         )
         if thumbnail:
             msg += _("Thumbnails:       [{0}]\n").format(
@@ -1097,9 +1101,9 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             "\n---"
             + _("Lavalink Settings")
             + "---        \n"
-            + _("Cog version:      [{version}]\n")
-            + _("Red-Lavalink:     [{lavalink_version}]\n")
-            + _("External server:  [{use_external_lavalink}]\n")
+            + _("Cog version:            [{version}]\n")
+            + _("Red-Lavalink:           [{lavalink_version}]\n")
+            + _("External server:        [{use_external_lavalink}]\n")
         ).format(
             version=__version__,
             lavalink_version=lavalink.__version__,
@@ -1107,8 +1111,22 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             if global_data["use_external_lavalink"]
             else _("Disabled"),
         )
+        if not global_data["use_external_lavalink"] and self.player_manager.ll_build:
+            msg += _(
+                "Lavalink build:         [{llbuild}]\n"
+                "Lavalink branch:        [{llbranch}]\n"
+                "Release date:           [{build_time}]\n"
+                "Lavaplayer version:     [{lavaplayer}]\n"
+                "Java version:           [{jvm}]\n"
+            ).format(
+                build_time=self.player_manager.build_time,
+                llbuild=self.player_manager.ll_build,
+                llbranch=self.player_manager.ll_branch,
+                lavaplayer=self.player_manager.lavaplayer,
+                jvm=self.player_manager.jvm,
+            )
         if is_owner:
-            msg += _("Localtracks path: [{localpath}]\n").format(**global_data)
+            msg += _("Localtracks path:       [{localpath}]\n").format(**global_data)
 
         await self.send_embed_msg(ctx, description=box(msg, lang="ini"))
 
@@ -1357,9 +1375,9 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.send_embed_msg(ctx, title=_("Setting Changed"), description=msg)
 
     @commands.is_owner()
-    @command_audioset.group(name="globaldb")
+    @command_audioset.group(name="globalapi")
     async def command_audioset_audiodb(self, ctx: commands.Context):
-        """Change audiodb settings."""
+        """Change globalapi settings."""
 
     @command_audioset_audiodb.command(name="toggle")
     async def command_audioset_audiodb_toggle(self, ctx: commands.Context):
@@ -1384,36 +1402,6 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         await self.config.global_db_get_timeout.set(timeout)
         await ctx.send(_("Request timeout set to {time} second(s)").format(time=timeout))
-
-    @command_audioset_audiodb.command(name="contribute")
-    async def command_audioset_audiodb_ontribute(self, ctx: commands.Context):
-        """Send your local DB upstream."""
-        tokens = await self.bot.get_shared_api_tokens("audiodb")
-        api_key = tokens.get("api_key", None)
-        if api_key is None:
-            return await self.send_embed_msg(
-                ctx,
-                description=_(
-                    "Hey! Thanks for showing interest into contributing, "
-                    "currently you don't have access to this, "
-                    "if you wish to contribute please DM Draper#6666"
-                ),
-            )
-        db_entries = await self.api_interface.fetch_all_contribute()
-        info = await self.send_embed_msg(
-            ctx,
-            description=_(
-                "Sending {entries} entries to the global DB. "
-                "are you sure about this (It may take a very long time...)?"
-            ).format(entries=len(db_entries)),
-        )
-        start_adding_reactions(info, ReactionPredicate.YES_OR_NO_EMOJIS)
-        pred = ReactionPredicate.yes_or_no(info, ctx.author)
-        await ctx.bot.wait_for("reaction_add", check=pred)
-        if not pred.result:
-            await info.delete()
-            return await self.send_embed_msg(ctx, title=_("Cancelled."))
-        await self.api_interface.contribute_to_global(ctx, db_entries)
 
     @command_audioset.command(name="persistqueue")
     @commands.admin()

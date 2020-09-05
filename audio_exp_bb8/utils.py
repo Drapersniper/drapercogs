@@ -216,4 +216,3 @@ def task_callback(task: asyncio.Task) -> None:
     with contextlib.suppress(asyncio.CancelledError, asyncio.InvalidStateError):
         if exc := task.exception():
             log.exception(f"{task.get_name()} raised an Exception", exc_info=exc)
-

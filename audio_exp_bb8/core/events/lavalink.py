@@ -25,7 +25,13 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
         if not current_channel:
             return
         guild = self.rgetattr(current_channel, "guild", None)
+        if await self.bot.cog_disabled_in_guild(self, guild):
+            await player.stop()
+            await player.disconnect()
+            return
         guild_id = self.rgetattr(guild, "id", None)
+        if not guild:
+            return
         current_requester = self.rgetattr(current_track, "requester", None)
         current_stream = self.rgetattr(current_track, "is_stream", None)
         current_length = self.rgetattr(current_track, "length", None)
@@ -210,7 +216,9 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                         embed = discord.Embed(
                             colour=await self.bot.get_embed_color(message_channel),
                             title=_("Track Stuck"),
-                            description="{}".format(description),
+                            description=_(
+                                "Playback of the song has stopped due to an unexcepted error.\n{error}"
+                            ).format(error=description),
                         )
                     else:
                         embed = discord.Embed(
