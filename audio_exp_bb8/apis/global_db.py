@@ -71,7 +71,7 @@ class GlobalCacheWrapper:
                     api_url,
                     timeout=aiohttp.ClientTimeout(total=await self.config.global_db_get_timeout()),
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                    params={"query": urllib.parse.quote(query)},
+                    params={"query": query},
                 ) as r:
                     search_response = await r.json()
                     if IS_DEBUG and "x-process-time" in r.headers:
@@ -90,7 +90,7 @@ class GlobalCacheWrapper:
         api_url = f"{_API_URL}api/v1/queries/spotify"
         try:
             search_response = "error"
-            params = {"title": urllib.parse.quote(title), "author": urllib.parse.quote(author)}
+            params = {"title": title, "author": author}
             await self._get_api_key()
             with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
                 async with self.session.get(
@@ -132,7 +132,7 @@ class GlobalCacheWrapper:
                 api_url,
                 json=llresponse._raw,
                 headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                params={"query": urllib.parse.quote(query)},
+                params={"query": query},
             ) as r:
                 await r.read()
                 if IS_DEBUG and "x-process-time" in r.headers:
