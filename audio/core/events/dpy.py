@@ -204,6 +204,18 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 error=True,
             )
             debug_exc_log(log, error, "This is a handled error")
+        elif isinstance(error, discord.errors.HTTPException):
+            handled = True
+            await self.send_embed_msg(
+                ctx,
+                title=_("There was an issue communicating with Discord."),
+                description=_(
+                    "This error has been reported to the bot owner."
+                ),
+                error=True,
+            )
+            log.exception("This is not handled in the core Audio cog, please report it.", exc_info=error)
+
         elif isinstance(error, PHNSFWError):
             handled = True
             await self.send_embed_msg(
