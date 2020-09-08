@@ -33,6 +33,7 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
         current_length = self.rgetattr(current_track, "length", None)
         current_thumbnail = self.rgetattr(current_track, "thumbnail", None)
         current_extras = self.rgetattr(current_track, "extras", {})
+        current_id = self.rgetattr(current_track, "_info", {}).get("identifier")
         guild_data = await self.config.guild(guild).all()
         repeat = guild_data["repeat"]
         notify = guild_data["notify"]
@@ -219,5 +220,7 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                             colour=await self.bot.get_embed_color(message_channel),
                             description="{}\n{}".format(extra.replace("\n", ""), description),
                         )
+                        if current_id:
+                            asyncio.create_task(self.api_interface.global_cache_api.report_invalid(current_id))
                     await message_channel.send(embed=embed)
             await player.skip()

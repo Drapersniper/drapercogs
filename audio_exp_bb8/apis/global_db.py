@@ -58,7 +58,7 @@ class GlobalCacheWrapper:
         return self.api_key
 
     async def get_call(self, query: Optional[Query] = None) -> dict:
-        api_url = f"{_API_URL}api/v1/queries"
+        api_url = f"{_API_URL}api/v2/queries"
         try:
             query = Query.process_input(query, self.cog.local_folder_current_path)
             if any([not query or not query.valid or query.is_spotify or query.is_local]):
@@ -87,7 +87,7 @@ class GlobalCacheWrapper:
         return {}
 
     async def get_spotify(self, title: str, author: Optional[str]) -> dict:
-        api_url = f"{_API_URL}api/v1/queries/spotify"
+        api_url = f"{_API_URL}api/v2/queries/spotify"
         try:
             search_response = "error"
             params = {"title": title, "author": author}
@@ -127,7 +127,7 @@ class GlobalCacheWrapper:
             if self.api_key is None:
                 await asyncio.sleep(0)
                 return None
-            api_url = f"{_API_URL}api/v1/queries"
+            api_url = f"{_API_URL}api/v2/queries"
             async with self.session.post(
                 api_url,
                 json=llresponse._raw,
@@ -146,3 +146,12 @@ class GlobalCacheWrapper:
 
     async def update_global(self, llresponse: LoadResult, query: Optional[Query] = None):
         await self.post_call(llresponse=llresponse, query=query)
+
+    async def report_invalid(self, id:str):
+        api_url = f"{_API_URL}api/v2/queries/es/id"
+        async with self.session.delete(
+                api_url,
+                headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                params={"id": id},
+        ) as r:
+            await r.read()
