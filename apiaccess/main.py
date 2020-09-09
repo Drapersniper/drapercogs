@@ -322,6 +322,7 @@ class APIManager(commands.Cog):
                                     log.info(
                                         f"User: {data.get('name')} ({data.get('user_id')}) has been deleted via d.apicleanup by {ctx.author}"
                                     )
+                    await ctx.tick()
                 else:
                     await ctx.send("Something went wrong.")
 
