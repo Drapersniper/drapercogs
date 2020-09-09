@@ -101,10 +101,11 @@ class APIManager(commands.Cog):
         if message.channel.id != 749207620249976892:
             return
         target_channel = message.guild.get_channel(749399885081477190)
-        new_message: discord.Message = await target_channel.send(
-            f"Message sent by : {message.author.mention}\n{message.content[:1800]}"
-        )
-        await message.delete()
+        with contextlib.suppress(discord.HTTPException):
+            new_message: discord.Message = await target_channel.send(
+                f"Message sent by : {message.author.mention}\n{message.content[:1800]}"
+            )
+            await message.delete()
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 f"{API_ENDPOINT}/api/v2/users/",
