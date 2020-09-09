@@ -318,7 +318,7 @@ class APIManager(commands.Cog):
                                 params={"user_id": user_id},
                             ) as del_resp:
                                 if del_resp.status == 200:
-                                    del_data = await resp.json()
+                                    del_data = await del_resp.json()
                                     log.info(
                                         f"User: {del_data.get('name')} ({del_data.get('user_id')}) has been deleted via d.apicleanup by {ctx.author}"
                                     )
