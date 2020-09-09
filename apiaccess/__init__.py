@@ -1,8 +1,8 @@
 from redbot.core.bot import Red
 
-from .main import APIAccess
+from .main import APIManager
 
 
 def setup(bot: Red):
-    cog = APIAccess(bot)
+    cog = APIManager(bot)
     bot.add_cog(cog=cog)

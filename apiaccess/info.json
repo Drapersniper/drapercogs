@@ -1,0 +1,12 @@
+{
+    "author": ["Drapersniper"],
+    "install_msg": "A cog designed to work in a specific server.",
+    "name": "APIManager",
+    "disabled": false,
+    "description": "A cog designed to work in a specific server",
+    "tags": [
+        "utils"
+    ],
+    "requirements": ["tabulate"],
+    "hidden": true
+}

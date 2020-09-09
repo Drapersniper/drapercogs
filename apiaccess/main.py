@@ -42,7 +42,7 @@ def has_any_role_in_guild(*items):
     return check(predicate)
 
 
-class APIAccess(commands.Cog):
+class APIManager(commands.Cog):
     def __init__(self, bot: Red):
         self.bot = bot
         self.any_role: Set[discord.Role] = set()
