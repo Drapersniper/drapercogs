@@ -221,6 +221,8 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                             description="{}\n{}".format(extra.replace("\n", ""), description),
                         )
                         if current_id:
-                            asyncio.create_task(self.api_interface.global_cache_api.report_invalid(current_id))
+                            asyncio.create_task(
+                                self.api_interface.global_cache_api.report_invalid(current_id)
+                            )
                     await message_channel.send(embed=embed)
             await player.skip()

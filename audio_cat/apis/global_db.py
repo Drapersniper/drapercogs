@@ -147,11 +147,11 @@ class GlobalCacheWrapper:
     async def update_global(self, llresponse: LoadResult, query: Optional[Query] = None):
         await self.post_call(llresponse=llresponse, query=query)
 
-    async def report_invalid(self, id:str):
+    async def report_invalid(self, id: str):
         api_url = f"{_API_URL}api/v2/queries/es/id"
         async with self.session.delete(
-                api_url,
-                headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                params={"id": id},
+            api_url,
+            headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+            params={"id": id},
         ) as r:
             await r.read()
