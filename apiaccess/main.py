@@ -2,6 +2,7 @@ import asyncio
 import contextlib
 import functools
 import json
+import logging
 from copy import copy
 from typing import Mapping, Optional, Set, Union
 
@@ -18,6 +19,20 @@ from apiaccess.menus import LeaderboardSource, SimpleHybridMenu
 
 GUILD_ID = 749205869530578964
 API_ENDPOINT = "http://172.40.0.5:8000"
+log = logging.getLogger("red.drapercogs.APIManager")
+
+
+def in_guild():
+    def predicate(ctx):
+        if not isinstance(ctx.channel, discord.abc.GuildChannel):
+            raise NoPrivateMessage()
+        guild: discord.Guild = ctx.bot.get_guild(GUILD_ID)
+        member = guild.get_member(ctx.author.id)
+        if not member:
+            return False
+        return True
+
+    return check(predicate)
 
 
 def has_any_role_in_guild(*items):
@@ -99,6 +114,8 @@ class APIManager(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         if message.channel.id != 749207620249976892:
+            return
+        if len(message.channel) < 32:
             return
         target_channel = message.guild.get_channel(749399885081477190)
         with contextlib.suppress(discord.HTTPException):
@@ -186,12 +203,14 @@ class APIManager(commands.Cog):
 
     @commands.command(name="mytoken")
     @commands.guild_only()
-    @has_any_role_in_guild(
-        749329286376456353, 749329319616184481, 749329344433750157, 749329381918244924
-    )
+    @commands.cooldown(1, 600, commands.BucketType.user)
     async def command_mytoken(self, ctx: commands.Context):
-        """Show your user Global API details."""
+        """Get your user Global API details."""
         user_id = ctx.author.id
+        if not self.guild.get_member(user_id):
+            return await ctx.send(
+                "You aren't in the support server your token is linked to the server, join https://discord.gg/zkmDzhs so that you can request access."
+            )
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 f"{API_ENDPOINT}/api/v2/users/{user_id}", headers=self.headers
@@ -209,7 +228,7 @@ class APIManager(commands.Cog):
                         "is_blacklisted",
                         "updated_on",
                     ]
-                    print(
+                    log.info(
                         f"{ctx.author} ({ctx.author.id}) requested their token: {data.get('user_id')}"
                     )
                     if int(data.get("user_id", 0)) != ctx.author.id:
@@ -233,14 +252,18 @@ class APIManager(commands.Cog):
                                 f"Use: `[p]set api audiodb api_key {token}` to set this key on your bot."
                             )
                     except discord.HTTPException:
+                        ctx.command.reset_cooldown(ctx)
                         await ctx.send("I can't DM you.")
                     member = self.guild.get_member(ctx.author.id)
-                    if not member:
-                        return
                     await self.assign_role(
                         member=member, reason="Has Been Given The Role Manually"
                     )
+                elif resp.status == 404:
+                    return await ctx.send(
+                        "You haven't been registered with in the API, join https://discord.gg/zkmDzhs so that you can request access."
+                    )
                 else:
+                    ctx.command.reset_cooldown(ctx)
                     return await ctx.send("Failed to get user info")
 
     @commands.command(name="apilb")
@@ -271,6 +294,36 @@ class APIManager(commands.Cog):
 
                 else:
                     await ctx.send("Nothing found")
+
+    @commands.command(name="apicleanup")
+    @commands.guild_only()
+    @has_any_role_in_guild(749329286376456353, 749329319616184481)
+    async def command_apicleanup(self, ctx: commands.Context):
+        """Remove users from API if they aren't in the server."""
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"{API_ENDPOINT}/api/v2/users/",
+                headers=self.headers,
+                params={"limit": 1000000},
+            ) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    data = [i.get("user_id") for i in data if not i.get("is_blacklisted")]
+                    for user_id in data:
+                        member = self.guild.get_member(int(user_id))
+                        if not member:
+                            async with session.delete(
+                                f"{API_ENDPOINT}/api/v2/users/",
+                                headers=self.headers,
+                                params={"user_id": user_id},
+                            ) as del_resp:
+                                if del_resp.status == 200:
+                                    data = await resp.json()
+                                    log.info(
+                                        f"User: {data.get('name')} ({data.get('user_id')}) has been deleted via d.apicleanup by {ctx.author}"
+                                    )
+                else:
+                    await ctx.send("Something went wrong.")
 
     @commands.command(name="apidecode")
     @commands.guild_only()
