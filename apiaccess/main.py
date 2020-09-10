@@ -4,6 +4,7 @@ import functools
 import json
 import logging
 from copy import copy
+from dataclasses import dataclass
 from typing import Mapping, Optional, Set, Union
 
 import aiohttp
@@ -20,6 +21,71 @@ from apiaccess.menus import LeaderboardSource, SimpleHybridMenu
 GUILD_ID = 749205869530578964
 API_ENDPOINT = "http://172.40.0.5:8000"
 log = logging.getLogger("red.drapercogs.APIManager")
+
+
+@dataclass
+class RequesterObject:
+    user_id: str
+    is_blacklisted: bool = False
+    is_superuser: bool = False
+    is_admin: bool = False
+    is_mod: bool = False
+    is_contributor: bool = False
+    is_user: bool = False
+    is_guest: bool = False
+    name: str = "Unauthenticated"
+    entries_submitted: int = 0
+    token: Optional[str] = None
+
+    def __post_init__(self):
+        self.is_blacklisted = bool(int(self.is_blacklisted))
+        self.is_superuser = bool(int(self.is_superuser))
+        self.is_admin = bool(int(self.is_admin))
+        self.is_mod = bool(int(self.is_mod))
+        self.is_contributor = bool(int(self.is_contributor))
+        self.is_user = bool(int(self.is_user))
+        self.is_guest = bool(int(self.is_guest))
+        if not self.name:
+            self.name = "Unauthenticated"
+        else:
+            if type(self.name) is bytes:
+                self.name = self.name.decode()
+        if not self.token:
+            self.token = None
+        else:
+            if type(self.token) is bytes:
+                self.token = self.token.decode()
+        self.user_id = str(self.user_id)
+        self.entries_submitted = int(self.entries_submitted)
+
+    def to_json(self):
+        return dict(
+            user_id=self.user_id,
+            entries_submitted=self.entries_submitted,
+            is_guest=self.is_guest,
+            is_user=self.is_user,
+            is_contributor=self.is_contributor,
+            is_mod=self.is_mod,
+            is_admin=self.is_admin,
+            is_superuser=self.is_superuser,
+            is_blacklisted=self.is_blacklisted,
+            name=self.name,
+        )
+
+    def to_json_full(self):
+        return dict(
+            user_id=self.user_id,
+            entries_submitted=self.entries_submitted,
+            is_guest=self.is_guest,
+            is_user=self.is_user,
+            is_contributor=self.is_contributor,
+            is_mod=self.is_mod,
+            is_admin=self.is_admin,
+            is_superuser=self.is_superuser,
+            is_blacklisted=self.is_blacklisted,
+            name=self.name,
+            token=self.token,
+        )
 
 
 def in_guild():
@@ -175,23 +241,27 @@ class APIManager(commands.Cog):
                 if resp.status == 200:
                     new_data = {}
                     data = await resp.json()
-                    interesting_key = [
-                        "user_id",
-                        "entries_submitted",
-                        "name",
-                        "is_contributor",
-                        "is_mod",
-                        "is_admin",
-                        "is_blacklisted",
-                        "updated_on",
-                    ]
-                    for key, value in data.items():
-                        if key in interesting_key:
-                            new_data[" ".join(key.split("_")).title()] = f"[{value}]"
+                    user = RequesterObject(**data)
+                    can_read = not user.is_blacklisted and any(
+                        [
+                            user.is_user,
+                            user.is_contributor,
+                            user.is_mod,
+                            user.is_admin,
+                            user.is_superuser,
+                        ]
+                    )
+                    can_post = can_read and not user.is_user
+                    new_data["Name"] = user.name
+                    new_data["User ID"] = user.user_id
+                    new_data["Entries Submitted"] = user.entries_submitted
+                    new_data["Can Read"] = can_read
+                    new_data["Can Post"] = can_post
+                    new_data["Can Delete"] = can_post and not user.is_contributor
                     return await ctx.send(
                         box(
                             tabulate(
-                                sorted(list(new_data.items()), key=lambda x: x[0].lower()),
+                                list(new_data.items()),
                                 missingval="?",
                                 tablefmt="plain",
                             ),
@@ -218,29 +288,34 @@ class APIManager(commands.Cog):
                 if resp.status == 200:
                     new_data = {}
                     data = await resp.json()
-                    interesting_key = [
-                        "user_id",
-                        "entries_submitted",
-                        "name",
-                        "is_contributor",
-                        "is_mod",
-                        "is_admin",
-                        "is_blacklisted",
-                        "updated_on",
-                    ]
                     log.info(
                         f"{ctx.author} ({ctx.author.id}) requested their token: {data.get('user_id')}"
                     )
                     if int(data.get("user_id", 0)) != ctx.author.id:
                         return await ctx.send("Failed to get user info")
-                    for key, value in data.items():
-                        if key in interesting_key:
-                            new_data[" ".join(key.split("_")).title()] = f"[{value}]"
                     try:
+                        user = RequesterObject(**data)
+                        can_read = not user.is_blacklisted and any(
+                            [
+                                user.is_user,
+                                user.is_contributor,
+                                user.is_mod,
+                                user.is_admin,
+                                user.is_superuser,
+                            ]
+                        )
+                        can_post = can_read and not user.is_user
+                        new_data["Name"] = user.name
+                        new_data["User ID"] = user.user_id
+                        new_data["Entries Submitted"] = user.entries_submitted
+                        new_data["Can Read"] = can_read
+                        new_data["Can Post"] = can_post
+                        new_data["Can Delete"] = can_post and not user.is_contributor
+
                         await ctx.author.send(
                             box(
                                 tabulate(
-                                    sorted(list(new_data.items()), key=lambda x: x[0].lower()),
+                                    list(new_data.items()),
                                     missingval="?",
                                     tablefmt="plain",
                                 ),
