@@ -1,0 +1,14 @@
+{
+    "author": ["Draper"],
+    "install_msg": "This is an alpha version of the Core Audio cog... Do not use without talking to Draper first.",
+    "name": "Audio",
+    "disabled": false,
+    "short": "Experimental version of Audio.",
+    "description":"Experimental version of Audio.",
+    "tags": [
+        "experimental"
+    ],
+    "requirements": [],
+    "min_bot_version": "3.4.0",
+    "hidden": false
+}
