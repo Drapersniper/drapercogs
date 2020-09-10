@@ -105,7 +105,7 @@ class APIManager(commands.Cog):
             return
         async with aiohttp.ClientSession() as session:
             async with session.put(
-                f"{API_ENDPOINT}/api/v2/users/{member.id}",
+                f"{API_ENDPOINT}/api/v2/users/user/{member.id}",
                 headers=self.headers,
                 params={"revoke_token": str(True).lower()},
             ) as resp:
@@ -125,7 +125,7 @@ class APIManager(commands.Cog):
             await message.delete()
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                f"{API_ENDPOINT}/api/v2/users/",
+                f"{API_ENDPOINT}/api/v2/users/user",
                 headers=self.headers,
                 params={
                     "user_id": str(message.author.id),
@@ -213,7 +213,7 @@ class APIManager(commands.Cog):
             )
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"{API_ENDPOINT}/api/v2/users/{user_id}", headers=self.headers
+                f"{API_ENDPOINT}/api/v2/users/user/{user_id}", headers=self.headers
             ) as resp:
                 if resp.status == 200:
                     new_data = {}
@@ -313,7 +313,7 @@ class APIManager(commands.Cog):
                         member = self.guild.get_member(int(user_id))
                         if not member:
                             async with session.delete(
-                                f"{API_ENDPOINT}/api/v2/users/",
+                                f"{API_ENDPOINT}/api/v2/users/user",
                                 headers=self.headers,
                                 params={"user_id": user_id},
                             ) as del_resp:
@@ -423,7 +423,7 @@ class APIManager(commands.Cog):
 
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                f"{API_ENDPOINT}/api/v2/users/ban/{user_id}",
+                f"{API_ENDPOINT}/api/v2/users/ban/user/{user_id}",
                 headers=self.headers,
                 params={"name": user_name},
             ) as resp:
@@ -538,7 +538,7 @@ class APIManager(commands.Cog):
             return
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"{API_ENDPOINT}/api/v2/users/{member.id}", headers=self.headers
+                f"{API_ENDPOINT}/api/v2/users/user/{member.id}", headers=self.headers
             ) as resp:
                 if resp.status == 200:
                     data = await resp.json()
@@ -573,7 +573,7 @@ class APIManager(commands.Cog):
     ):
         async with aiohttp.ClientSession() as session:
             async with session.put(
-                f"{API_ENDPOINT}/api/v2/users/{member.id}",
+                f"{API_ENDPOINT}/api/v2/users/user/{member.id}",
                 headers=self.headers,
                 params={
                     "revoke_token": str(revoke_token).lower(),
