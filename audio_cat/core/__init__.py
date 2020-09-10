@@ -77,6 +77,12 @@ class Audio(
         self.session = aiohttp.ClientSession()
         self.cog_ready_event = asyncio.Event()
         self.cog_init_task = None
+        self.global_api_user = {
+            "fetched": False,
+            "can_read": False,
+            "can_post": False,
+            "can_delete": False,
+        }
 
         default_global = dict(
             schema_version=1,

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Standard Library
 import asyncio
+import contextlib
 import datetime
 import itertools
 import logging
@@ -47,6 +48,7 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
             self.playlist_api = PlaylistWrapper(self.bot, self.config, self.db_conn)
             await self.playlist_api.init()
             await self.api_interface.initialize()
+            self.global_api_user = await self.api_interface.global_cache_api.get_perms()
             await self.data_schema_migration(
                 from_version=await self.config.schema_version(), to_version=_SCHEMA_VERSION
             )

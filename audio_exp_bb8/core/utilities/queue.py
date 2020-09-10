@@ -76,6 +76,7 @@ class QueueUtilities(MixinMeta, metaclass=CompositeMetaClass):
             title=_("Queue for __{guild_name}__").format(guild_name=ctx.guild.name),
             description=queue_list,
         )
+
         if await self.config.guild(ctx.guild).thumbnail() and player.current.thumbnail:
             embed.set_thumbnail(url=player.current.thumbnail)
         queue_dur = await self.queue_duration(ctx)

@@ -53,6 +53,7 @@ class MixinMeta(ABC):
     _nsfw_cache: MutableMapping[int, bool]
     _error_timer: MutableMapping[int, float]
     _disconnected_players: MutableMapping[int, bool]
+    global_api_user: MutableMapping[str, Any]
 
     cog_cleaned_up: bool
     lavalink_connection_aborted: bool

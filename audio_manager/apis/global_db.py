@@ -173,8 +173,8 @@ class GlobalCacheWrapper:
         with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
             async with aiohttp.ClientSession() as session:
                 async with session.get(
-                        f"{_API_URL}api/v2/users/me",
-                        headers={"Authorization": self.api_key, "X-Token": self._handshake_token}
+                    f"{_API_URL}api/v2/users/me",
+                    headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                 ) as resp:
                     if resp.status == 200:
                         search_response = await resp.json()
