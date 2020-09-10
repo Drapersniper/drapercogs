@@ -115,7 +115,7 @@ class APIManager(commands.Cog):
     async def on_message(self, message: discord.Message):
         if message.channel.id != 749207620249976892:
             return
-        if len(message.channel) < 32:
+        if len(message.content) < 32:
             return
         target_channel = message.guild.get_channel(749399885081477190)
         with contextlib.suppress(discord.HTTPException):
