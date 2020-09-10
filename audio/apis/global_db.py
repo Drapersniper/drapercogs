@@ -60,7 +60,7 @@ class GlobalCacheWrapper:
 
     async def get_call(self, query: Optional[Query] = None) -> dict:
         api_url = f"{_API_URL}api/v2/queries"
-        if not self.cog.self.global_api_user.get("can_read"):
+        if not self.cog.global_api_user.get("can_read"):
             return {}
         try:
             query = Query.process_input(query, self.cog.local_folder_current_path)
@@ -90,7 +90,7 @@ class GlobalCacheWrapper:
         return {}
 
     async def get_spotify(self, title: str, author: Optional[str]) -> dict:
-        if not self.cog.self.global_api_user.get("can_read"):
+        if not self.cog.global_api_user.get("can_read"):
             return {}
         api_url = f"{_API_URL}api/v2/queries/spotify"
         try:
@@ -119,7 +119,7 @@ class GlobalCacheWrapper:
 
     async def post_call(self, llresponse: LoadResult, query: Optional[Query]) -> None:
         try:
-            if not self.cog.self.global_api_user.get("can_post"):
+            if not self.cog.global_api_user.get("can_post"):
                 return
             query = Query.process_input(query, self.cog.local_folder_current_path)
             if llresponse.has_error or llresponse.load_type.value in ["NO_MATCHES", "LOAD_FAILED"]:
@@ -155,7 +155,7 @@ class GlobalCacheWrapper:
         await self.post_call(llresponse=llresponse, query=query)
 
     async def report_invalid(self, id: str) -> None:
-        if not self.cog.self.global_api_user.get("can_delete"):
+        if not self.cog.global_api_user.get("can_delete"):
             return
         api_url = f"{_API_URL}api/v2/queries/es/id"
         async with self.session.delete(
