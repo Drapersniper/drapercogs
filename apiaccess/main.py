@@ -41,6 +41,9 @@ class RequesterObject:
     registered_on: str = None
     md5: str = None
     id: int = None
+    can_delete: bool = False
+    can_post: bool = False
+    can_read: bool = False
 
     def __post_init__(self):
         self.is_blacklisted = bool(int(self.is_blacklisted))
@@ -62,6 +65,17 @@ class RequesterObject:
                 self.token = self.token.decode()
         self.user_id = str(self.user_id)
         self.entries_submitted = int(self.entries_submitted)
+        self.can_read = not self.is_blacklisted and any(
+            [
+                self.is_user,
+                self.is_contributor,
+                self.is_mod,
+                self.is_admin,
+                self.is_superuser,
+            ]
+        )
+        self.can_post = self.can_read and not self.is_user
+        self.can_delete = self.can_post and not self.is_contributor
 
     def to_json(self):
         return dict(
@@ -247,22 +261,12 @@ class APIManager(commands.Cog):
                     new_data = {}
                     data = await resp.json()
                     user = RequesterObject(**data)
-                    can_read = not user.is_blacklisted and any(
-                        [
-                            user.is_user,
-                            user.is_contributor,
-                            user.is_mod,
-                            user.is_admin,
-                            user.is_superuser,
-                        ]
-                    )
-                    can_post = can_read and not user.is_user
                     new_data["Name"] = f"[{user.name}]"
                     new_data["User ID"] = f"[{user.user_id}]"
                     new_data["Entries Submitted"] = f"[{user.entries_submitted}]"
-                    new_data["Can Read"] = f"[{can_read}]"
-                    new_data["Can Post"] = f"[{can_post}]"
-                    new_data["Can Delete"] = f"[{can_post and not user.is_contributor}]"
+                    new_data["Can Read"] = f"[{user.can_read}]"
+                    new_data["Can Post"] = f"[{user.can_post}]"
+                    new_data["Can Delete"] = f"[{user.can_delete}]"
                     return await ctx.send(
                         box(
                             tabulate(
@@ -300,22 +304,13 @@ class APIManager(commands.Cog):
                         return await ctx.send("Failed to get user info")
                     try:
                         user = RequesterObject(**data)
-                        can_read = not user.is_blacklisted and any(
-                            [
-                                user.is_user,
-                                user.is_contributor,
-                                user.is_mod,
-                                user.is_admin,
-                                user.is_superuser,
-                            ]
-                        )
-                        can_post = can_read and not user.is_user
+
                         new_data["Name"] = f"[{user.name}]"
                         new_data["User ID"] = f"[{user.user_id}]"
                         new_data["Entries Submitted"] = f"[{user.entries_submitted}]"
-                        new_data["Can Read"] = f"[{can_read}]"
-                        new_data["Can Post"] = f"[{can_post}]"
-                        new_data["Can Delete"] = f"[{can_post and not user.is_contributor}]"
+                        new_data["Can Read"] = f"[{user.can_read}]"
+                        new_data["Can Post"] = f"[{user.can_post}]"
+                        new_data["Can Delete"] = f"[{user.can_delete}]"
 
                         await ctx.author.send(
                             box(
@@ -327,9 +322,9 @@ class APIManager(commands.Cog):
                                 lang="ini",
                             )
                         )
-                        if (token := data.get("token")) is not None:
+                        if user.token is not None:
                             await ctx.author.send(
-                                f"Use: `[p]set api audiodb api_key {token}` to set this key on your bot."
+                                f"Use: `[p]set api audiodb api_key {user.token}` to set this key on your bot."
                             )
                     except discord.HTTPException:
                         ctx.command.reset_cooldown(ctx)
