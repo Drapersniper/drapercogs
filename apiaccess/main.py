@@ -25,6 +25,7 @@ log = logging.getLogger("red.drapercogs.APIManager")
 
 @dataclass
 class RequesterObject:
+    id: int
     user_id: str
     is_blacklisted: bool = False
     is_superuser: bool = False
@@ -36,6 +37,10 @@ class RequesterObject:
     name: str = "Unauthenticated"
     entries_submitted: int = 0
     token: Optional[str] = None
+    updated_on: str = None
+    blacklisted_on: str = None
+    registered_on: str = None
+    md5: str = None
 
     def __post_init__(self):
         self.is_blacklisted = bool(int(self.is_blacklisted))
