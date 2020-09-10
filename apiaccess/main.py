@@ -252,12 +252,12 @@ class APIManager(commands.Cog):
                         ]
                     )
                     can_post = can_read and not user.is_user
-                    new_data["Name"] = user.name
-                    new_data["User ID"] = user.user_id
-                    new_data["Entries Submitted"] = user.entries_submitted
-                    new_data["Can Read"] = can_read
-                    new_data["Can Post"] = can_post
-                    new_data["Can Delete"] = can_post and not user.is_contributor
+                    new_data["Name"] = f"[{user.name}]"
+                    new_data["User ID"] = f"[{user.user_id}]"
+                    new_data["Entries Submitted"] = f"[{user.entries_submitted}]"
+                    new_data["Can Read"] = f"[{can_read}]"
+                    new_data["Can Post"] = f"[{can_post}]"
+                    new_data["Can Delete"] = f"[{can_post and not user.is_contributor}]"
                     return await ctx.send(
                         box(
                             tabulate(
@@ -305,12 +305,12 @@ class APIManager(commands.Cog):
                             ]
                         )
                         can_post = can_read and not user.is_user
-                        new_data["Name"] = user.name
-                        new_data["User ID"] = user.user_id
-                        new_data["Entries Submitted"] = user.entries_submitted
-                        new_data["Can Read"] = can_read
-                        new_data["Can Post"] = can_post
-                        new_data["Can Delete"] = can_post and not user.is_contributor
+                        new_data["Name"] = f"[{user.name}]"
+                        new_data["User ID"] = f"[{user.user_id}]"
+                        new_data["Entries Submitted"] = f"[{user.entries_submitted}]"
+                        new_data["Can Read"] = f"[{can_read}]"
+                        new_data["Can Post"] = f"[{can_post}]"
+                        new_data["Can Delete"] = f"[{can_post and not user.is_contributor}]"
 
                         await ctx.author.send(
                             box(
