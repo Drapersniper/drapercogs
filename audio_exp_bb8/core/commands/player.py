@@ -643,8 +643,13 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
         will search Pornhub instead of YouTube.
         """
 
-        if query.startswith("ph ") and not ctx.channel.is_nsfw():
+        if isinstance(query, str) and query.startswith("ph ") and not ctx.channel.is_nsfw():
             raise PHNSFWError
+        elif isinstance(query, Query) and query.is_nsfw and not ctx.channel.is_nsfw():
+            raise PHNSFWError
+        else:
+            raise RuntimeError(
+                f"Expect 'query' to be a string or Query object but recieved: {type(query)} is an unexpected argument type please report it.")
 
         async def _search_menu(
             ctx: commands.Context,
