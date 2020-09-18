@@ -526,6 +526,32 @@ class APIManager(commands.Cog):
             await guild.ban(user, reason=f"Requested by {ctx.author}", delete_message_days=1)
         await ctx.tick()
 
+    @commands.command(name="mass", cooldown_after_parsing=True)
+    @commands.guild_only()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @has_any_role_in_guild(749329286376456353, 749329319616184481)
+    async def command_mass_apiban(self, ctx: commands.Context, *users: int):
+        """Ban multiple people from server and API."""
+        params = [("name", "Unknown")]
+        for user in users:
+            user = discord.Object(id=user)
+            guild = self.guild
+            with contextlib.suppress(discord.HTTPException):
+                await guild.ban(user, reason=f"Requested by {ctx.author}", delete_message_days=1)
+
+            member = self.guild.get_member(user.id)
+            if member and not await self.is_allowed_by_hierarchy(ctx.author, member):
+                continue
+            params.append(("user", str(user.id)))
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                f"{API_ENDPOINT}/api/v2/users/ban/multi",
+                headers=self.headers,
+                params=params,
+            ) as resp:
+                await resp.json()
+        await ctx.tick()
+
     @commands.command(name="apirevoke")
     @commands.guild_only()
     @has_any_role_in_guild(749329286376456353, 749329319616184481)
