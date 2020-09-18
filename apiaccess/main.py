@@ -542,7 +542,7 @@ class APIManager(commands.Cog):
             member = self.guild.get_member(user.id)
             if member and not await self.is_allowed_by_hierarchy(ctx.author, member):
                 continue
-            params.append(("user", str(user.id)))
+            params.append(("users", str(user.id)))
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 f"{API_ENDPOINT}/api/v2/users/ban/multi",
