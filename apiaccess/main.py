@@ -526,7 +526,7 @@ class APIManager(commands.Cog):
             await guild.ban(user, reason=f"Requested by {ctx.author}", delete_message_days=1)
         await ctx.tick()
 
-    @commands.command(name="mass", cooldown_after_parsing=True)
+    @commands.command(name="massban", cooldown_after_parsing=True)
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     @has_any_role_in_guild(749329286376456353, 749329319616184481)
