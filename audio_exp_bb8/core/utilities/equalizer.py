@@ -1,14 +1,18 @@
+# Standard Library
 import asyncio
 import contextlib
 import logging
+
 from typing import List
 
+# Cog Dependencies
 import discord
 import lavalink
 
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import box
 
+# Cog Relative Imports
 from ...equalizer import Equalizer
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass

@@ -3,7 +3,6 @@
 import asyncio
 import contextlib
 import datetime
-import json
 import logging
 import random
 import time
@@ -38,6 +37,12 @@ from .playlist_interface import get_playlist
 from .playlist_wrapper import PlaylistWrapper
 from .spotify import SpotifyWrapper
 from .youtube import YouTubeWrapper
+
+try:
+    from redbot import json
+except ImportError:
+    import json
+
 
 if TYPE_CHECKING:
     from .. import Audio

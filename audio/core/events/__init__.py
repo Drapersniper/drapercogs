@@ -1,5 +1,7 @@
+# Standard Library
 import logging
 
+# Cog Relative Imports
 from ..cog_utils import CompositeMetaClass
 from .cog import AudioEvents
 from .dpy import DpyEvents

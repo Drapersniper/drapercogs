@@ -1,5 +1,6 @@
 # The equalizer class and some audio eq functions are derived from
 # 180093157554388993's work, with his permission
+# Standard Library
 from typing import Final
 
 

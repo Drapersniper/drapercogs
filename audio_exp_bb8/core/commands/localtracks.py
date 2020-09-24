@@ -1,14 +1,18 @@
+# Standard Library
 import contextlib
 import logging
 import math
+
 from pathlib import Path
 from typing import MutableMapping
 
+# Cog Dependencies
 import discord
 
 from redbot.core import commands
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
 
+# Cog Relative Imports
 from ...audio_dataclasses import LocalPath, Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _

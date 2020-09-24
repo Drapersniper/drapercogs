@@ -20,6 +20,11 @@ from ..utils import PlaylistScope
 from . import abc, cog_utils, commands, events, tasks, utilities
 from .cog_utils import CompositeMetaClass, _
 
+try:
+    from redbot import json
+except ImportError:
+    import json
+
 
 @cog_i18n(_)
 class Audio(
@@ -75,7 +80,7 @@ class Audio(
             external_emojis=True,
         )
 
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(json_serialize=json.dumps)
         self.cog_ready_event = asyncio.Event()
         self.cog_init_task = None
         self.global_api_user = {

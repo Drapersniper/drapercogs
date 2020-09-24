@@ -1,8 +1,11 @@
+# Standard Library
 import asyncio
 import logging
 
+# Cog Dependencies
 import lavalink
 
+# Cog Relative Imports
 from ...errors import LavalinkDownloadFailed
 from ...manager import ServerManager
 from ..abc import MixinMeta

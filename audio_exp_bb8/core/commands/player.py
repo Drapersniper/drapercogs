@@ -651,7 +651,8 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 raise PHNSFWError
         else:
             raise RuntimeError(
-                f"Expect 'query' to be a string or Query object but recieved: {type(query)} is an unexpected argument type please report it.")
+                f"Expect 'query' to be a string or Query object but recieved: {type(query)} is an unexpected argument type please report it."
+            )
 
         async def _search_menu(
             ctx: commands.Context,

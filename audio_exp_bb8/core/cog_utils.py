@@ -1,11 +1,14 @@
+# Standard Library
 from abc import ABC
 from pathlib import Path
 from typing import Final
 
+# Cog Dependencies
 from redbot import VersionInfo
 from redbot.core import commands
 from redbot.core.i18n import Translator
 
+# Cog Relative Imports
 from ..converters import get_lazy_converter, get_playlist_converter
 
 __version__ = VersionInfo.from_json(

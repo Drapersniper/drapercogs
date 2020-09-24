@@ -1,10 +1,13 @@
+# Standard Library
 import asyncio
 import contextlib
 import logging
 import time
+
 from enum import Enum, unique
 from typing import MutableMapping
 
+# Cog Dependencies
 import discord
 
 from redbot.core import commands

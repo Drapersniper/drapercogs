@@ -19,8 +19,6 @@ from typing import (
     Pattern,
     Tuple,
     Union,
-    Callable,
-    Pattern,
 )
 from urllib.parse import urlparse
 

@@ -1,27 +1,19 @@
 # Standard Library
 from abc import ABC
-from pathlib import Path
-from typing import Final
 
 # Cog Dependencies
-from redbot import VersionInfo
 from redbot.core import commands
-from redbot.core.i18n import Translator
 
-# Cog Relative Imports
-from ..converters import get_lazy_converter, get_playlist_converter
 
-__version__ = VersionInfo.from_json(
-    {"major": 2, "minor": 2, "micro": 1, "dev_release": 1, "releaselevel": "final"}
-)
+class CompositeMetaClass(type(commands.Cog), type(ABC)):
+    """
+    This allows the metaclass used for proper type detection to
+    coexist with discord.py's metaclass
+    """
 
-__author__ = ["aikaterna", "Draper"]
+    pass
 
-_ = Translator("Audio", Path(__file__).parent)
-_SCHEMA_VERSION: Final[int] = 3
 
-LazyGreedyConverter = get_lazy_converter("--")
-PlaylistConverter = get_playlist_converter()
 HUMANIZED_PERM = {
     "create_instant_invite": "Create Instant Invite",
     "kick_members": "Kick Members",
@@ -55,12 +47,3 @@ HUMANIZED_PERM = {
     "manage_webhooks": "Manage Webhooks",
     "manage_emojis": "Manage Emojis",
 }
-
-
-class CompositeMetaClass(type(commands.Cog), type(ABC)):
-    """
-    This allows the metaclass used for proper type detection to
-    coexist with discord.py's metaclass
-    """
-
-    pass

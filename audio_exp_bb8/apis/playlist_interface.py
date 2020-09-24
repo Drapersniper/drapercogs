@@ -1,13 +1,17 @@
+# Standard Library
 import logging
+
 from typing import List, MutableMapping, Optional, Union
 
+# Cog Dependencies
 import discord
 import lavalink
-from redbot.core.utils import AsyncIter
 
 from redbot.core import Config, commands
 from redbot.core.bot import Red
+from redbot.core.utils import AsyncIter
 
+# Cog Relative Imports
 from ..errors import NotAllowed
 from ..utils import PlaylistScope
 from .api_utils import PlaylistFetchResult, prepare_config_scope, standardize_scope

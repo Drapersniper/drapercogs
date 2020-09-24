@@ -19,6 +19,12 @@ from redbot.core.utils import AsyncIter
 # Cog Relative Imports
 from ..errors import SpotifyFetchError
 
+try:
+    from redbot import json
+except ImportError:
+    import json
+
+
 if TYPE_CHECKING:
     from .. import Audio
 
@@ -102,7 +108,7 @@ class SpotifyWrapper:
         if params is None:
             params = {}
         async with self.session.request("GET", url, params=params, headers=headers) as r:
-            data = await r.json()
+            data = await r.json(loads=json.loads)
             if r.status != 200:
                 log.debug(f"Issue making GET request to {url}: [{r.status}] {data}")
             return data
@@ -156,7 +162,7 @@ class SpotifyWrapper:
     ) -> MutableMapping:
         """Make a POST call to spotify."""
         async with self.session.post(url, data=payload, headers=headers) as r:
-            data = await r.json()
+            data = await r.json(loads=json.loads)
             if r.status != 200:
                 log.debug(f"Issue making POST request to {url}: [{r.status}] {data}")
             return data

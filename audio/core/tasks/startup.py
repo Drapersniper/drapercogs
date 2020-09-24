@@ -20,9 +20,9 @@ from redbot.core.utils.dbtools import APSWConnectionWrapper
 from ...apis.interface import AudioAPIInterface
 from ...apis.playlist_wrapper import PlaylistWrapper
 from ...audio_logging import debug_exc_log
+from ...utils import task_callback
 from ..abc import MixinMeta
 from ..cog_utils import _SCHEMA_VERSION, CompositeMetaClass
-from ...utils import task_callback
 
 log = logging.getLogger("red.cogs.Audio.cog.Tasks.startup")
 

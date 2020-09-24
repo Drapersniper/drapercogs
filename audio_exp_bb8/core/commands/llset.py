@@ -1,9 +1,12 @@
+# Standard Library
 import logging
 
+# Cog Dependencies
 import discord
 
 from redbot.core import commands
 
+# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 

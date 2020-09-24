@@ -4,8 +4,8 @@ import asyncio
 import contextlib
 import logging
 import urllib.parse
-from copy import copy
 
+from copy import copy
 from typing import TYPE_CHECKING, Mapping, Optional, Union
 
 # Cog Dependencies
@@ -19,6 +19,12 @@ from redbot.core.commands import Cog
 # Cog Relative Imports
 from ..audio_dataclasses import Query
 from ..audio_logging import IS_DEBUG, debug_exc_log
+
+try:
+    from redbot import json
+except ImportError:
+    import json
+
 
 if TYPE_CHECKING:
     from .. import Audio
@@ -76,7 +82,7 @@ class GlobalCacheWrapper:
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                     params={"query": query},
                 ) as r:
-                    search_response = await r.json()
+                    search_response = await r.json(loads=json.loads)
                     if IS_DEBUG and "x-process-time" in r.headers:
                         log.debug(
                             f"GET || Ping {r.headers.get('x-process-time')} || "
@@ -104,7 +110,7 @@ class GlobalCacheWrapper:
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                     params=params,
                 ) as r:
-                    search_response = await r.json()
+                    search_response = await r.json(loads=json.loads)
                     if IS_DEBUG and "x-process-time" in r.headers:
                         log.debug(
                             f"GET/spotify || Ping {r.headers.get('x-process-time')} || "
@@ -171,13 +177,13 @@ class GlobalCacheWrapper:
         if self.api_key is None:
             return global_api_user
         with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(json_serialize=json.dumps) as session:
                 async with session.get(
                     f"{_API_URL}api/v2/users/me",
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                 ) as resp:
                     if resp.status == 200:
-                        search_response = await resp.json()
+                        search_response = await resp.json(loads=json.loads)
                         global_api_user.update(search_response)
                         global_api_user["fetched"] = True
         return global_api_user

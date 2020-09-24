@@ -3,7 +3,6 @@
 import asyncio
 import contextlib
 import datetime
-import json
 import logging
 import random
 import time
@@ -41,6 +40,11 @@ from .youtube import YouTubeWrapper
 
 if TYPE_CHECKING:
     from .. import Audio
+
+try:
+    from redbot import json
+except ImportError:
+    import json
 
 _ = Translator("Audio", __file__)
 log = logging.getLogger("red.cogs.Audio.api.AudioAPIInterface")

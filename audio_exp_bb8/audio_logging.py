@@ -1,5 +1,7 @@
+# Standard Library
 import logging
 import sys
+
 from typing import Final
 
 IS_DEBUG: Final[bool] = "--debug" in sys.argv

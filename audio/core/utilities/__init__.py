@@ -1,3 +1,4 @@
+# Cog Relative Imports
 from ..cog_utils import CompositeMetaClass
 from .equalizer import EqualizerUtilities
 from .formatting import FormattingUtilities

@@ -1,11 +1,16 @@
+# Standard Library
 import asyncio
 import logging
 import time
+
 from typing import Dict
 
+# Cog Dependencies
 import lavalink
+
 from redbot.core.utils import AsyncIter
 
+# Cog Relative Imports
 from ...audio_logging import debug_exc_log
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass

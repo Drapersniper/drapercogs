@@ -1,40 +1,48 @@
+# Standard Library
 import asyncio
 import concurrent
-import json
 import logging
 import time
-from types import SimpleNamespace
-from typing import List, TYPE_CHECKING, Union
 
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, List, Union
+
+# Cog Dependencies
 import lavalink
+
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
-from .api_utils import QueueFetchResult
+# Cog Relative Imports
 from ..audio_logging import debug_exc_log
 from ..sql_statements import (
     PERSIST_QUEUE_BULK_PLAYED,
+    PERSIST_QUEUE_CREATE_INDEX,
+    PERSIST_QUEUE_CREATE_TABLE,
     PERSIST_QUEUE_DELETE_SCHEDULED,
+    PERSIST_QUEUE_DROP_TABLE,
     PERSIST_QUEUE_FETCH_ALL,
     PERSIST_QUEUE_PLAYED,
     PERSIST_QUEUE_UPSERT,
-    PERSIST_QUEUE_CREATE_INDEX,
-    PERSIST_QUEUE_CREATE_TABLE,
-    PERSIST_QUEUE_DROP_TABLE,
     PRAGMA_FETCH_user_version,
     PRAGMA_SET_journal_mode,
     PRAGMA_SET_read_uncommitted,
     PRAGMA_SET_temp_store,
     PRAGMA_SET_user_version,
 )
+from .api_utils import QueueFetchResult
 
 log = logging.getLogger("red.cogs.Audio.api.PersistQueueWrapper")
 
 if TYPE_CHECKING:
     from .. import Audio
+try:
+    from redbot import json
+except ImportError:
+    import json
 
 
 class QueueInterface:

@@ -1,15 +1,19 @@
+# Standard Library
 import logging
 import math
+
 from typing import List, Tuple
 
+# Cog Dependencies
 import discord
 import lavalink
-from fuzzywuzzy import process
-from redbot.core.utils import AsyncIter
 
+from fuzzywuzzy import process
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number
 
+# Cog Relative Imports
 from ...audio_dataclasses import LocalPath, Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _

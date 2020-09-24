@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Standard Library
 import asyncio
-import json
 import logging
 import math
 import os
@@ -34,6 +33,10 @@ from ...utils import PlaylistScope
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, LazyGreedyConverter, PlaylistConverter, _
 
+try:
+    from redbot import json
+except ImportError:
+    import json
 log = logging.getLogger("red.cogs.Audio.cog.Commands.playlist")
 
 
@@ -1810,7 +1813,9 @@ class PlaylistCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
         try:
             async with self.session.request("GET", file_url) as r:
-                uploaded_playlist = await r.json(content_type="text/plain", encoding="utf-8")
+                uploaded_playlist = await r.json(
+                    content_type="text/plain", encoding="utf-8", loads=json.loads
+                )
         except UnicodeDecodeError:
             return await self.send_embed_msg(ctx, title=_("Not a valid playlist file."))
 

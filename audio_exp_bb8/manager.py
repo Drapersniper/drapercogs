@@ -24,6 +24,12 @@ from tqdm import tqdm
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
 
+try:
+    from redbot import json
+except ImportError:
+    import json
+
+
 log = logging.getLogger("red.audio.manager")
 JAR_VERSION: Final[str] = "3.3.1"
 JAR_BUILD: Final[int] = 1069
@@ -235,7 +241,7 @@ class ServerManager:
 
     async def _download_jar(self) -> None:
         log.info("Downloading Lavalink.jar...")
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(json_serialize=json.dumps) as session:
             async with session.get(LAVALINK_DOWNLOAD_URL) as response:
                 if response.status == 404:
                     # A 404 means our LAVALINK_DOWNLOAD_URL is invalid, so likely the jar version

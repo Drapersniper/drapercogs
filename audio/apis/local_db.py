@@ -1,19 +1,22 @@
+# Standard Library
 import concurrent
 import contextlib
 import datetime
 import logging
 import random
 import time
+
 from types import SimpleNamespace
-from typing import Callable, List, MutableMapping, Optional, TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, Callable, List, MutableMapping, Optional, Tuple, Union
 
-from redbot.core.utils import AsyncIter
-
+# Cog Dependencies
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
+# Cog Relative Imports
 from ..audio_logging import debug_exc_log
 from ..sql_statements import (
     LAVALINK_CREATE_INDEX,
