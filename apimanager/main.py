@@ -105,7 +105,7 @@ class APIManager(commands.Cog):
                     lang="ini",
                 )
             )
-            if api_requester.token is not None:
+            if api_requester.token is not None and not api_requester.is_blacklisted:
                 await ctx.author.send(
                     f"Use: `{ctx.clean_prefix}set api audiodb api_key {api_requester.token}` to set this key on your bot."
                 )
