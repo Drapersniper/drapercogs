@@ -257,14 +257,14 @@ class APIManager(commands.Cog):
         if user.is_admin or user.is_superuser:
             return False
         if not strict:
-            if mod.is_admin and any(
+            if (mod.is_admin or mod.is_superuser) and any(
                 s for s in [user.is_mod, user.is_contributor, user.is_user, user.is_guest]
             ):
                 return True
             if mod.is_mod and any(s for s in [user.is_contributor, user.is_user, user.is_guest]):
                 return True
         else:
-            if mod.is_admin and any(s for s in [user.is_contributor, user.is_user, user.is_guest]):
+            if (mod.is_admin or mod.is_superuser) and any(s for s in [user.is_contributor, user.is_user, user.is_guest]):
                 return True
             if mod.is_mod and any(s for s in [user.is_user, user.is_guest]):
                 return True
