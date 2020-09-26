@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import operator
 from typing import Mapping, Optional, Union
 
 import discord
@@ -127,7 +128,7 @@ class APIManager(commands.Cog):
         ]
         if not data:
             return await ctx.send("Nothing found")
-        data.sort(key=lambda x: x[0], reverse=True)
+        data.sort(key=operator.itemgetter(0), reverse=True)
         await SimpleHybridMenu(
             source=LeaderboardSource(data),
             delete_message_after=True,
