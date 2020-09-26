@@ -140,7 +140,7 @@ class APIManager(commands.Cog):
     @commands.guild_only()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def command_apiban(self, ctx: commands.Context, *, user: Union[discord.User, int]):
-        """Ban people from server and API."""
+        """Ban people from API."""
         if not await is_api_admin(ctx):
             return
         api_requester = ctx.audio_api_user
@@ -167,7 +167,7 @@ class APIManager(commands.Cog):
     @commands.guild_only()
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def command_mass_apiban(self, ctx: commands.Context, *users: int):
-        """Ban multiple people from server and API."""
+        """Ban multiple people from API."""
         if not await is_api_admin(ctx):
             return
         await API.mass_ban_user(cog=self, users=list(users), user_name="Mass Banned")
