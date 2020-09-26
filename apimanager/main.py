@@ -84,12 +84,11 @@ class APIManager(commands.Cog):
             return await ctx.send("You aren't registered with the API.")
         if int(api_requester.user_id) != ctx.author.id:
             return await ctx.send("Failed to get user info")
-
-        if api_requester.token is not None and not api_requester.is_blacklisted:
-            await ctx.author.send(
-                f"Use: `{ctx.clean_prefix}set api audiodb api_key {api_requester.token}` to set this key on your bot."
-            )
         try:
+            if api_requester.token is not None and not api_requester.is_blacklisted:
+                await ctx.author.send(
+                    f"Use: `{ctx.clean_prefix}set api audiodb api_key {api_requester.token}` to set this key on your bot."
+                )
             new_data = {
                 "Name": f"[{api_requester.name}]",
                 "User ID": f"[{api_requester.user_id}]",
@@ -128,8 +127,10 @@ class APIManager(commands.Cog):
         data = [
             (u.entries_submitted, int(u.user_id), u.name)
             for u in users
-            if ((not u.is_blacklisted) and u.token)
+            if u.can_read
         ]
+        if not data:
+            return await ctx.send("Nothing found")
         data.sort(key=lambda x: x[0], reverse=True)
         await SimpleHybridMenu(
             source=LeaderboardSource(data),
