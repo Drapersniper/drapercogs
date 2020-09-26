@@ -38,14 +38,13 @@ from .playlist_wrapper import PlaylistWrapper
 from .spotify import SpotifyWrapper
 from .youtube import YouTubeWrapper
 
+if TYPE_CHECKING:
+    from .. import Audio
+
 try:
     from redbot import json
 except ImportError:
     import json
-
-
-if TYPE_CHECKING:
-    from .. import Audio
 
 _ = Translator("Audio", __file__)
 log = logging.getLogger("red.cogs.Audio.api.AudioAPIInterface")

@@ -22,7 +22,6 @@ try:
 except ImportError:
     import json
 
-
 log = logging.getLogger("red.cogs.Audio.api.utils")
 
 

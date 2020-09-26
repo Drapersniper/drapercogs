@@ -28,8 +28,6 @@ try:
     from redbot import json
 except ImportError:
     import json
-
-
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.miscellaneous")
 
 _RE_TIME_CONVERTER: Final[Pattern] = re.compile(r"(?:(\d+):)?([0-5]?[0-9]):([0-5][0-9])")

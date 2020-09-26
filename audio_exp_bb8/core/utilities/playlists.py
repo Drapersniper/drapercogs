@@ -31,8 +31,6 @@ try:
     from redbot import json
 except ImportError:
     import json
-
-
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.playlists")
 
 

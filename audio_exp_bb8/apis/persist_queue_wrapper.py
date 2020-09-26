@@ -35,16 +35,14 @@ from ..sql_statements import (
 )
 from .api_utils import QueueFetchResult
 
-try:
-    from redbot import json
-except ImportError:
-    import json
-
-
 log = logging.getLogger("red.cogs.Audio.api.PersistQueueWrapper")
 
 if TYPE_CHECKING:
     from .. import Audio
+try:
+    from redbot import json
+except ImportError:
+    import json
 
 
 class QueueInterface:
