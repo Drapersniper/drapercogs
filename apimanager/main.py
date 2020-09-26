@@ -236,7 +236,8 @@ class APIManager(commands.Cog):
                 f"{ctx.author} you already registered with me, if want to see your token please use `{ctx.clean_prefix}{self.command_mytoken}`"
             )
             return
-        api_user = await API.create_user(cog=self, member=ctx.author)
+        await API.create_user(cog=self, member=ctx.author)
+        api_user = await API.get_user(cog=self, member=ctx.author)
         if not api_user:
             return await ctx.send(
                 f"Couldn't register {ctx.author} with the API, please try again later."
