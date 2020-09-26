@@ -85,10 +85,6 @@ class APIManager(commands.Cog):
         if int(api_requester.user_id) != ctx.author.id:
             return await ctx.send("Failed to get user info")
         try:
-            if api_requester.token is not None and not api_requester.is_blacklisted:
-                await ctx.author.send(
-                    f"Use: `{ctx.clean_prefix}set api audiodb api_key {api_requester.token}` to set this key on your bot."
-                )
             new_data = {
                 "Name": f"[{api_requester.name}]",
                 "User ID": f"[{api_requester.user_id}]",
