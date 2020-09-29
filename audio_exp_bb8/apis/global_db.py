@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from .. import Audio
 
 _API_URL = "http://172.40.0.5:8000/"
-_UNIX_PATH = "/home/draper/GAI/data/sock/api.sock"
+_UNIX_PATH = "/home/draper/GAI/data/sock/api/api.sock"
 log = logging.getLogger("red.cogs.Audio.api.GlobalDB")
 
 
