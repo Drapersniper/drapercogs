@@ -164,19 +164,20 @@ class GlobalCacheWrapper:
         if not self.cog.global_api_user.get("can_delete"):
             return
         api_url = f"{_API_URL}api/v2/queries/es/id"
-        async with self.session.delete(
-            api_url,
-            headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-            params={"id": id},
-        ) as r:
-            await r.read()
+        with contextlib.suppress(Exception):
+            async with self.session.delete(
+                api_url,
+                headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                params={"id": id},
+            ) as r:
+                await r.read()
 
     async def get_perms(self):
         global_api_user = copy(self.cog.global_api_user)
         await self._get_api_key()
         if self.api_key is None:
             return global_api_user
-        with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
+        with contextlib.suppress(Exception):
             async with aiohttp.ClientSession(json_serialize=json.dumps) as session:
                 async with session.get(
                     f"{_API_URL}api/v2/users/me",
@@ -184,6 +185,8 @@ class GlobalCacheWrapper:
                 ) as resp:
                     if resp.status == 200:
                         search_response = await resp.json(loads=json.loads)
-                        global_api_user.update(search_response)
                         global_api_user["fetched"] = True
+                        global_api_user["can_read"] = search_response.get("can_read", False)
+                        global_api_user["can_post"] = search_response.get("can_post", False)
+                        global_api_user["can_delete"] = search_response.get("can_delete", False)
         return global_api_user
