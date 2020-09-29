@@ -12,6 +12,7 @@ class User:
     is_contributor: bool = False
     is_user: bool = False
     is_guest: bool = False
+    is_unregistered: bool = False
     name: str = "Unauthenticated"
     entries_submitted: int = 0
     token: Optional[str] = None
@@ -24,6 +25,7 @@ class User:
     can_post: bool = False
     can_read: bool = False
 
+
     def __post_init__(self):
         self.is_blacklisted = bool(int(self.is_blacklisted))
         self.is_superuser = bool(int(self.is_superuser))
@@ -32,6 +34,7 @@ class User:
         self.is_contributor = bool(int(self.is_contributor))
         self.is_user = bool(int(self.is_user))
         self.is_guest = bool(int(self.is_guest))
+        self.is_unregistered = bool(int(self.is_unregistered))
         if not self.name:
             self.name = "Unauthenticated"
         else:
