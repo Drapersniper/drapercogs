@@ -28,25 +28,12 @@ class API:
                 return [User(**u) for u in data]
 
     @classmethod
-    async def fetch_user(
-        cls, cog: APIManager, member: Union[discord.abc.User, discord.Object]
-    ) -> Optional[User]:
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-            async with session.get(
-                f"{API_ENDPOINT}/api/v2/users/user/{member.id}", headers=cog.headers
-            ) as resp:
-                if resp.status != 200:
-                    return None
-                data = await resp.json(loads=ujson.loads)
-                return User(**data)
-
-    @classmethod
     async def get_user(
         cls, cog: APIManager, member: Union[discord.abc.User, discord.Object]
     ) -> Optional[User]:
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             async with session.get(
-                f"{API_ENDPOINT}/api/v2/users/cached/{member.id}", headers=cog.headers
+                f"{API_ENDPOINT}/api/v2/users/user/{member.id}", headers=cog.headers
             ) as resp:
                 if resp.status != 200:
                     return None
