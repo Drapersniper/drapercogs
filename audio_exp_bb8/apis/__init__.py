@@ -1,4 +1,3 @@
-# Cog Relative Imports
 from . import (
     api_utils,
     global_db,

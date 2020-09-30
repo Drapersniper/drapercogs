@@ -1,4 +1,3 @@
-# Cog Relative Imports
 from ..cog_utils import CompositeMetaClass
 from .bb8 import BB8Utilities
 from .equalizer import EqualizerUtilities

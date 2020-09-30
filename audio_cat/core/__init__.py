@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 
 from collections import Counter
 from typing import Mapping
 
-# Cog Dependencies
 import aiohttp
 import discord
 
@@ -15,10 +12,14 @@ from redbot.core.commands import Cog
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import cog_i18n
 
-# Cog Relative Imports
 from ..utils import PlaylistScope
 from . import abc, cog_utils, commands, events, tasks, utilities
 from .cog_utils import CompositeMetaClass, _
+
+try:
+    from redbot import json
+except ImportError:
+    import json
 
 
 @cog_i18n(_)

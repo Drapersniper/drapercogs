@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import contextlib
 import logging
@@ -9,7 +7,6 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import Final, Pattern
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -18,7 +15,6 @@ from discord.ext.commands import CheckFailure
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import box, humanize_list
 
-# Cog Relative Imports
 from ...audio_logging import debug_exc_log
 from ...errors import PHNSFWError, TrackEnqueueError
 from ..abc import MixinMeta

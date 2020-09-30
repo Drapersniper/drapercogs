@@ -1,17 +1,17 @@
 import asyncio
 import contextlib
 import datetime
-import json
 import logging
 import math
+
 from typing import List, MutableMapping, Optional, Tuple, Union
 
 import discord
 import lavalink
-from discord.embeds import EmptyEmbed
-from redbot.core.utils import AsyncIter
 
+from discord.embeds import EmptyEmbed
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import box
 from redbot.core.utils.menus import start_adding_reactions
 from redbot.core.utils.predicates import ReactionPredicate
@@ -24,6 +24,10 @@ from ...utils import Notifier, PlaylistScope
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 
+try:
+    from redbot import json
+except ImportError:
+    import json
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.playlists")
 
 

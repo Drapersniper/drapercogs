@@ -2,25 +2,29 @@ import asyncio
 import contextlib
 import datetime
 import functools
-import json
 import logging
 import re
-from typing import Any, Final, MutableMapping, Union, cast, Mapping, Pattern
+
+from typing import Any, Final, Mapping, MutableMapping, Pattern, Union, cast
 
 import discord
 import lavalink
-from discord.embeds import EmptyEmbed
-from redbot.core.utils import AsyncIter
 
+from discord.embeds import EmptyEmbed
 from redbot.core import bank, commands
 from redbot.core.commands import Context
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number
 
-from ..abc import MixinMeta
-from ..cog_utils import CompositeMetaClass, _
 from ...apis.playlist_interface import get_all_playlist_for_migration23
 from ...utils import PlaylistScope, task_callback
+from ..abc import MixinMeta
+from ..cog_utils import CompositeMetaClass, _
 
+try:
+    from redbot import json
+except ImportError:
+    import json
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.miscellaneous")
 
 _RE_TIME_CONVERTER: Final[Pattern] = re.compile(r"(?:(\d+):)?([0-5]?[0-9]):([0-5][0-9])")

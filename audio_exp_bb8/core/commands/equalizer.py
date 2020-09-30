@@ -1,10 +1,8 @@
-# Standard Library
 import asyncio
 import contextlib
 import logging
 import re
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -13,7 +11,6 @@ from redbot.core.utils.chat_formatting import box, humanize_number, pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 
-# Cog Relative Imports
 from ...equalizer import Equalizer
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _

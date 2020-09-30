@@ -1,4 +1,3 @@
-# Standard Library
 import datetime
 import logging
 
@@ -6,14 +5,12 @@ from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import List, MutableMapping, Optional, Union
 
-# Cog Dependencies
 import discord
 import lavalink
 
 from redbot.core.bot import Red
 from redbot.core.utils.chat_formatting import humanize_list
 
-# Cog Relative Imports
 from ..errors import InvalidPlaylistScope, MissingAuthor, MissingGuild
 from ..utils import PlaylistScope
 

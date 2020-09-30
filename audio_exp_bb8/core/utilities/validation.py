@@ -1,18 +1,14 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import logging
 import re
 
 from typing import Final, List, Optional, Pattern, Set, Union
 from urllib.parse import urlparse
 
-# Cog Dependencies
 import discord
 
 from redbot.core import Config
 from redbot.core.commands import Context
 
-# Cog Relative Imports
 from ...audio_dataclasses import Query
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass

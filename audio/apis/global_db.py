@@ -1,22 +1,18 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import contextlib
 import logging
-import urllib.parse
 
 from copy import copy
 from typing import TYPE_CHECKING, Mapping, Optional, Union
 
-# Cog Dependencies
 import aiohttp
 
 from lavalink.rest_api import LoadResult
+
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 
-# Cog Relative Imports
 from ..audio_dataclasses import Query
 from ..audio_logging import IS_DEBUG, debug_exc_log
 
@@ -43,8 +39,6 @@ class GlobalCacheWrapper:
         self.config = config
         self.session = session
         self.api_key = None
-        self._handshake_token = ""
-        self.can_write = False
         self._handshake_token = ""
         self.has_api_key = None
         self._token: Mapping[str, str] = {}
@@ -175,7 +169,8 @@ class GlobalCacheWrapper:
     async def get_perms(self):
         global_api_user = copy(self.cog.global_api_user)
         await self._get_api_key()
-        if self.api_key is None:
+        is_enabled = await self.config.global_db_enabled()
+        if (not is_enabled) or self.api_key is None:
             return global_api_user
         with contextlib.suppress(Exception):
             async with aiohttp.ClientSession(json_serialize=json.dumps) as session:

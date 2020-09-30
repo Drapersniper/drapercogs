@@ -1,10 +1,9 @@
 import concurrent
-import json
 import logging
+
 from types import SimpleNamespace
 from typing import List, MutableMapping, Optional
 
-# Cog Dependencies
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.utils import AsyncIter
@@ -12,6 +11,7 @@ from redbot.core.utils.dbtools import APSWConnectionWrapper
 
 from ..audio_logging import debug_exc_log
 from ..sql_statements import (
+    HANDLE_DISCORD_DATA_DELETION_QUERY,
     PLAYLIST_CREATE_INDEX,
     PLAYLIST_CREATE_TABLE,
     PLAYLIST_DELETE,
@@ -27,11 +27,14 @@ from ..sql_statements import (
     PRAGMA_SET_read_uncommitted,
     PRAGMA_SET_temp_store,
     PRAGMA_SET_user_version,
-    HANDLE_DISCORD_DATA_DELETION_QUERY,
 )
 from ..utils import PlaylistScope
 from .api_utils import PlaylistFetchResult
 
+try:
+    from redbot import json
+except ImportError:
+    import json
 log = logging.getLogger("red.cogs.Audio.api.Playlists")
 
 

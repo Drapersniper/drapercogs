@@ -1,6 +1,6 @@
 import datetime
-import json
 import logging
+
 from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import List, MutableMapping, Optional, Union
@@ -13,6 +13,11 @@ from redbot.core.utils.chat_formatting import humanize_list
 
 from ..errors import InvalidPlaylistScope, MissingAuthor, MissingGuild
 from ..utils import PlaylistScope
+
+try:
+    from redbot import json
+except ImportError:
+    import json
 
 log = logging.getLogger("red.cogs.Audio.api.utils")
 

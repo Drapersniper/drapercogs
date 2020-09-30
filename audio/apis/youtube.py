@@ -1,17 +1,13 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import logging
 
 from typing import TYPE_CHECKING, Mapping, Optional, Union
 
-# Cog Dependencies
 import aiohttp
 
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 
-# Cog Relative Imports
 from ..errors import YouTubeApiError
 
 try:

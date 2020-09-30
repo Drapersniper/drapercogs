@@ -1,11 +1,9 @@
-# Standard Library
 import argparse
 import functools
 import re
 
 from typing import Final, MutableMapping, Optional, Pattern, Tuple, Union
 
-# Cog Dependencies
 import discord
 
 from redbot.core import commands
@@ -13,7 +11,6 @@ from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 
-# Cog Relative Imports
 from .apis.api_utils import standardize_scope
 from .apis.playlist_interface import get_all_playlist_converter
 from .errors import NoMatchesFound, TooManyMatches

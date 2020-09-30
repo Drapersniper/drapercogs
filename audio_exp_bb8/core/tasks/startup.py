@@ -1,28 +1,22 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
-import contextlib
 import datetime
 import itertools
 import logging
-import sys
 
 from typing import Optional
 
-# Cog Dependencies
-import aiohttp
 import lavalink
 
 from redbot.core.data_manager import cog_data_path
+from redbot.core.utils._internal_utils import send_to_owners_with_prefix_replaced
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
-# Cog Relative Imports
 from ...apis.interface import AudioAPIInterface
 from ...apis.playlist_wrapper import PlaylistWrapper
 from ...audio_logging import debug_exc_log
 from ...utils import task_callback
 from ..abc import MixinMeta
-from ..cog_utils import _SCHEMA_VERSION, CompositeMetaClass
+from ..cog_utils import _, _OWNER_NOTIFICATION, _SCHEMA_VERSION, CompositeMetaClass
 
 log = logging.getLogger("red.cogs.Audio.cog.Tasks.startup")
 
@@ -39,6 +33,7 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
         await self.bot.wait_until_red_ready()
         # Unlike most cases, we want the cache to exit before migration.
         try:
+            await self.maybe_message_all_owners()
             self.db_conn = APSWConnectionWrapper(
                 str(cog_data_path(self.bot.get_cog("Audio")) / "Audio.db")
             )
@@ -133,3 +128,24 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
             except Exception as err:
                 debug_exc_log(log, err, f"Error restoring player in {guild_id}")
                 await self.api_interface.persistent_queue_api.drop(guild_id)
+
+    async def maybe_message_all_owners(self):
+        current_notification = await self.config.owner_notification()
+        if current_notification == _OWNER_NOTIFICATION:
+            return
+        if current_notification < 1 <= _OWNER_NOTIFICATION:
+            msg = _(
+                """Hey, first of all sorry for this notification, it is not something we wish to do often but this update to the Audio Cog warrants it in this case.
+            
+Audio version 2.3.0+ brings you access to the **Global Audio API**, `[p]help audioset globalapi` for more info, this **API is disabled by default and will never be enabled until you manually enable it**.
+
+This API will allow your to use the Spotify functionally of Audio with a much smaller YouTube API key usage, as it will attempt to look for results in the API before using your key.
+This API will also help your bot by reducing the likelihood of YouTube rate-limiting your bot for making requests too often.
+
+To use this API **you will be required to have an access token**, to obtain this token please join <https://discord.gg/red> and run `?audioapi register` in #testing.
+Note: Just like any request your bot makes this service will be able to see your bot IP, your bot IP is not used for anything in the server but we felt that disclosing this to potential users is an important step since the service is managed by Draper and Cog-Creators org.
+
+Since I'm already sending this message, I would highly recommend that you enable your local cache if you haven't yet, to do so you can run `[p]audioset cache 5` This cache only stores metadata so it shouldn't use up a lot of space, however it will make repeated audio requests faster and further reduce the likelihood of YouTube rate-limiting your bot."""
+            )
+            await send_to_owners_with_prefix_replaced(self.bot, msg)
+            await self.config.owner_notification.set(1)

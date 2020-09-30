@@ -1,4 +1,3 @@
-# Standard Library
 import asyncio
 import contextlib
 import datetime
@@ -8,7 +7,6 @@ import re
 
 from typing import Any, Final, Mapping, MutableMapping, Pattern, Union, cast
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -18,7 +16,6 @@ from redbot.core.commands import Context
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number
 
-# Cog Relative Imports
 from ...apis.playlist_interface import get_all_playlist_for_migration23
 from ...utils import PlaylistScope, task_callback
 from ..abc import MixinMeta

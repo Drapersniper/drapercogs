@@ -1,7 +1,5 @@
-# Cog Dependencies
 from redbot.core.bot import Red
 
-# Cog Relative Imports
 from .core import Audio
 
 

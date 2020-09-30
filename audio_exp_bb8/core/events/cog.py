@@ -1,4 +1,3 @@
-# Standard Library
 import asyncio
 import datetime
 import logging
@@ -6,13 +5,11 @@ import time
 
 from typing import Optional
 
-# Cog Dependencies
 import discord
 import lavalink
 
 from redbot.core import commands
 
-# Cog Relative Imports
 from ...apis.playlist_interface import Playlist, delete_playlist, get_playlist
 from ...audio_logging import debug_exc_log
 from ...utils import PlaylistScope

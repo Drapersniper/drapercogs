@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import asyncio.subprocess  # disables for # https://github.com/PyCQA/pylint/issues/1469
 import itertools
@@ -20,7 +18,6 @@ import aiohttp
 from redbot.core import data_manager
 from tqdm import tqdm
 
-# Cog Relative Imports
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
 

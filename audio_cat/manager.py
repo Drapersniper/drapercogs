@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import asyncio.subprocess  # disables for # https://github.com/PyCQA/pylint/issues/1469
 import itertools
@@ -20,9 +18,14 @@ import aiohttp
 from redbot.core import data_manager
 from tqdm import tqdm
 
-# Cog Relative Imports
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
+
+try:
+    from redbot import json
+except ImportError:
+    import json
+
 
 log = logging.getLogger("red.audio.manager")
 JAR_VERSION: Final[str] = "3.3.1"
@@ -235,7 +238,7 @@ class ServerManager:
 
     async def _download_jar(self) -> None:
         log.info("Downloading Lavalink.jar...")
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(json_serialize=json.dumps) as session:
             async with session.get(LAVALINK_DOWNLOAD_URL) as response:
                 if response.status == 404:
                     # A 404 means our LAVALINK_DOWNLOAD_URL is invalid, so likely the jar version

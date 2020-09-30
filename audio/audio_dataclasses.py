@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import glob
 import logging
@@ -22,7 +20,6 @@ from typing import (
 )
 from urllib.parse import urlparse
 
-# Cog Dependencies
 import lavalink
 
 from redbot.core.utils import AsyncIter

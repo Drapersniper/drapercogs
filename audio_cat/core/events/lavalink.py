@@ -1,14 +1,10 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import contextlib
 import logging
 
-# Cog Dependencies
 import discord
 import lavalink
 
-# Cog Relative Imports
 from ...errors import DatabaseError, TrackEnqueueError
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _

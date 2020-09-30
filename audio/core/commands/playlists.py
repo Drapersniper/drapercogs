@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import logging
 import math
@@ -10,7 +8,6 @@ import time
 from io import BytesIO
 from typing import cast
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -22,7 +19,6 @@ from redbot.core.utils.chat_formatting import bold, pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from redbot.core.utils.predicates import MessagePredicate
 
-# Cog Relative Imports
 from ...apis.api_utils import FakePlaylist
 from ...apis.playlist_interface import Playlist, create_playlist, delete_playlist, get_all_playlist
 from ...audio_dataclasses import LocalPath, Query

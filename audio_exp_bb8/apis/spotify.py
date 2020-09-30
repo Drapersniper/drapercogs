@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import base64
 import contextlib
 import logging
@@ -7,7 +5,6 @@ import time
 
 from typing import TYPE_CHECKING, List, Mapping, MutableMapping, Optional, Tuple, Union
 
-# Cog Dependencies
 import aiohttp
 
 from redbot.core import Config
@@ -16,7 +13,6 @@ from redbot.core.commands import Cog, Context
 from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 
-# Cog Relative Imports
 from ..errors import SpotifyFetchError
 
 try:

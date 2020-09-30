@@ -1,24 +1,26 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import contextlib
 import logging
-import urllib.parse
-from copy import copy
 
+from copy import copy
 from typing import TYPE_CHECKING, Mapping, Optional, Union
 
-# Cog Dependencies
 import aiohttp
 
 from lavalink.rest_api import LoadResult
+
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 
-# Cog Relative Imports
 from ..audio_dataclasses import Query
 from ..audio_logging import IS_DEBUG, debug_exc_log
+
+try:
+    from redbot import json
+except ImportError:
+    import json
+
 
 if TYPE_CHECKING:
     from .. import Audio
@@ -37,8 +39,6 @@ class GlobalCacheWrapper:
         self.config = config
         self.session = session
         self.api_key = None
-        self._handshake_token = ""
-        self.can_write = False
         self._handshake_token = ""
         self.has_api_key = None
         self._token: Mapping[str, str] = {}
@@ -76,7 +76,7 @@ class GlobalCacheWrapper:
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                     params={"query": query},
                 ) as r:
-                    search_response = await r.json()
+                    search_response = await r.json(loads=json.loads)
                     if IS_DEBUG and "x-process-time" in r.headers:
                         log.debug(
                             f"GET || Ping {r.headers.get('x-process-time')} || "
@@ -104,7 +104,7 @@ class GlobalCacheWrapper:
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                     params=params,
                 ) as r:
-                    search_response = await r.json()
+                    search_response = await r.json(loads=json.loads)
                     if IS_DEBUG and "x-process-time" in r.headers:
                         log.debug(
                             f"GET/spotify || Ping {r.headers.get('x-process-time')} || "
@@ -158,26 +158,30 @@ class GlobalCacheWrapper:
         if not self.cog.global_api_user.get("can_delete"):
             return
         api_url = f"{_API_URL}api/v2/queries/es/id"
-        async with self.session.delete(
-            api_url,
-            headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-            params={"id": id},
-        ) as r:
-            await r.read()
+        with contextlib.suppress(Exception):
+            async with self.session.delete(
+                api_url,
+                headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                params={"id": id},
+            ) as r:
+                await r.read()
 
     async def get_perms(self):
         global_api_user = copy(self.cog.global_api_user)
         await self._get_api_key()
-        if self.api_key is None:
+        is_enabled = await self.config.global_db_enabled()
+        if (not is_enabled) or self.api_key is None:
             return global_api_user
-        with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
-            async with aiohttp.ClientSession() as session:
+        with contextlib.suppress(Exception):
+            async with aiohttp.ClientSession(json_serialize=json.dumps) as session:
                 async with session.get(
                     f"{_API_URL}api/v2/users/me",
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
                 ) as resp:
                     if resp.status == 200:
-                        search_response = await resp.json()
-                        global_api_user.update(search_response)
+                        search_response = await resp.json(loads=json.loads)
                         global_api_user["fetched"] = True
+                        global_api_user["can_read"] = search_response.get("can_read", False)
+                        global_api_user["can_post"] = search_response.get("can_post", False)
+                        global_api_user["can_delete"] = search_response.get("can_delete", False)
         return global_api_user

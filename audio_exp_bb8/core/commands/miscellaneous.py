@@ -1,11 +1,9 @@
-# Standard Library
 import datetime
 import heapq
 import logging
 import math
 import random
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -14,7 +12,6 @@ from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number, pagify
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
-# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 

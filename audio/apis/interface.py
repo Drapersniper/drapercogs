@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import contextlib
 import datetime
@@ -10,7 +8,6 @@ import time
 from collections import namedtuple
 from typing import TYPE_CHECKING, Callable, List, MutableMapping, Optional, Tuple, Union, cast
 
-# Cog Dependencies
 import aiohttp
 import discord
 import lavalink
@@ -24,7 +21,6 @@ from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
-# Cog Relative Imports
 from ..audio_dataclasses import Query
 from ..audio_logging import IS_DEBUG, debug_exc_log
 from ..errors import DatabaseError, PHNSFWError, SpotifyFetchError, TrackEnqueueError
@@ -591,7 +587,7 @@ class AudioAPIInterface:
                 if not await self.cog.is_query_allowed(
                     self.config,
                     ctx,
-                    f"{single_track.title} {single_track.author} {single_track.uri} " f"{query}",
+                    f"{single_track.title} {single_track.author} {single_track.uri} {query}",
                     query_obj=query,
                 ):
                     has_not_allowed = True
@@ -962,7 +958,7 @@ class AudioAPIInterface:
                 if not await self.cog.is_query_allowed(
                     self.config,
                     notify_channel,
-                    f"{track.title} {track.author} {track.uri} " f"{str(query)}",
+                    f"{track.title} {track.author} {track.uri} {query}",
                     query_obj=query,
                 ):
                     if IS_DEBUG:
@@ -989,41 +985,3 @@ class AudioAPIInterface:
 
     async def fetch_all_contribute(self) -> List[LavalinkCacheFetchForGlobalResult]:
         return await self.local_cache_api.lavalink.fetch_all_for_global()
-
-    async def contribute_to_global(
-        self, ctx: commands.Context, db_entries: List[LavalinkCacheFetchForGlobalResult]
-    ) -> None:
-        tasks = []
-        async for i, entry in AsyncIter(db_entries).enumerate(start=1):
-            query = entry.query
-            data = entry.data
-            _raw_query = Query.process_input(query, self.cog.local_folder_current_path)
-            if data.get("loadType") == "V2_COMPACT":
-                data["loadType"] = "V2_COMPAT"
-            results = LoadResult(data)
-            with contextlib.suppress(Exception):
-                if not _raw_query.is_local and not results.has_error and len(results.tracks) >= 1:
-                    global_task = dict(llresponse=results, query=_raw_query)
-                    tasks.append(global_task)
-                if i % 500 == 0:
-                    if IS_DEBUG:
-                        log.debug("Running pending writes to database")
-                    await asyncio.gather(
-                        *[self.global_cache_api.update_global(**a) for a in tasks],
-                        return_exceptions=True,
-                    )
-                    tasks = []
-                    if IS_DEBUG:
-                        log.debug("Pending writes to database have finished")
-                    await asyncio.sleep(5)
-        with contextlib.suppress(Exception):
-            if tasks:
-                if IS_DEBUG:
-                    log.debug("Running pending writes to database")
-                await asyncio.gather(
-                    *[self.global_cache_api.update_global(**a) for a in tasks],
-                    return_exceptions=True,
-                )
-                if IS_DEBUG:
-                    log.debug("Pending writes to database have finished")
-        await ctx.tick()

@@ -1,18 +1,20 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import logging
 
 from typing import TYPE_CHECKING, Mapping, Optional, Union
 
-# Cog Dependencies
 import aiohttp
 
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 
-# Cog Relative Imports
 from ..errors import YouTubeApiError
+
+try:
+    from redbot import json
+except ImportError:
+    import json
+
 
 if TYPE_CHECKING:
     from .. import Audio
@@ -64,7 +66,7 @@ class YouTubeWrapper:
                     raise YouTubeApiError("Your YouTube Data API quota has been reached.")
                 return None
             else:
-                search_response = await r.json()
+                search_response = await r.json(loads=json.loads)
         for search_result in search_response.get("items", []):
             if search_result["id"]["kind"] == "youtube#video":
                 return f"https://www.youtube.com/watch?v={search_result['id']['videoId']}"

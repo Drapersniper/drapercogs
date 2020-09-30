@@ -1,4 +1,3 @@
-# Standard Library
 from typing import Final
 
 # TODO: https://github.com/Cog-Creators/Red-DiscordBot/pull/3195#issuecomment-567821701

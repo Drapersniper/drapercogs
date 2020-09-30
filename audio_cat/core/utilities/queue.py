@@ -1,13 +1,14 @@
 import logging
 import math
+
 from typing import List, Tuple
 
 import discord
 import lavalink
-from fuzzywuzzy import process
-from redbot.core.utils import AsyncIter
 
+from fuzzywuzzy import process
 from redbot.core import commands
+from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number
 
 from ...audio_dataclasses import LocalPath, Query

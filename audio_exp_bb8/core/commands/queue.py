@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import asyncio
 import contextlib
 import datetime
@@ -8,7 +6,6 @@ import math
 
 from typing import MutableMapping, Optional
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -24,7 +21,6 @@ from redbot.core.utils.menus import (
 )
 from redbot.core.utils.predicates import ReactionPredicate
 
-# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, _
 

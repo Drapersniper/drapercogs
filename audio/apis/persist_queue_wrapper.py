@@ -1,4 +1,3 @@
-# Standard Library
 import asyncio
 import concurrent
 import logging
@@ -7,7 +6,6 @@ import time
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, List, Union
 
-# Cog Dependencies
 import lavalink
 
 from redbot.core import Config
@@ -16,7 +14,6 @@ from redbot.core.commands import Cog
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
-# Cog Relative Imports
 from ..audio_logging import debug_exc_log
 from ..sql_statements import (
     PERSIST_QUEUE_BULK_PLAYED,
@@ -94,7 +91,7 @@ class QueueInterface:
                 try:
                     row_result = future.result()
                 except Exception as exc:
-                    debug_exc_log(log, exc, "Failed to completed playlist fetch from database")
+                    debug_exc_log(log, exc, "Failed to complete playlist fetch from database")
                     return []
 
         async for index, row in AsyncIter(row_result).enumerate(start=1):

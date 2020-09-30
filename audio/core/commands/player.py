@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import datetime
 import logging
@@ -8,7 +6,6 @@ import time
 
 from typing import MutableMapping
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -18,7 +15,6 @@ from redbot.core.commands import UserInputOptional
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
 
-# Cog Relative Imports
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query
 from ...audio_logging import IS_DEBUG
 from ...errors import (
@@ -649,7 +645,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 raise PHNSFWError
         else:
             raise RuntimeError(
-                f"Expect 'query' to be a string or Query object but recieved: {type(query)} is an unexpected argument type please report it."
+                f"Expect 'query' to be a string or Query object but received: {type(query)} is an unexpected argument type please report it."
             )
 
         async def _search_menu(

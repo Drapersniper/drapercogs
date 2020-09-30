@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import datetime
 import logging
@@ -8,7 +6,6 @@ import time
 
 from typing import MutableMapping
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -18,7 +15,6 @@ from redbot.core.commands import UserInputOptional
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
 
-# Cog Relative Imports
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query
 from ...audio_logging import IS_DEBUG
 from ...errors import (
@@ -57,6 +53,13 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(
                 ctx, title=_("Unable To Play Tracks"), description=_("That track is not allowed.")
             )
+        can_skip = await self._can_instaskip(ctx, ctx.author)
+        if guild_data["dj_enabled"] and not can_skip:
+            return await self.send_embed_msg(
+                ctx,
+                title=_("Unable To Play Tracks"),
+                description=_("You need the DJ role to queue tracks."),
+            )
         if not self._player_check(ctx):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
@@ -91,15 +94,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     title=_("Unable To Play Tracks"),
                     description=_("Connection to Lavalink has not yet been established."),
                 )
-        can_skip = await self._can_instaskip(ctx, ctx.author)
-        if guild_data["dj_enabled"] and not can_skip:
-            return await self.send_embed_msg(
-                ctx,
-                title=_("Unable To Play Tracks"),
-                description=_("You need the DJ role to queue tracks."),
-            )
         player = lavalink.get_player(ctx.guild.id)
-
         player.store("channel", ctx.channel.id)
         player.store("guild", ctx.guild.id)
         await self._eq_check(ctx, player)
@@ -164,6 +159,13 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(
                 ctx, title=_("Unable To Play Tracks"), description=_("That track is not allowed.")
             )
+        can_skip = await self._can_instaskip(ctx, ctx.author)
+        if guild_data["dj_enabled"] and not can_skip:
+            return await self.send_embed_msg(
+                ctx,
+                title=_("Unable To Play Tracks"),
+                description=_("You need the DJ role to queue tracks."),
+            )
         if not self._player_check(ctx):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
@@ -198,15 +200,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     title=_("Unable To Play Tracks"),
                     description=_("Connection to Lavalink has not yet been established."),
                 )
-        can_skip = await self._can_instaskip(ctx, ctx.author)
-        if guild_data["dj_enabled"] and not can_skip:
-            return await self.send_embed_msg(
-                ctx,
-                title=_("Unable To Play Tracks"),
-                description=_("You need the DJ role to queue tracks."),
-            )
         player = lavalink.get_player(ctx.guild.id)
-
         player.store("channel", ctx.channel.id)
         player.store("guild", ctx.guild.id)
         await self._eq_check(ctx, player)
@@ -428,6 +422,12 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ).format(prefix=ctx.prefix),
             )
         guild_data = await self.config.guild(ctx.guild).all()
+        if guild_data["dj_enabled"] and not await self._can_instaskip(ctx, ctx.author):
+            return await self.send_embed_msg(
+                ctx,
+                title=_("Unable To Play Tracks"),
+                description=_("You need the DJ role to queue tracks."),
+            )
         if not self._player_check(ctx):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
@@ -462,12 +462,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     title=_("Unable To Play Tracks"),
                     description=_("Connection to Lavalink has not yet been established."),
                 )
-        if guild_data["dj_enabled"] and not await self._can_instaskip(ctx, ctx.author):
-            return await self.send_embed_msg(
-                ctx,
-                title=_("Unable To Play Tracks"),
-                description=_("You need the DJ role to queue tracks."),
-            )
         player = lavalink.get_player(ctx.guild.id)
 
         player.store("channel", ctx.channel.id)
@@ -543,6 +537,13 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.mod_or_permissions(manage_guild=True)
     async def command_autoplay(self, ctx: commands.Context):
         """Starts auto play."""
+        guild_data = await self.config.guild(ctx.guild).all()
+        if guild_data["dj_enabled"] and not await self._can_instaskip(ctx, ctx.author):
+            return await self.send_embed_msg(
+                ctx,
+                title=_("Unable To Play Tracks"),
+                description=_("You need the DJ role to queue tracks."),
+            )
         if not self._player_check(ctx):
             if self.lavalink_connection_aborted:
                 msg = _("Connection to Lavalink has failed")
@@ -577,13 +578,6 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     title=_("Unable To Play Tracks"),
                     description=_("Connection to Lavalink has not yet been established."),
                 )
-        guild_data = await self.config.guild(ctx.guild).all()
-        if guild_data["dj_enabled"] and not await self._can_instaskip(ctx, ctx.author):
-            return await self.send_embed_msg(
-                ctx,
-                title=_("Unable To Play Tracks"),
-                description=_("You need the DJ role to queue tracks."),
-            )
         player = lavalink.get_player(ctx.guild.id)
 
         player.store("channel", ctx.channel.id)
@@ -651,7 +645,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 raise PHNSFWError
         else:
             raise RuntimeError(
-                f"Expect 'query' to be a string or Query object but recieved: {type(query)} is an unexpected argument type please report it."
+                f"Expect 'query' to be a string or Query object but received: {type(query)} is an unexpected argument type please report it."
             )
 
         async def _search_menu(

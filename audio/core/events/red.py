@@ -1,13 +1,9 @@
-# Standard Library
 import asyncio
 import logging
 
 from typing import Literal, Mapping
 
-# Cog Dependencies
 from redbot.core import commands
-
-# Cog Relative Imports
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
 
