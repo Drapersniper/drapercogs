@@ -25,8 +25,8 @@ except ImportError:
 if TYPE_CHECKING:
     from .. import Audio
 
-_API_URL = "http://172.40.0.5:8000/"
-_UNIX_PATH = "/home/draper/GAI/data/sock/api/api.sock"
+_API_URL = "https://api.redbot.app/"
+
 log = logging.getLogger("red.cogs.Audio.api.GlobalDB")
 
 
@@ -43,7 +43,6 @@ class GlobalCacheWrapper:
         self.has_api_key = None
         self._token: Mapping[str, str] = {}
         self.cog = cog
-        self.__unix_con = aiohttp.UnixConnector(path=_UNIX_PATH, keepalive_timeout=15.0, limit=0)
 
     def update_token(self, new_token: Mapping[str, str]):
         self._token = new_token
@@ -71,19 +70,18 @@ class GlobalCacheWrapper:
             search_response = "error"
             query = query.lavalink_query
             with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
-                async with aiohttp.ClientSession(json_serialize=json.dumps, connector_owner=False, connector=self.__unix_con, timeout=2) as session:
-                    async with session.get(
-                        api_url,
-                        timeout=aiohttp.ClientTimeout(total=await self.config.global_db_get_timeout()),
-                        headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                        params={"query": query},
-                    ) as r:
-                        search_response = await r.json(loads=json.loads)
-                        if IS_DEBUG and "x-process-time" in r.headers:
-                            log.debug(
-                                f"GET || Ping {r.headers.get('x-process-time')} || "
-                                f"Status code {r.status} || {query}"
-                            )
+                async with self.session.get(
+                    api_url,
+                    timeout=aiohttp.ClientTimeout(total=await self.config.global_db_get_timeout()),
+                    headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                    params={"query": query},
+                ) as r:
+                    search_response = await r.json(loads=json.loads)
+                    if IS_DEBUG and "x-process-time" in r.headers:
+                        log.debug(
+                            f"GET || Ping {r.headers.get('x-process-time')} || "
+                            f"Status code {r.status} || {query}"
+                        )
             if "tracks" not in search_response:
                 return {}
             return search_response
@@ -100,19 +98,18 @@ class GlobalCacheWrapper:
             params = {"title": title, "author": author}
             await self._get_api_key()
             with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
-                async with aiohttp.ClientSession(json_serialize=json.dumps, connector_owner=False, connector=self.__unix_con, timeout=2) as session:
-                    async with session.get(
-                        api_url,
-                        timeout=aiohttp.ClientTimeout(total=await self.config.global_db_get_timeout()),
-                        headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                        params=params,
-                    ) as r:
-                        search_response = await r.json(loads=json.loads)
-                        if IS_DEBUG and "x-process-time" in r.headers:
-                            log.debug(
-                                f"GET/spotify || Ping {r.headers.get('x-process-time')} || "
-                                f"Status code {r.status} || {title} - {author}"
-                            )
+                async with self.session.get(
+                    api_url,
+                    timeout=aiohttp.ClientTimeout(total=await self.config.global_db_get_timeout()),
+                    headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                    params=params,
+                ) as r:
+                    search_response = await r.json(loads=json.loads)
+                    if IS_DEBUG and "x-process-time" in r.headers:
+                        log.debug(
+                            f"GET/spotify || Ping {r.headers.get('x-process-time')} || "
+                            f"Status code {r.status} || {title} - {author}"
+                        )
             if "tracks" not in search_response:
                 return {}
             return search_response
@@ -138,19 +135,18 @@ class GlobalCacheWrapper:
                 await asyncio.sleep(0)
                 return None
             api_url = f"{_API_URL}api/v2/queries"
-            async with aiohttp.ClientSession(json_serialize=json.dumps, connector_owner=False, connector=self.__unix_con, timeout=2) as session:
-                async with session.post(
-                    api_url,
-                    json=llresponse._raw,
-                    headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                    params={"query": query},
-                ) as r:
-                    await r.read()
-                    if IS_DEBUG and "x-process-time" in r.headers:
-                        log.debug(
-                            f"POST || Ping {r.headers.get('x-process-time')} ||"
-                            f" Status code {r.status} || {query}"
-                        )
+            async with self.session.post(
+                api_url,
+                json=llresponse._raw,
+                headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                params={"query": query},
+            ) as r:
+                await r.read()
+                if IS_DEBUG and "x-process-time" in r.headers:
+                    log.debug(
+                        f"POST || Ping {r.headers.get('x-process-time')} ||"
+                        f" Status code {r.status} || {query}"
+                    )
         except Exception as err:
             debug_exc_log(log, err, f"Failed to post query: {query}")
         await asyncio.sleep(0)
@@ -163,13 +159,12 @@ class GlobalCacheWrapper:
             return
         api_url = f"{_API_URL}api/v2/queries/es/id"
         with contextlib.suppress(Exception):
-            async with aiohttp.ClientSession(json_serialize=json.dumps, connector_owner=False, connector=self.__unix_con, timeout=2) as session:
-                async with session.delete(
-                    api_url,
-                    headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
-                    params={"id": id},
-                ) as r:
-                    await r.read()
+            async with self.session.delete(
+                api_url,
+                headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
+                params={"id": id},
+            ) as r:
+                await r.read()
 
     async def get_perms(self):
         global_api_user = copy(self.cog.global_api_user)
@@ -178,7 +173,7 @@ class GlobalCacheWrapper:
         if (not is_enabled) or self.api_key is None:
             return global_api_user
         with contextlib.suppress(Exception):
-            async with aiohttp.ClientSession(json_serialize=json.dumps, connector_owner=False, connector=self.__unix_con, timeout=2) as session:
+            async with aiohttp.ClientSession(json_serialize=json.dumps) as session:
                 async with session.get(
                     f"{_API_URL}api/v2/users/me",
                     headers={"Authorization": self.api_key, "X-Token": self._handshake_token},
