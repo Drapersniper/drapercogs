@@ -4,7 +4,6 @@ from typing import List, Optional, TYPE_CHECKING, Union
 import aiohttp
 import discord
 import ujson
-from redbot.core.bot import Red
 
 from .utils import User
 
@@ -65,11 +64,11 @@ class API:
                     "renew_token": "true",
                 },
                 json={
-                    "is_admin": admin,
-                    "is_mod": mod,
-                    "is_contributor": contrib,
-                    "is_user": user,
-                    "is_guest": False,
+                    "is_admin": 1 if admin else 0,
+                    "is_mod": 1 if mod else 0 ,
+                    "is_contributor": 1 if contrib else 0,
+                    "is_user": 1 if user else 0,
+                    "is_guest": 0,
                 },
             ) as resp:
                 if resp.status != 200:
@@ -86,7 +85,7 @@ class API:
                 params={
                     "user_id": str(member.id),
                     "name": str(member),
-                    "is_user": str(True).lower(),
+                    "is_user": 1,
                 },
             ) as resp:
                 if resp != 200:
