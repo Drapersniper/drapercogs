@@ -88,7 +88,7 @@ class API:
                     "is_user": 1,
                 },
             ) as resp:
-                if resp != 200:
+                if resp.status != 200:
                     return None
                 data = await resp.json(loads=ujson.loads)
                 return User(**data)
@@ -103,7 +103,7 @@ class API:
                 headers=cog.headers,
                 params={"user_id": str(member.id)},
             ) as resp:
-                if resp != 200:
+                if resp.status != 200:
                     return None
                 data = await resp.json(loads=ujson.loads)
                 return User(**data)
@@ -125,7 +125,7 @@ class API:
                     else user_name or "Banned"
                 },
             ) as resp:
-                if resp != 200:
+                if resp.status != 200:
                     return None
                 data = await resp.json(loads=ujson.loads)
                 return User(**data)
