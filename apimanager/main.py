@@ -1,6 +1,6 @@
 import asyncio
+import json
 import logging
-import ujson
 import operator
 from typing import Mapping, Optional, Union
 
@@ -254,7 +254,7 @@ class APIManager(commands.Cog):
         decoded = await API.decode_track(cog=self, track=track)
         if not decoded:
             return await ctx.send(f"Couldn't decode this track, is it valid?.")
-        await ctx.send(box(ujson.dumps(decoded), lang="json"))
+        await ctx.send(box(json.dumps(decoded, sort_keys=True, indent=4), lang="json"))
 
 
     @command_audio_api.command(name="register")
