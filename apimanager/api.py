@@ -17,6 +17,17 @@ class API:
     _handshake_token: str = ""
 
     @classmethod
+    async def decode_track(cls, cog: APIManager, track: str):
+        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+            async with session.get(
+                f"{API_ENDPOINT}/api/v2/queries/decode",
+                headers=cog.headers,
+                params={"query": track},
+            ) as resp:
+                if resp.status == 200:
+                    return await resp.json(loads=ujson.loads)
+
+    @classmethod
     async def get_all_users(cls, cog: APIManager) -> List[User]:
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             async with session.get(

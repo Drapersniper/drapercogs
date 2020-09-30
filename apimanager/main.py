@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import ujson
 import operator
 from typing import Mapping, Optional, Union
 
@@ -10,7 +11,7 @@ from redbot.core.utils.chat_formatting import box
 from tabulate import tabulate
 
 from .api import API
-from .checks import is_api_admin, is_api_user, is_api_mod, is_not_api_user
+from .checks import is_api_admin, is_api_contributor, is_api_user, is_api_mod, is_not_api_user
 from .menus import LeaderboardSource, SimpleHybridMenu
 from .utils import User
 
@@ -243,6 +244,18 @@ class APIManager(commands.Cog):
         if not api_user:
             return await ctx.send(f"Couldn't update user `{user_id}` at this time.")
         await ctx.send(f"`{api_user.name} ({api_user.user_id})` has benn unbanned.")
+
+    @command_audio_api.command(name="decode")
+    @commands.guild_only()
+    async def command_decode(self, ctx: commands.Context, *, track: str):
+        """Decodes a Base64 encoded audio track.."""
+        if not await is_api_contributor(ctx):
+            return
+        decoded = await API.decode_track(cog=self, track=track)
+        if not decoded:
+            return await ctx.send(f"Couldn't decode this track, is it valid?.")
+        await ctx.send(box(ujson.dumps(decoded), lang="json"))
+
 
     @command_audio_api.command(name="register")
     @commands.guild_only()
