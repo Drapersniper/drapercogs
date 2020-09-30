@@ -26,8 +26,11 @@ class APIManager(commands.Cog):
 
     async def init(self):
         await self.bot.wait_until_red_ready()
+        id_list = list(self.bot.owner_ids)
+        handshake = "||".join(map(str, id_list))
         self.headers = {
-            "Authorization": (await self.bot.get_shared_api_tokens("audiodb")).get("api_key")
+            "Authorization": (await self.bot.get_shared_api_tokens("audiodb")).get("api_key"),
+            "X-Token": handshake
         }
         self.cog_is_ready.set()
 

@@ -4,6 +4,7 @@ from typing import List, Optional, TYPE_CHECKING, Union
 import aiohttp
 import discord
 import ujson
+from redbot.core.bot import Red
 
 from .utils import User
 
@@ -14,6 +15,8 @@ API_ENDPOINT = "https://api.redbot.app"
 
 
 class API:
+    _handshake_token: str = ""
+
     @classmethod
     async def get_all_users(cls, cog: APIManager) -> List[User]:
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
