@@ -232,7 +232,7 @@ class APIManager(commands.Cog):
 
     @command_audio_api.command(name="unban")
     @commands.guild_only()
-    async def command_apimod(self, ctx: commands.Context, user_id: int):
+    async def command_unban(self, ctx: commands.Context, user_id: int):
         """Elevate a user to mod status."""
         if not await is_api_admin(ctx):
             return
@@ -276,14 +276,14 @@ class APIManager(commands.Cog):
             return False
         if not strict:
             if (mod.is_admin or mod.is_superuser) and any(
-                s for s in [user.is_mod, user.is_contributor, user.is_user, user.is_guest]
+                s for s in [user.is_mod, user.is_contributor, user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]
             ):
                 return True
-            if mod.is_mod and any(s for s in [user.is_contributor, user.is_user, user.is_guest]):
+            if mod.is_mod and any(s for s in [user.is_contributor, user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]):
                 return True
         else:
-            if (mod.is_admin or mod.is_superuser) and any(s for s in [user.is_contributor, user.is_user, user.is_guest]):
+            if (mod.is_admin or mod.is_superuser) and any(s for s in [user.is_contributor, user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]):
                 return True
-            if mod.is_mod and any(s for s in [user.is_user, user.is_guest]):
+            if mod.is_mod and any(s for s in [user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]):
                 return True
         return False
