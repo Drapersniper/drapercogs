@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import datetime
 import logging
 import math
@@ -8,7 +6,6 @@ import time
 
 from typing import List, Optional
 
-# Cog Dependencies
 import discord
 import lavalink
 
@@ -17,7 +14,6 @@ from redbot.core import commands
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import box, escape
 
-# Cog Relative Imports
 from ...audio_dataclasses import LocalPath, Query
 from ...audio_logging import IS_DEBUG
 from ..abc import MixinMeta
@@ -379,7 +375,7 @@ class FormattingUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return None
 
     def format_playlist_picker_data(self, pid, pname, ptracks, pauthor, scope) -> str:
-        """Format the values into a pretified codeblock."""
+        """Format the values into a prettified codeblock."""
         author = self.bot.get_user(pauthor) or pauthor or _("Unknown")
         line = _(
             " - Name:   <{pname}>\n"

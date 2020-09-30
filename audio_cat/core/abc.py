@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
-# Standard Library
 import asyncio
 
 from abc import ABC, abstractmethod
@@ -9,7 +7,6 @@ from collections import Counter
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, List, Mapping, MutableMapping, Optional, Tuple, Union
 
-# Cog Dependencies
 import aiohttp
 import discord
 import lavalink

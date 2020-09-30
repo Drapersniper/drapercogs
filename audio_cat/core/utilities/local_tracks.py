@@ -1,19 +1,15 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import logging
 
 from pathlib import Path
 from typing import List, Union
 
-# Cog Dependencies
 import lavalink
 
 from fuzzywuzzy import process
 from redbot.core import commands
 from redbot.core.utils import AsyncIter
 
-# Cog Relative Imports
 from ...audio_dataclasses import LocalPath, Query
 from ...errors import TrackEnqueueError
 from ..abc import MixinMeta

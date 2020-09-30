@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-# Standard Library
 import logging
 import time
 
 from typing import List, Optional, Tuple, Union
 
-# Cog Dependencies
 import aiohttp
 import discord
 import lavalink
@@ -15,7 +12,6 @@ from redbot.core import commands
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import bold, escape
 
-# Cog Relative Imports
 from ...audio_dataclasses import _PARTIALLY_SUPPORTED_MUSIC_EXT, Query
 from ...audio_logging import IS_DEBUG, debug_exc_log
 from ...errors import QueryUnauthorized, SpotifyFetchError, TrackEnqueueError
@@ -214,7 +210,11 @@ class PlayerUtilities(MixinMeta, metaclass=CompositeMetaClass):
             return False
 
     async def self_deafen(self, player: lavalink.Player) -> None:
-        guild_id = player.channel.guild.id
+        guild_id = self.rgetattr(player, "channel.guild.id", None)
+        if not guild_id:
+            return
+        if not self.config.guild_from_id(guild_id).auto_deafen():
+            return
         channel_id = player.channel.id
         node = player.manager.node
         voice_ws = node.get_voice_ws(guild_id)

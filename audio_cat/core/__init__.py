@@ -75,7 +75,7 @@ class Audio(
             add_reactions=True,
         )
 
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(json_serialize=json.dumps)
         self.cog_ready_event = asyncio.Event()
         self.cog_init_task = None
         self.global_api_user = {
@@ -87,11 +87,12 @@ class Audio(
 
         default_global = dict(
             schema_version=1,
+            owner_notification=0,
             cache_level=0,
             cache_age=365,
             daily_playlists=False,
             global_db_enabled=True,
-            global_db_get_timeout=5,  # Here as a placeholder in case we want to enable the command
+            global_db_get_timeout=5,
             status=False,
             use_external_lavalink=False,
             restrict=True,
@@ -103,6 +104,7 @@ class Audio(
 
         default_guild = dict(
             auto_play=False,
+            auto_deafen=True,
             autoplaylist={"enabled": False, "id": None, "name": None, "scope": None},
             persist_queue=True,
             disconnect=False,
