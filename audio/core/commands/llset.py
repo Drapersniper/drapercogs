@@ -22,7 +22,8 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_llsetup_external(self, ctx: commands.Context):
         """Toggle using external Lavalink servers."""
         external = await self.config.use_external_lavalink()
-        await self.config.use_external_lavalink.set(not external)
+        await self.\
+            fig.use_external_lavalink.set(not external)
 
         if external:
             embed = discord.Embed(
