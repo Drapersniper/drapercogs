@@ -239,10 +239,10 @@ class APIManager(commands.Cog):
         api_requester = ctx.audio_api_user
         if not await self.is_allowed_by_hierarchy(api_requester, user_id, strict=True):
             return await ctx.send("I can't allow you to do that.")
-        api_user = await API.update_user(cog=self, member=discord.Object(id=user_id), user=True, banned=False)
+        api_user = await API.unban_user(cog=self, member=discord.Object(id=user_id))
         if not api_user:
             return await ctx.send(f"Couldn't update user `{user_id}` at this time.")
-        await ctx.send(f"`{api_user.name} ({api_user.user_id})` is now a moderator.")
+        await ctx.send(f"`{api_user.name} ({api_user.user_id})` has benn unbanned.")
 
     @command_audio_api.command(name="register")
     @commands.guild_only()
