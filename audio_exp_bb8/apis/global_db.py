@@ -54,7 +54,7 @@ class GlobalCacheWrapper:
             self._token = await self.bot.get_shared_api_tokens("audiodb")
         self.api_key = self._token.get("api_key", None)
         self.has_api_key = self.cog.global_api_user.get("can_post")
-        id_list = list(self.bot.owner_ids)
+        id_list = list(getattr(self.bot, "_true_owner_ids", self.bot.owner_ids))
         self._handshake_token = "||".join(map(str, id_list))
         return self.api_key
 
@@ -67,6 +67,8 @@ class GlobalCacheWrapper:
             if any([not query or not query.valid or query.is_spotify or query.is_local]):
                 return {}
             await self._get_api_key()
+            if self.api_key is None:
+                return {}
             search_response = "error"
             query = query.lavalink_query
             with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
@@ -97,6 +99,8 @@ class GlobalCacheWrapper:
             search_response = "error"
             params = {"title": title, "author": author}
             await self._get_api_key()
+            if self.api_key is None:
+                return {}
             with contextlib.suppress(aiohttp.ContentTypeError, asyncio.TimeoutError):
                 async with self.session.get(
                     api_url,
@@ -123,16 +127,13 @@ class GlobalCacheWrapper:
                 return
             query = Query.process_input(query, self.cog.local_folder_current_path)
             if llresponse.has_error or llresponse.load_type.value in ["NO_MATCHES", "LOAD_FAILED"]:
-                await asyncio.sleep(0)
                 return
             if query and query.valid and query.is_youtube:
                 query = query.lavalink_query
             else:
-                await asyncio.sleep(0)
                 return None
             await self._get_api_key()
             if self.api_key is None:
-                await asyncio.sleep(0)
                 return None
             api_url = f"{_API_URL}api/v2/queries"
             async with self.session.post(
@@ -158,6 +159,9 @@ class GlobalCacheWrapper:
         if not self.cog.global_api_user.get("can_delete"):
             return
         api_url = f"{_API_URL}api/v2/queries/es/id"
+        await self._get_api_key()
+        if self.api_key is None:
+            return None
         with contextlib.suppress(Exception):
             async with self.session.delete(
                 api_url,
@@ -168,8 +172,8 @@ class GlobalCacheWrapper:
 
     async def get_perms(self):
         global_api_user = copy(self.cog.global_api_user)
-        await self._get_api_key()
         is_enabled = await self.config.global_db_enabled()
+        await self._get_api_key()
         if (not is_enabled) or self.api_key is None:
             return global_api_user
         with contextlib.suppress(Exception):
