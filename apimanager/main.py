@@ -86,7 +86,7 @@ class APIManager(commands.Cog):
             return
         api_requester = ctx.audio_api_user
         if not api_requester:
-            return await ctx.send("You aren't registered with the API.")
+            return await ctx.send(f"You aren't registered with the API, run `{ctx.clean_prefix}{self.command_apiregister}` to register.")
         if int(api_requester.user_id) != ctx.author.id:
             return await ctx.send("Failed to get user info")
         try:
