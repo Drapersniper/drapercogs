@@ -612,7 +612,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ctx,
                 title=_("Unable to Get Track"),
                 description=_(
-                    "I'm unable get a track from Lavalink at the moment, try again in a few "
+                    "I'm unable to get a track from Lavalink at the moment, try again in a few "
                     "minutes."
                 ),
             )
@@ -633,7 +633,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Pick a track with a search.
 
         Use `[p]search list <search term>` to queue all tracks found on YouTube. Use `[p]search sc
-        <search term>` will search SoundCloud instead of YouTube. Use `[p]search ph <search term>`
+        <search term>` to search on SoundCloud instead of YouTube. Use `[p]search ph <search term>`
         will search Pornhub instead of YouTube.
         """
 
@@ -753,7 +753,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                             ctx,
                             title=_("Unable to Get Track"),
                             description=_(
-                                "I'm unable get a track from Lavalink at the moment, "
+                                "I'm unable to get a track from Lavalink at the moment, "
                                 "try again in a few minutes."
                             ),
                         )
@@ -769,7 +769,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                             ctx,
                             title=_("Unable to Get Track"),
                             description=_(
-                                "I'm unable get a track from Lavalink at the moment, "
+                                "I'm unable to get a track from Lavalink at the moment, "
                                 "try again in a few minutes."
                             ),
                         )
@@ -885,7 +885,7 @@ class PlayerCommands(MixinMeta, metaclass=CompositeMetaClass):
                         ctx,
                         title=_("Unable to Get Track"),
                         description=_(
-                            "I'm unable get a track from Lavalink at the moment,"
+                            "I'm unable to get a track from Lavalink at the moment,"
                             "try again in a few minutes."
                         ),
                     )

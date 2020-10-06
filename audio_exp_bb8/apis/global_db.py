@@ -172,6 +172,7 @@ class GlobalCacheWrapper:
 
     async def get_perms(self):
         global_api_user = copy(self.cog.global_api_user)
+        await self._get_api_key()
         is_enabled = await self.config.global_db_enabled()
         await self._get_api_key()
         if (not is_enabled) or self.api_key is None:
