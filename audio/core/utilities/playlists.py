@@ -412,7 +412,7 @@ class PlaylistUtilities(MixinMeta, metaclass=CompositeMetaClass):
                         ctx,
                         title=_("Unable to Get Track"),
                         description=_(
-                            "I'm unable get a track from Lavalink at the moment, "
+                            "I'm unable to get a track from Lavalink at the moment, "
                             "try again in a few minutes."
                         ),
                     )
@@ -598,7 +598,7 @@ class PlaylistUtilities(MixinMeta, metaclass=CompositeMetaClass):
                     ctx,
                     title=_("Unable to Get Track"),
                     description=_(
-                        "I'm unable get a track from Lavalink at the moment, try again in a few "
+                        "I'm unable to get a track from Lavalink at the moment, try again in a few "
                         "minutes."
                     ),
                 )
@@ -624,7 +624,7 @@ class PlaylistUtilities(MixinMeta, metaclass=CompositeMetaClass):
                     ctx,
                     title=_("Unable to Get Track"),
                     description=_(
-                        "I'm unable get a track from Lavalink at the moment, try again in a few "
+                        "I'm unable to get a track from Lavalink at the moment, try again in a few "
                         "minutes."
                     ),
                 )
