@@ -159,9 +159,6 @@ class GlobalCacheWrapper:
         if not self.cog.global_api_user.get("can_delete"):
             return
         api_url = f"{_API_URL}api/v2/queries/es/id"
-        await self._get_api_key()
-        if self.api_key is None:
-            return None
         with contextlib.suppress(Exception):
             async with self.session.delete(
                 api_url,
