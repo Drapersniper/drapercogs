@@ -34,7 +34,6 @@ async def is_api_mod(ctx: commands.Context):
     return api_user.can_delete
 
 
-
 async def is_api_admin(ctx: commands.Context):
     api_user = await API.get_user(cog=ctx.cog, member=ctx.author)
     ctx.audio_api_user = api_user

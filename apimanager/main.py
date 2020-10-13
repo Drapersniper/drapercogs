@@ -203,6 +203,20 @@ class APIManager(commands.Cog):
                 f"I have revoked `{revoked_user.name} ({revoked_user.user_id})` token."
             )
 
+    @command_audio_api.command(name="user")
+    @commands.guild_only()
+    async def command_user(self, ctx: commands.Context, user_id: int):
+        """Downgrade a user to reader-only status."""
+        if not await is_api_mod(ctx):
+            return
+        api_requester = ctx.audio_api_user
+        if not await self.is_allowed_by_hierarchy(api_requester, user_id, strict=True):
+            return await ctx.send("I can't allow you to do that.")
+        api_user = await API.update_user(cog=self, member=discord.Object(id=user_id), contrib=False, user=True)
+        if not api_user:
+            return await ctx.send(f"Couldn't update user `{user_id}` at this time.")
+        await ctx.send(f"`{api_user.name} ({api_user.user_id})` is now a contributor.")
+
     @command_audio_api.command(name="contributor")
     @commands.guild_only()
     async def command_apicontributor(self, ctx: commands.Context, user_id: int):
