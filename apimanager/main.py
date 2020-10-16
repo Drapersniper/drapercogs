@@ -270,7 +270,6 @@ class APIManager(commands.Cog):
             return await ctx.send(f"Couldn't decode this track, is it valid?.")
         await ctx.send(box(json.dumps(decoded, sort_keys=True, indent=4), lang="json"))
 
-
     @command_audio_api.command(name="register")
     @commands.guild_only()
     async def command_apiregister(self, ctx: commands.Context):
@@ -287,6 +286,7 @@ class APIManager(commands.Cog):
                 f"Couldn't register {ctx.author} with the API, please try again later."
             )
         ctx.audio_api_user = api_user
+        await ctx.tick()
         await ctx.invoke(self.command_mytoken)
 
     async def is_allowed_by_hierarchy(
