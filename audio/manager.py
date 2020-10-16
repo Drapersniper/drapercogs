@@ -19,13 +19,14 @@ from tqdm import tqdm
 
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
+from ...core.i18n import Translator
 
 try:
     from redbot import json
 except ImportError:
     import json
 
-
+_ = Translator("Audio", pathlib.Path(__file__))
 log = logging.getLogger("red.audio.manager")
 JAR_VERSION: Final[str] = "3.3.1"
 JAR_BUILD: Final[int] = 1069

@@ -14,7 +14,7 @@ from redbot.core.i18n import cog_i18n
 
 from ..utils import PlaylistScope
 from . import abc, cog_utils, commands, events, tasks, utilities
-from .cog_utils import CompositeMetaClass, _
+from .cog_utils import CompositeMetaClass
 
 try:
     from redbot import json
