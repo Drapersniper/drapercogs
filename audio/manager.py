@@ -15,11 +15,11 @@ from typing import ClassVar, Final, List, Optional, Pattern, Tuple
 import aiohttp
 
 from redbot.core import data_manager
+from redbot.core.i18n import Translator
 from tqdm import tqdm
 
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
-from ...core.i18n import Translator
 
 try:
     from redbot import json
