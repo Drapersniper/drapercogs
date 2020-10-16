@@ -4,6 +4,7 @@ import datetime
 import functools
 import logging
 import re
+from pathlib import Path
 
 from typing import Any, Final, Mapping, MutableMapping, Pattern, Union, cast
 
@@ -13,20 +14,21 @@ import lavalink
 from discord.embeds import EmptyEmbed
 from redbot.core import bank, commands
 from redbot.core.commands import Context
+from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number
 
 from ...apis.playlist_interface import get_all_playlist_for_migration23
 from ...utils import PlaylistScope, task_callback
 from ..abc import MixinMeta
-from ..cog_utils import CompositeMetaClass, _
+from ..cog_utils import CompositeMetaClass
 
 try:
     from redbot import json
 except ImportError:
     import json
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.miscellaneous")
-
+_ = Translator("Audio", Path(__file__))
 _RE_TIME_CONVERTER: Final[Pattern] = re.compile(r"(?:(\d+):)?([0-5]?[0-9]):([0-5][0-9])")
 _prefer_lyrics_cache = {}
 

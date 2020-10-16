@@ -1,11 +1,13 @@
 import concurrent
 import logging
+from pathlib import Path
 
 from types import SimpleNamespace
 from typing import List, MutableMapping, Optional
 
 from redbot.core import Config
 from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.dbtools import APSWConnectionWrapper
 
@@ -36,6 +38,7 @@ try:
 except ImportError:
     import json
 log = logging.getLogger("red.cogs.Audio.api.Playlists")
+_ = Translator("Audio", Path(__file__))
 
 
 class PlaylistWrapper:

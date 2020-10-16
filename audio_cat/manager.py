@@ -15,6 +15,7 @@ from typing import ClassVar, Final, List, Optional, Pattern, Tuple
 import aiohttp
 
 from redbot.core import data_manager
+from redbot.core.i18n import Translator
 from tqdm import tqdm
 
 from .errors import LavalinkDownloadFailed
@@ -25,7 +26,7 @@ try:
 except ImportError:
     import json
 
-
+_ = Translator("Audio", pathlib.Path(__file__))
 log = logging.getLogger("red.audio.manager")
 JAR_VERSION: Final[str] = "3.3.1"
 JAR_BUILD: Final[int] = 1069

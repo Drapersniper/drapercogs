@@ -6,6 +6,7 @@ import random
 import time
 
 from collections import namedtuple
+from pathlib import Path
 from typing import TYPE_CHECKING, Callable, List, MutableMapping, Optional, Tuple, Union, cast
 
 import aiohttp
@@ -42,7 +43,7 @@ try:
 except ImportError:
     import json
 
-_ = Translator("Audio", __file__)
+_ = Translator("Audio", Path(__file__))
 log = logging.getLogger("red.cogs.Audio.api.AudioAPIInterface")
 _TOP_100_US = "https://www.youtube.com/playlist?list=PL4fGSI1pDJn5rWitrRWFKdm-ulaFiIyoK"
 # TODO: Get random from global Cache

@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import math
 import os
@@ -32,6 +31,10 @@ from ...utils import PlaylistScope
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, LazyGreedyConverter, PlaylistConverter
 
+try:
+    from redbot import json
+except ImportError:
+    import json
 log = logging.getLogger("red.cogs.Audio.cog.Commands.playlist")
 _ = Translator("Audio", Path(__file__))
 

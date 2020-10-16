@@ -3,12 +3,14 @@ import logging
 
 from collections import namedtuple
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import List, MutableMapping, Optional, Union
 
 import discord
 import lavalink
 
 from redbot.core.bot import Red
+from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 from ..errors import InvalidPlaylistScope, MissingAuthor, MissingGuild
@@ -20,6 +22,7 @@ except ImportError:
     import json
 
 log = logging.getLogger("red.cogs.Audio.api.utils")
+_ = Translator("Audio", Path(__file__))
 
 
 @dataclass

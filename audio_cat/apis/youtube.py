@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from typing import TYPE_CHECKING, Mapping, Optional, Union
 
@@ -7,6 +8,7 @@ import aiohttp
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
+from redbot.core.i18n import Translator
 
 from ..errors import YouTubeApiError
 
@@ -20,7 +22,7 @@ if TYPE_CHECKING:
     from .. import Audio
 
 log = logging.getLogger("red.cogs.Audio.api.YouTube")
-
+_ = Translator("Audio", Path(__file__))
 SEARCH_ENDPOINT = "https://www.googleapis.com/youtube/v3/search"
 
 
@@ -37,7 +39,7 @@ class YouTubeWrapper:
         self._token: Mapping[str, str] = {}
         self.cog = cog
 
-    def update_token(self, new_token: Mapping[str, str]):
+    async def update_token(self, new_token: Mapping[str, str]):
         self._token = new_token
 
     async def _get_api_key(
@@ -63,7 +65,7 @@ class YouTubeWrapper:
                 return None
             elif r.status in [403, 429]:
                 if r.reason == "quotaExceeded":
-                    raise YouTubeApiError("Your YouTube Data API quota has been reached.")
+                    raise YouTubeApiError(_("Your YouTube Data API quota has been reached."))
                 return None
             else:
                 search_response = await r.json(loads=json.loads)

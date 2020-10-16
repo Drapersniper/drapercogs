@@ -2,6 +2,7 @@ import base64
 import contextlib
 import logging
 import time
+from pathlib import Path
 
 from typing import TYPE_CHECKING, List, Mapping, MutableMapping, Optional, Tuple, Union
 
@@ -24,7 +25,7 @@ except ImportError:
 if TYPE_CHECKING:
     from .. import Audio
 
-_ = Translator("Audio", __file__)
+_ = Translator("Audio", Path(__file__))
 
 log = logging.getLogger("red.cogs.Audio.api.Spotify")
 
@@ -109,7 +110,7 @@ class SpotifyWrapper:
                 log.debug(f"Issue making GET request to {url}: [{r.status}] {data}")
             return data
 
-    def update_token(self, new_token: Mapping[str, str]):
+    async def update_token(self, new_token: Mapping[str, str]):
         self._token = new_token
 
     async def get_token(self) -> None:
