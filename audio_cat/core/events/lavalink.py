@@ -173,6 +173,7 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                 player.current = None
             if not guild_id:
                 return
+            guild_id = int(guild_id)
             self._error_counter.setdefault(guild_id, 0)
             if guild_id not in self._error_counter:
                 self._error_counter[guild_id] = 0
