@@ -96,6 +96,9 @@ class SpotifyFetchError(SpotifyApiError):
 
 class YouTubeApiError(ApiError):
     """Base exception for YouTube Data API errors."""
+    def __init__(self, message, *args):
+        self.message = message
+        super().__init__(*args)
 
 
 class DatabaseError(AudioError):

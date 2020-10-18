@@ -1,4 +1,3 @@
-import asyncio
 import concurrent
 import logging
 import time

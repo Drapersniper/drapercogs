@@ -9,14 +9,13 @@ import shutil
 import sys
 import tempfile
 import time
-
 from typing import ClassVar, Final, List, Optional, Pattern, Tuple
 
 import aiohttp
+from tqdm import tqdm
 
 from redbot.core import data_manager
 from redbot.core.i18n import Translator
-from tqdm import tqdm
 
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
