@@ -600,7 +600,7 @@ class AudioAPIInterface:
                             seconds=seconds,
                         )
 
-                if youtube_api_error or consecutive_fails >= (100 if global_entry else 10):
+                if youtube_api_error or consecutive_fails >= (20 if global_entry else 10):
                     error_embed = discord.Embed(
                         colour=await ctx.embed_colour(),
                         title=_("Failing to get tracks, skipping remaining."),
