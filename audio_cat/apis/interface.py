@@ -568,7 +568,9 @@ class AudioAPIInterface:
                                 lock(ctx, False)
                                 error_embed = discord.Embed(
                                     colour=await ctx.embed_colour(),
-                                    title=_("The connection was reset while loading the playlist."),
+                                    title=_(
+                                        "The connection was reset while loading the playlist."
+                                    ),
                                 )
                                 if notifier is not None:
                                     await notifier.update_embed(error_embed)
@@ -609,9 +611,7 @@ class AudioAPIInterface:
                         await notifier.update_embed(error_embed)
                     if youtube_api_error:
                         lock(ctx, False)
-                        raise SpotifyFetchError(
-                            message=youtube_api_error
-                        )
+                        raise SpotifyFetchError(message=youtube_api_error)
                     break
                 if not track_object:
                     consecutive_fails += 1
