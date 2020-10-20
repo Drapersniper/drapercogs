@@ -15,7 +15,7 @@ async def is_not_api_user(ctx: commands.Context):
     api_user = await API.get_user(cog=ctx.cog, member=ctx.author)
     if not api_user:
         return True
-    return not api_user.can_read and not (api_user.is_blacklisted or api_user.token)
+    return not (api_user.is_blacklisted and (api_user.can_read or api_user.token))
 
 
 async def is_api_contributor(ctx: commands.Context):
