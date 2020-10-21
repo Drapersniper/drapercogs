@@ -820,12 +820,12 @@ class Stats(commands.Cog):
                     "Active Players: {active}\n"
                     "Inactive Players: {inactive}"
                 ).format(
-                    total=bold(humanize_number(getattr(self.bot.stats.audio, "Music Players"))),
+                    total=bold(humanize_number(getattr(self.bot.stats.audio, "Music Players", 0))),
                     active=bold(
-                        humanize_number(getattr(self.bot.stats.audio, "Active Music Players"))
+                        humanize_number(getattr(self.bot.stats.audio, "Active Music Players", 0))
                     ),
                     inactive=bold(
-                        humanize_number(getattr(self.bot.stats.audio, "Inactive Music Players"))
+                        humanize_number(getattr(self.bot.stats.audio, "Inactive Music Players", 0))
                     ),
                 ),
             )
