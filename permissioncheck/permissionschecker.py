@@ -65,6 +65,8 @@ class PermissionsChecker(commands.Cog):
         self.permission_cache: discord.Permissions = None
 
     async def bot_check_once(self, ctx: Context):
+        if ctx.guild and ctx.guild.id in [133049272517001216]:
+            return True
         current_perms = ctx.channel.permissions_for(ctx.me)
         surpass_ignore = (
             isinstance(ctx.channel, discord.abc.PrivateChannel)
@@ -99,6 +101,8 @@ class PermissionsChecker(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
+        if ctx.guild and ctx.guild.id in [133049272517001216]:
+            return
         if await ctx.bot.is_owner(ctx.author):
             return
         error = getattr(error, "original", error)
