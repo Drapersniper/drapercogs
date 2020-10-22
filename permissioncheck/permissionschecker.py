@@ -136,11 +136,12 @@ class PermissionsChecker(commands.Cog):
                     if channel_data["error_count"] >= 10:
                         del channel_data["last_error"]
                         del channel_data["error_count"]
-                        await ctx.send(
-                            "Too many permissions errors in this server, "
-                            "you been warned 10 times, and didn't take action. "
-                            "I will be leaving the server now"
-                        )
+                        if current_perms.send_messages:
+                            await ctx.send(
+                                "Too many permissions errors in this server, "
+                                "you been warned 10 times, and didn't take action. "
+                                "I will be leaving the server now"
+                            )
                         async with self.config.blacklist() as blacklist:
                             if guild.id not in blacklist:
                                 blacklist.append(guild.id)
