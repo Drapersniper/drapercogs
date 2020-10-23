@@ -1,14 +1,23 @@
 {
-    "author": ["Draper"],
-    "install_msg": "This cog can only be used by the bot owner.",
-    "name": "Setting Reporter",
-    "disabled": false,
-    "short": "Use this to report server settings.",
-    "description":"Use this to report server settings.",
-    "tags": [
+    "author" : [
+        "Draper"
+    ],
+    "description" : "Use this to report server settings.",
+    "disabled" : false,
+    "end_user_data_statement" : "This cog does not persistently store data or metadata about users.",
+    "hidden" : false,
+    "install_msg" : "This cog can only be used by the bot owner.",
+    "max_bot_version" : "0.0.0",
+    "min_bot_version" : "3.4.0",
+    "min_python_version" : [3, 8, 1],
+    "name" : "Setting Reporter",
+    "permissions" : [],
+    "required_cogs" : {},
+    "requirements" : [],
+    "short" : "Use this to report server settings.",
+    "tags" : [
         "dev",
         "owner"
     ],
-    "requirements": [],
-    "hidden": false
+    "type" : "COG"
 }
