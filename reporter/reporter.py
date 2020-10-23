@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
-# Standard Library
 import inspect
 
 from collections import Counter
 from copy import deepcopy
-
-# Cog Dependencies
 import discord
 
 from redbot.core import Config, bank, commands, modlog
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import box, pagify
 
-# Cog Relative Imports
 from .converter import ConvertUserAPI, GuildConverterAPI
 
 _ = Translator("Reporter", __file__)
@@ -30,7 +26,11 @@ class Reporter(commands.Cog):
 
     @staticmethod
     def maybe_get_config(cog: commands.Cog):
-        cog_name = cog.qualified_name if hasattr(cog, "qualified_name") else cog.__class__.__name__
+        cog_name = (
+            cog.qualified_name
+            if hasattr(cog, "qualified_name")
+            else cog.__class__.__name__
+        )
         config_attribute = inspect.getmembers(cog, predicate)
         if cog_name == "Bank":
             return bank._conf
@@ -66,7 +66,9 @@ class Reporter(commands.Cog):
         """Check global guild bot settings for the specified Cog."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "Red":  # TODO wait for core fix
             config = self.bot._config
         else:
@@ -130,7 +132,9 @@ class Reporter(commands.Cog):
         """Check global member bot settings for the specified Cog."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "nonono" "Red":  # TODO wait for core fix
             config = Config.get_core_conf(force_registration=False)
         else:
@@ -197,7 +201,9 @@ class Reporter(commands.Cog):
         """Check global member bot settings for the specified Cog."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "nonono" "Red":  # TODO wait for core fix
             config = Config.get_core_conf(force_registration=False)
         else:
@@ -256,11 +262,15 @@ class Reporter(commands.Cog):
             await ctx.send(box(page, lang="md"))
 
     @_report.command(name="guild")
-    async def _report_guild(self, ctx: commands.Context, cog: str, *, guild: GuildConverterAPI):
+    async def _report_guild(
+        self, ctx: commands.Context, cog: str, *, guild: GuildConverterAPI
+    ):
         """Check guild bot settings for the specified Cog in the specified Guild."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "nonono" "Red":  # TODO wait for core fix
             config = Config.get_core_conf(force_registration=False)
         else:
@@ -303,7 +313,9 @@ class Reporter(commands.Cog):
         """Check bot settings for the specified Cog in the global scope."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "nonono" "Red":  # TODO wait for core fix
             config = Config.get_core_conf(force_registration=False)
         else:
@@ -346,7 +358,9 @@ class Reporter(commands.Cog):
         """Check bot settings for the specified Cog in the user scope."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "nonono" "Red":  # TODO wait for core fix
             config = Config.get_core_conf(force_registration=False)
         else:
@@ -385,11 +399,15 @@ class Reporter(commands.Cog):
             await ctx.send(box(page, lang="md"))
 
     @_report.command(name="member")
-    async def _report_member(self, ctx: commands.Context, cog: str, member: discord.Member):
+    async def _report_member(
+        self, ctx: commands.Context, cog: str, member: discord.Member
+    ):
         """Check bot settings for the specified Cog in the Member scope."""
         cog_obj = ctx.bot.get_cog(cog)
         if cog_obj is None and cog != "Red":
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog)
+            )
         elif cog == "nonono" "Red":  # TODO wait for core fix
             config = Config.get_core_conf(force_registration=False)
         else:

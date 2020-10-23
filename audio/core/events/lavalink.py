@@ -46,7 +46,9 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
             current_track, self.local_folder_current_path
         )
         status = await self.config.status()
-        log.debug(f"Received a new lavalink event for {guild_id}: {event_type}: {extra}")
+        log.debug(
+            f"Received a new lavalink event for {guild_id}: {event_type}: {extra}"
+        )
         prev_song: lavalink.Track = player.fetch("prev_song")
         await self.maybe_reset_error_counter(player)
 
@@ -58,7 +60,9 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
             player.store("prev_requester", requester)
             player.store("playing_song", current_track)
             player.store("requester", current_requester)
-            self.bot.dispatch("red_audio_track_start", guild, current_track, current_requester)
+            self.bot.dispatch(
+                "red_audio_track_start", guild, current_track, current_requester
+            )
             if guild_id and current_track:
                 await self.api_interface.persistent_queue_api.played(
                     guild_id=guild_id, track_id=current_track.track_identifier
@@ -114,10 +118,15 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                     and current_extras.get("autoplay")
                     and (
                         prev_song is None
-                        or (hasattr(prev_song, "extras") and not prev_song.extras.get("autoplay"))
+                        or (
+                            hasattr(prev_song, "extras")
+                            and not prev_song.extras.get("autoplay")
+                        )
                     )
                 ):
-                    await self.send_embed_msg(notify_channel, title=_("Auto Play started."))
+                    await self.send_embed_msg(
+                        notify_channel, title=_("Auto Play started.")
+                    )
 
                 if not description:
                     return
@@ -189,7 +198,9 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                 player.queue = []
                 player.store("playing_song", None)
                 if eq:
-                    await self.config.custom("EQUALIZER", guild_id).eq_bands.set(eq.bands)
+                    await self.config.custom("EQUALIZER", guild_id).eq_bands.set(
+                        eq.bands
+                    )
                 await player.stop()
                 await player.disconnect()
                 self.bot.dispatch("red_audio_audio_disconnect", guild)
@@ -222,11 +233,15 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                         embed = discord.Embed(
                             title=_("Track Error"),
                             colour=await self.bot.get_embed_color(message_channel),
-                            description="{}\n{}".format(extra.replace("\n", ""), description),
+                            description="{}\n{}".format(
+                                extra.replace("\n", ""), description
+                            ),
                         )
                         if current_id:
                             asyncio.create_task(
-                                self.api_interface.global_cache_api.report_invalid(current_id)
+                                self.api_interface.global_cache_api.report_invalid(
+                                    current_id
+                                )
                             )
                     await message_channel.send(embed=embed)
             await player.skip()

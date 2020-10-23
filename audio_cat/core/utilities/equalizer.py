@@ -159,7 +159,9 @@ class EqualizerUtilities(MixinMeta, metaclass=CompositeMetaClass):
             with contextlib.suppress(discord.HTTPException):
                 await eq_message.delete()
 
-    async def _get_eq_reaction(self, ctx: commands.Context, message: discord.Message, emoji):
+    async def _get_eq_reaction(
+        self, ctx: commands.Context, message: discord.Message, emoji
+    ):
         try:
             reaction, user = await self.bot.wait_for(
                 "reaction_add",

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-# Standard Library
 import re
 
-# Cog Dependencies
 from redbot.core import commands
 
 
@@ -53,7 +51,9 @@ class ConvertUserAPI(commands.UserConverter):
             user = await super().convert(ctx, argument)
         except commands.BadArgument:
             user = None
-            match = self._get_id_match(argument) or re.match(r"<@!?([0-9]+)>$", argument)
+            match = self._get_id_match(argument) or re.match(
+                r"<@!?([0-9]+)>$", argument
+            )
             if match is not None:
                 user_id = int(match.group(1))
                 user = await ctx.bot.fetch_user(user_id)

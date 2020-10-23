@@ -12,7 +12,12 @@ from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 from .config_holder import ConfigHolder
 from .constants import REPLACE_BRACKER
-from .utilities import get_all_user_rigs, get_date_time, get_date_string, get_member_activity
+from .utilities import (
+    get_all_user_rigs,
+    get_date_time,
+    get_date_string,
+    get_member_activity,
+)
 
 __updated__ = "27-04-2019"
 
@@ -34,7 +39,10 @@ class PCSpecs(commands.Cog):
         if ctx.invoked_subcommand is None:
             if show_all and show_all == "all":
                 data = await get_all_user_rigs(
-                    ctx.guild, pm=False if not isinstance(ctx.channel, discord.DMChannel) else True
+                    ctx.guild,
+                    pm=False
+                    if not isinstance(ctx.channel, discord.DMChannel)
+                    else True,
                 )
                 if data:
                     discord_names = ""
@@ -51,7 +59,9 @@ class PCSpecs(commands.Cog):
                             discord_names += f"{mention}\n"
                     if discord_names:
                         embed = discord.Embed(title=f"Users with a rig profile")
-                        embed.add_field(name=f"Discord ID", value=discord_names, inline=True)
+                        embed.add_field(
+                            name=f"Discord ID", value=discord_names, inline=True
+                        )
                         embed_list.append(embed)
                     # await embeder.send_webhook(embeds=embed_list)
                     await menu(
@@ -123,7 +133,9 @@ class PCSpecs(commands.Cog):
             return await ctx.send(f"I can't DM you, {ctx.author.mention}")
 
         if completed == 0:
-            await ctx.send("The provided component is not valid, no changes made to your rig")
+            await ctx.send(
+                "The provided component is not valid, no changes made to your rig"
+            )
 
     async def update_rig(self, rig_data: dict, author: discord.User):
         def check(m):
@@ -268,7 +280,9 @@ class PCSpecs(commands.Cog):
         rig_data = await self.config.user(member).rig.get_raw()
         has_profile = [True for _, value in rig_data.items() if value]
         if not has_profile:
-            await ctx.send(f"Member: {member.mention} does not have any rig data with me")
+            await ctx.send(
+                f"Member: {member.mention} does not have any rig data with me"
+            )
             return None
         gaming_cog = ctx.bot.get_cog("GamingProfile")
         discord_user_name = member.display_name
@@ -317,7 +331,9 @@ class PCSpecs(commands.Cog):
                 if "\n" in component_value:
                     new_line = "\n" * component_value.count("\n")
                 component_name_field += f"{component_value}\n"
-                component_name_field = regex.sub(REPLACE_BRACKER, "", component_name_field)
+                component_name_field = regex.sub(
+                    REPLACE_BRACKER, "", component_name_field
+                )
                 component_field += f"{component}{new_line}\n"
         component_field = component_field.strip()
         component_name_field = component_name_field.strip()

@@ -135,7 +135,9 @@ class GamingProfile(commands.Cog):
                     role = discord.utils.get(author.guild.roles, name=continent_role)
                     if role:
                         role_to_add.append(role)
-                zone_roles_user_has = [x for x in list(CONTINENT_DATA.values()) if x in role_names]
+                zone_roles_user_has = [
+                    x for x in list(CONTINENT_DATA.values()) if x in role_names
+                ]
                 if len(zone_roles_user_has) > 1 or not continent_role:
                     roles = [
                         discord.utils.get(author.guild.roles, name=role_name)
@@ -166,7 +168,9 @@ class GamingProfile(commands.Cog):
                 "Updating your profile\nLet's continue here (We don't want to spam the other chat!)"
             )
         except discord.Forbidden:
-            return await ctx.author.send("I can't DM you", send_first=f"{ctx.author.mention}")
+            return await ctx.author.send(
+                "I can't DM you", send_first=f"{ctx.author.mention}"
+            )
         user = await update_profile(self.bot, user, author)
         async with self.profileConfig.user(author).all() as user_data:
             user_data.update(user)
@@ -189,12 +193,15 @@ class GamingProfile(commands.Cog):
                 role = discord.utils.get(author.guild.roles, name=continent_role)
                 if role:
                     role_to_add.append(role)
-            zone_roles_user_has = [x for x in list(CONTINENT_DATA.values()) if x in role_names]
+            zone_roles_user_has = [
+                x for x in list(CONTINENT_DATA.values()) if x in role_names
+            ]
             if len(zone_roles_user_has) > 1 or not continent_role:
                 roles = [
                     discord.utils.get(author.guild.roles, name=role_name)
                     for role_name in zone_roles_user_has
-                    if discord.utils.get(author.guild.roles, name=role_name).name != continent_role
+                    if discord.utils.get(author.guild.roles, name=role_name).name
+                    != continent_role
                 ]
                 roles = [r for r in roles if r]
                 if roles:
@@ -236,16 +243,24 @@ class GamingProfile(commands.Cog):
                 usernames = ""
                 discord_names = ""
                 embed_list = []
-                for username, _, mention, _, steamid in sorted(data, key=itemgetter(3, 1)):
+                for username, _, mention, _, steamid in sorted(
+                    data, key=itemgetter(3, 1)
+                ):
                     if username and mention:
-                        username = add_username_hyperlink(platform, username, _id=steamid)
+                        username = add_username_hyperlink(
+                            platform, username, _id=steamid
+                        )
                         if (
                             len(usernames + f"{username}\n") > 1000
                             or len(discord_names + f"{mention}\n") > 1000
                         ):
                             embed = discord.Embed(title=f"{platform.title()} usernames")
-                            embed.add_field(name=f"Discord ID", value=discord_names, inline=True)
-                            embed.add_field(name=f"Usernames", value=usernames, inline=True)
+                            embed.add_field(
+                                name=f"Discord ID", value=discord_names, inline=True
+                            )
+                            embed.add_field(
+                                name=f"Usernames", value=usernames, inline=True
+                            )
                             if logo:
                                 embed.set_thumbnail(url=logo)
                             embed_list.append(embed)
@@ -255,7 +270,9 @@ class GamingProfile(commands.Cog):
                         discord_names += f"{mention}\n"
                 if usernames:
                     embed = discord.Embed(title=f"{platform.title()} usernames")
-                    embed.add_field(name=f"Discord ID", value=discord_names, inline=True)
+                    embed.add_field(
+                        name=f"Discord ID", value=discord_names, inline=True
+                    )
                     embed.add_field(name=f"Usernames", value=usernames, inline=True)
                     if logo:
                         embed.set_thumbnail(url=logo)
@@ -270,7 +287,9 @@ class GamingProfile(commands.Cog):
                 )
                 embed_list = []
             else:
-                return await ctx.send(f"No one has an account registered with {platform.title()}")
+                return await ctx.send(
+                    f"No one has an account registered with {platform.title()}"
+                )
 
     @_profile.command(name="delete", aliases=["purge", "remove"])
     async def _profile_delete(self, ctx: commands.Context):
@@ -305,7 +324,9 @@ class GamingProfile(commands.Cog):
         role_to_remove = []
         role_to_add = []
         if self.config_cache[guild.id] == {}:
-            self.config_cache[guild.id] = await self.profileConfig.guild(guild).role_management()
+            self.config_cache[guild.id] = await self.profileConfig.guild(
+                guild
+            ).role_management()
         if not self.config_cache[guild.id]:
             return
         if guild and guild.me.guild_permissions.manage_roles:
@@ -315,12 +336,15 @@ class GamingProfile(commands.Cog):
                 role = discord.utils.get(after.guild.roles, name=continent_role)
                 if role:
                     role_to_add.append(role)
-            zone_roles_user_has = [x for x in list(CONTINENT_DATA.values()) if x in role_names]
+            zone_roles_user_has = [
+                x for x in list(CONTINENT_DATA.values()) if x in role_names
+            ]
             if len(zone_roles_user_has) > 1 or not continent_role:
                 roles = [
                     discord.utils.get(after.guild.roles, name=role_name)
                     for role_name in zone_roles_user_has
-                    if discord.utils.get(after.guild.roles, name=role_name).name != continent_role
+                    if discord.utils.get(after.guild.roles, name=role_name).name
+                    != continent_role
                 ]
                 if roles:
                     role_to_remove += roles
@@ -392,7 +416,8 @@ class GamingProfile(commands.Cog):
         if data.get("identifier"):
             if member:
                 last_seen = (
-                    self._cache.get(member.id) or await self.profileConfig.user(member).seen()
+                    self._cache.get(member.id)
+                    or await self.profileConfig.user(member).seen()
                 )
 
             if last_seen:
@@ -407,7 +432,9 @@ class GamingProfile(commands.Cog):
             accounts = await self.config.user(member).account()
             if accounts:
                 accounts = {
-                    key: value for key, value in accounts.items() if value and value != "None"
+                    key: value
+                    for key, value in accounts.items()
+                    if value and value != "None"
                 }
             header = ""
             activity = get_member_activity(member)
@@ -435,7 +462,9 @@ class GamingProfile(commands.Cog):
                             steamid = accounts.get("steamid", None)
                         if platform_name.lower() == "spotify":
                             steamid = accounts.get("spotifyid", None)
-                        username = add_username_hyperlink(platform_name, username, _id=steamid)
+                        username = add_username_hyperlink(
+                            platform_name, username, _id=steamid
+                        )
                         services += f"{platform_name}\n"
                         usernames += f"{username}\n"
                 services.strip()
@@ -502,7 +531,9 @@ class GamingProfile(commands.Cog):
                         f"I've deleted your {platform.title()} username: {deleted_data}"
                     )
                 else:
-                    await ctx.send(f"You don't have a {platform.title()} username with me")
+                    await ctx.send(
+                        f"You don't have a {platform.title()} username with me"
+                    )
             elif platform not in supported_platforms:
                 platforms = await get_supported_platforms()
                 pos_len = 3
@@ -512,7 +543,9 @@ class GamingProfile(commands.Cog):
                         "{number}."
                         "    <{name}>\n"
                         " - Command:  < {scope} >\n".format(
-                            number=number, name=name, command=command,
+                            number=number,
+                            name=name,
+                            command=command,
                         )
                     )
                     platforms_text += line
@@ -528,7 +561,9 @@ class GamingProfile(commands.Cog):
         if self._task:
             self._task.cancel()
         if self._cache:
-            group = self.profileConfig._get_base_group(self.config.USER)  # Bulk update to config
+            group = self.profileConfig._get_base_group(
+                self.config.USER
+            )  # Bulk update to config
             async with group.all() as new_data:
                 for member_id, seen in self._cache.items():
                     if str(member_id) not in new_data:

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Cog Dependencies
 from redbot.core import Config, commands
 from redbot.core.bot import Red
 

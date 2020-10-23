@@ -25,7 +25,6 @@ class User:
     can_post: bool = False
     can_read: bool = False
 
-
     def __post_init__(self):
         self.is_blacklisted = bool(int(self.is_blacklisted))
         self.is_superuser = bool(int(self.is_superuser))

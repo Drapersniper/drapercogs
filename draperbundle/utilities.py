@@ -172,7 +172,8 @@ async def get_supported_platforms(lists: bool = True, supported: bool = False):
         platforms = [(value.get("identifier")) for _, value in platforms.items()]
     elif lists:
         platforms = [
-            (value.get("identifier"), value.get("name")) for _, value in platforms.items()
+            (value.get("identifier"), value.get("name"))
+            for _, value in platforms.items()
         ]
     return platforms
 
@@ -180,15 +181,21 @@ async def get_supported_platforms(lists: bool = True, supported: bool = False):
 async def account_adder(bot, author: discord.User):  # @UnusedVariable
     platforms = await get_supported_platforms()
     platform_prompt = [name for _, name in platforms]
-    platform_prompt = {str(counter): name for counter, name in enumerate(platform_prompt, start=1)}
+    platform_prompt = {
+        str(counter): name for counter, name in enumerate(platform_prompt, start=1)
+    }
     accounts = await smart_prompt(bot, author, platform_prompt, platforms)
     return accounts
 
 
 async def update_profile(bot, user_data: dict, author: discord.User):
-    msg = await author.send("What country are you from (Enter the number next to the country)?")
+    msg = await author.send(
+        "What country are you from (Enter the number next to the country)?"
+    )
     country_data = WorldData.get("country", {})
-    validcountries = sorted(list(value.get("name") for _, value in country_data.items()))
+    validcountries = sorted(
+        list(value.get("name") for _, value in country_data.items())
+    )
     desc = ""
     valid_county_list = []
     for index, value in enumerate(validcountries, start=1):
@@ -203,7 +210,11 @@ async def update_profile(bot, user_data: dict, author: discord.User):
     while not country:
         with contextlib.suppress(asyncio.TimeoutError):
             await bot.wait_for("message", timeout=30.0, check=pred_check)
-        country = valid_county_list[pred_check.result] if pred_check.result is not None else None
+        country = (
+            valid_county_list[pred_check.result]
+            if pred_check.result is not None
+            else None
+        )
     with contextlib.suppress(Exception):
         menu_task.cancel()
     user_data["country"] = validcountries[int(country) - 1]
@@ -236,7 +247,9 @@ async def update_profile(bot, user_data: dict, author: discord.User):
             with contextlib.suppress(asyncio.TimeoutError):
                 await bot.wait_for("message", timeout=30.0, check=pred_check)
             zone = (
-                valid_continent_list[pred_check.result] if pred_check.result is not None else None
+                valid_continent_list[pred_check.result]
+                if pred_check.result is not None
+                else None
             )
         user_data["zone"] = continent_data[int(zone) - 1]
     else:
@@ -245,7 +258,9 @@ async def update_profile(bot, user_data: dict, author: discord.User):
     user_data["language"] = None
 
     if country_timezones and len(country_timezones) > 1:
-        country_timezones_dict = {str(i): key for i, key in enumerate(country_timezones, start=1)}
+        country_timezones_dict = {
+            str(i): key for i, key in enumerate(country_timezones, start=1)
+        }
         country_timezones = sorted(country_timezones_dict.values())
 
         await author.send(
@@ -266,7 +281,9 @@ async def update_profile(bot, user_data: dict, author: discord.User):
             with contextlib.suppress(asyncio.TimeoutError):
                 await bot.wait_for("message", timeout=30.0, check=pred_check)
             timezone = (
-                valid_timezone_list[pred_check.result] if pred_check.result is not None else None
+                valid_timezone_list[pred_check.result]
+                if pred_check.result is not None
+                else None
             )
         user_data["timezone"] = country_timezones[int(timezone) - 1]
     elif country_timezones and len(country_timezones) == 1:
@@ -286,13 +303,18 @@ def get_user_named(bot, name):
 
         # do the actual lookup and return if found
         # if it isn't found then we'll do a full name lookup below.
-        result = discord.utils.get(members, name=name[:-5], discriminator=potential_discriminator)
+        result = discord.utils.get(
+            members, name=name[:-5], discriminator=potential_discriminator
+        )
         if result is not None:
             return result
 
     def pred(m):
         try:
-            return str(m.nick).lower() == name.lower() or str(m.name).lower() == name.lower()
+            return (
+                str(m.nick).lower() == name.lower()
+                or str(m.name).lower() == name.lower()
+            )
         except Exception:
             return False
 
@@ -325,7 +347,9 @@ async def get_activity_list(ctx, data, game_name, activity):
                 or len(discord_names + f"{display_name}\n") > 1000
             ):
                 embed = discord.Embed(
-                    title=("Who's {activity}{name}?").format(name=key, activity=activity_name),
+                    title=("Who's {activity}{name}?").format(
+                        name=key, activity=activity_name
+                    ),
                     colour=embed_colour,
                 )
                 embed.add_field(name="Discord Member", value=discord_names, inline=True)
@@ -338,7 +362,9 @@ async def get_activity_list(ctx, data, game_name, activity):
             discord_names += f"{display_name}\n"
         if usernames:
             embed = discord.Embed(
-                title=("Who's {activity} {name}?").format(name=key, activity=activity_name),
+                title=("Who's {activity} {name}?").format(
+                    name=key, activity=activity_name
+                ),
                 colour=embed_colour,
             )
             embed.add_field(name="Discord Member", value=discord_names, inline=True)
@@ -430,7 +456,9 @@ def get_member_activity(member: discord.Member, database=False):
     else:
         return None
 
-    interested_in = [activity for activity in member.activities if activity.type == looking_for]
+    interested_in = [
+        activity for activity in member.activities if activity.type == looking_for
+    ]
     if interested_in:
         activity_name = getattr(interested_in[0], name_property, None)
         if not database:
@@ -483,7 +511,12 @@ async def get_all_user_profiles(
         if not inactivity:
             if withprofile and has_profile and username_true and is_bot is not True:
                 data_list.append((username_true, mention, role_value))
-            elif not withprofile and not has_profile and username_true and is_bot is not True:
+            elif (
+                not withprofile
+                and not has_profile
+                and username_true
+                and is_bot is not True
+            ):
                 data_list.append((username_true, mention, role_value))
         else:
             if innactive:
@@ -534,7 +567,9 @@ async def get_user_inactivity(member, pm=False, inactivity=False, timespan=None)
 async def get_role_profiles(role, pm=False, inactivity=False, timespan=None):
     data = []
     for member in role.members:
-        data += await get_user_inactivity(member, pm=pm, inactivity=inactivity, timespan=timespan)
+        data += await get_user_inactivity(
+            member, pm=pm, inactivity=inactivity, timespan=timespan
+        )
     return data
 
 
@@ -612,15 +647,21 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
     if message.mentions:
         target_member = message.mentions[0]
         if sum(1 for x in message.mentions) >= 2:
-            target_member = [x for x in message.mentions if x != author or x != ctx.guild.me][0]
+            target_member = [
+                x for x in message.mentions if x != author or x != ctx.guild.me
+            ][0]
         member_name = target_member.display_name
         if get_platform and len(args) > 1:
-            platform = args[1].lower() if args[1].lower() in supported_platforms else None
+            platform = (
+                args[1].lower() if args[1].lower() in supported_platforms else None
+            )
         target_user = bot.get_user(target_member.id)
     else:
         if len(args) == 2:
             if get_platform:
-                platform = args[1].lower() if args[1].lower() in supported_platforms else None
+                platform = (
+                    args[1].lower() if args[1].lower() in supported_platforms else None
+                )
             member_name = args[0]
             if guild:
                 target_member = get_member_named(guild, member_name)
@@ -635,7 +676,9 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
             member_name = args[0]
             if get_platform:
                 platform = (
-                    member_name.lower() if member_name.lower() in supported_platforms else None
+                    member_name.lower()
+                    if member_name.lower() in supported_platforms
+                    else None
                 )
             if not platform and guild:
                 target_member = get_member_named(guild, member_name)
@@ -673,7 +716,9 @@ async def get_mention(ctx, args: list, bot, get_platform=True, stats=False):
 async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: dict):
     def check(m):
         return (
-            m.author == author and isinstance(m.channel, discord.DMChannel) and len(m.content) < 33
+            m.author == author
+            and isinstance(m.channel, discord.DMChannel)
+            and len(m.content) < 33
         )
 
     data = {}
@@ -681,9 +726,14 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
     original_len = len(prompt_data) + 1
     await author.send(f"Pick number {original_len} to finish this part.")
     while True:
-        if "finish" not in prompt_data.values() and "Finish" not in prompt_data.values():
+        if (
+            "finish" not in prompt_data.values()
+            and "Finish" not in prompt_data.values()
+        ):
             prompt_data.update({str(original_len): "finish"})
-        embed = discord.Embed(title="Pick a number that matches the service you want to add")
+        embed = discord.Embed(
+            title="Pick a number that matches the service you want to add"
+        )
         valid_account_list = []
         desc = ""
         for index, value in enumerate(prompt_data.values(), start=1):
@@ -702,11 +752,17 @@ async def smart_prompt(bot, author: discord.User, prompt_data: dict, platforms: 
             key = msg.content
             name = prompt_data.get(msg.content, "")
             command = next(
-                (command_toget for command_toget, name_toget in platforms if name_toget == name),
+                (
+                    command_toget
+                    for command_toget, name_toget in platforms
+                    if name_toget == name
+                ),
                 None,
             )
             if name and command:
-                await author.send(f"What is your username for {name}? (32 characters or less)")
+                await author.send(
+                    f"What is your username for {name}? (32 characters or less)"
+                )
                 msg = await bot.wait_for("message", check=check)
                 if msg and msg.content.lower() in ["stop", "finish"]:
                     await author.send(f"Thanks for adding your accounts.")
@@ -730,7 +786,9 @@ def get_member_named(guild, name):
     members = guild.members
     if len(name) > 5 and name[-5] == "#":
         potential_discriminator = name[-4:]
-        result = discord.utils.get(members, name=name[:-5], discriminator=potential_discriminator)
+        result = discord.utils.get(
+            members, name=name[:-5], discriminator=potential_discriminator
+        )
         if result is not None:
             return result
 

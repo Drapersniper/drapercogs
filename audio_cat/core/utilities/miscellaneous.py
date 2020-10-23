@@ -28,7 +28,9 @@ except ImportError:
     import json
 log = logging.getLogger("red.cogs.Audio.cog.Utilities.miscellaneous")
 _ = Translator("Audio", Path(__file__))
-_RE_TIME_CONVERTER: Final[Pattern] = re.compile(r"(?:(\d+):)?([0-5]?[0-9]):([0-5][0-9])")
+_RE_TIME_CONVERTER: Final[Pattern] = re.compile(
+    r"(?:(\d+):)?([0-5]?[0-9]):([0-5][0-9])"
+)
 _prefer_lyrics_cache = {}
 
 
@@ -41,7 +43,9 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         task.add_done_callback(task_callback)
         return task
 
-    async def maybe_charge_requester(self, ctx: commands.Context, jukebox_price: int) -> bool:
+    async def maybe_charge_requester(
+        self, ctx: commands.Context, jukebox_price: int
+    ) -> bool:
         jukebox = await self.config.guild(ctx.guild).jukebox()
         if jukebox and not await self._can_instaskip(ctx, ctx.author):
             can_spend = await bank.can_spend(ctx.author, jukebox_price)
@@ -68,7 +72,11 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
     async def send_embed_msg(
         self, ctx: commands.Context, author: Mapping[str, str] = None, **kwargs
     ) -> discord.Message:
-        colour = kwargs.get("colour") or kwargs.get("color") or await self.bot.get_embed_color(ctx)
+        colour = (
+            kwargs.get("colour")
+            or kwargs.get("color")
+            or await self.bot.get_embed_color(ctx)
+        )
         title = kwargs.get("title", EmptyEmbed) or EmptyEmbed
         _type = kwargs.get("type", "rich") or "rich"
         url = kwargs.get("url", EmptyEmbed) or EmptyEmbed
@@ -149,7 +157,9 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         with contextlib.suppress(discord.HTTPException):
             await message.remove_reaction(react_emoji, react_user)
 
-    async def clear_react(self, message: discord.Message, emoji: MutableMapping = None) -> None:
+    async def clear_react(
+        self, message: discord.Message, emoji: MutableMapping = None
+    ) -> None:
         try:
             await message.clear_reactions()
         except discord.Forbidden:
@@ -210,7 +220,9 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
         player = lavalink.get_player(ctx.guild.id)
         dur = [
             i.length
-            async for i in AsyncIter(player.queue, steps=50).filter(lambda x: not x.is_stream)
+            async for i in AsyncIter(player.queue, steps=50).filter(
+                lambda x: not x.is_stream
+            )
         ]
         queue_dur = sum(dur)
         if not player.queue:
@@ -303,11 +315,20 @@ class MiscellaneousUtilities(MixinMeta, metaclass=CompositeMetaClass):
                         async for t in AsyncIter(tracks_in_playlist):
                             uri = t.get("info", {}).get("uri")
                             if uri:
-                                t = {"loadType": "V2_COMPAT", "tracks": [t], "query": uri}
+                                t = {
+                                    "loadType": "V2_COMPAT",
+                                    "tracks": [t],
+                                    "query": uri,
+                                }
                                 data = json.dumps(t)
                                 if all(
                                     k in data
-                                    for k in ["loadType", "playlistInfo", "isSeekable", "isStream"]
+                                    for k in [
+                                        "loadType",
+                                        "playlistInfo",
+                                        "isSeekable",
+                                        "isStream",
+                                    ]
                                 ):
                                     database_entries.append(
                                         {

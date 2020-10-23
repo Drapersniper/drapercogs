@@ -5,7 +5,9 @@ WorldData = {
         "afghanistan": {
             "alpha2_code": "AF",
             "alpha3_code": "AFG",
-            "currencies": [{"code": "AFN", "name": "Afghan afghani", "symbol": "\u060b"}],
+            "currencies": [
+                {"code": "AFN", "name": "Afghan afghani", "symbol": "\u060b"}
+            ],
             "capital": "Kabul",
             "calling_codes": ["93"],
             "alt_spellings": ["AF", "Af\u0121\u0101nist\u0101n"],
@@ -98,11 +100,21 @@ WorldData = {
             "name": "\u00c5land Islands",
             "numeric_code": "248",
             "languages": [
-                {"iso639_1": "sv", "iso639_2": "swe", "name": "Swedish", "nativeName": "svenska"}
+                {
+                    "iso639_1": "sv",
+                    "iso639_2": "swe",
+                    "name": "Swedish",
+                    "nativeName": "svenska",
+                }
             ],
             "flag": "https://restcountries.eu/data/ala.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "",
         },
@@ -139,7 +151,12 @@ WorldData = {
             "name": "Albania",
             "numeric_code": "008",
             "languages": [
-                {"iso639_1": "sq", "iso639_2": "sqi", "name": "Albanian", "nativeName": "Shqip"}
+                {
+                    "iso639_1": "sq",
+                    "iso639_2": "sqi",
+                    "name": "Albanian",
+                    "nativeName": "Shqip",
+                }
             ],
             "flag": "https://restcountries.eu/data/alb.svg",
             "regional_blocs": [
@@ -155,7 +172,9 @@ WorldData = {
         "algeria": {
             "alpha2_code": "DZ",
             "alpha3_code": "DZA",
-            "currencies": [{"code": "DZD", "name": "Algerian dinar", "symbol": "\u062f.\u062c"}],
+            "currencies": [
+                {"code": "DZD", "name": "Algerian dinar", "symbol": "\u062f.\u062c"}
+            ],
             "capital": "Algiers",
             "calling_codes": ["213"],
             "alt_spellings": ["DZ", "Dzayer", "Alg\u00e9rie"],
@@ -222,7 +241,9 @@ WorldData = {
         "american samoa": {
             "alpha2_code": "AS",
             "alpha3_code": "ASM",
-            "currencies": [{"code": "USD", "name": "United State Dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United State Dollar", "symbol": "$"}
+            ],
             "capital": "Pago Pago",
             "calling_codes": ["1684"],
             "alt_spellings": [
@@ -257,7 +278,12 @@ WorldData = {
             "name": "American Samoa",
             "numeric_code": "016",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "sm",
                     "iso639_2": "smo",
@@ -377,7 +403,9 @@ WorldData = {
         "anguilla": {
             "alpha2_code": "AI",
             "alpha3_code": "AIA",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "The Valley",
             "calling_codes": ["1264"],
             "alt_spellings": ["AI"],
@@ -407,7 +435,12 @@ WorldData = {
             "name": "Anguilla",
             "numeric_code": "660",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/aia.svg",
             "regional_blocs": [],
@@ -458,7 +491,12 @@ WorldData = {
             "name": "Antarctica",
             "numeric_code": "010",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "ru",
                     "iso639_2": "rus",
@@ -473,7 +511,9 @@ WorldData = {
         "antigua and barbuda": {
             "alpha2_code": "AG",
             "alpha3_code": "ATG",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "Saint John's",
             "calling_codes": ["1268"],
             "alt_spellings": ["AG"],
@@ -503,7 +543,12 @@ WorldData = {
             "name": "Antigua and Barbuda",
             "numeric_code": "028",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/atg.svg",
             "regional_blocs": [
@@ -647,7 +692,9 @@ WorldData = {
         "aruba": {
             "alpha2_code": "AW",
             "alpha3_code": "ABW",
-            "currencies": [{"code": "AWG", "name": "Aruban florin", "symbol": "\u0192"}],
+            "currencies": [
+                {"code": "AWG", "name": "Aruban florin", "symbol": "\u0192"}
+            ],
             "capital": "Oranjestad",
             "calling_codes": ["297"],
             "alt_spellings": ["AW"],
@@ -677,7 +724,12 @@ WorldData = {
             "name": "Aruba",
             "numeric_code": "533",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"},
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                },
                 {
                     "iso639_1": "pa",
                     "iso639_2": "pan",
@@ -731,7 +783,12 @@ WorldData = {
             "name": "Australia",
             "numeric_code": "036",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/aus.svg",
             "regional_blocs": [],
@@ -770,21 +827,37 @@ WorldData = {
             "name": "Austria",
             "numeric_code": "040",
             "languages": [
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"}
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                }
             ],
             "flag": "https://restcountries.eu/data/aut.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "AUT",
         },
         "azerbaijan": {
             "alpha2_code": "AZ",
             "alpha3_code": "AZE",
-            "currencies": [{"code": "AZN", "name": "Azerbaijani manat", "symbol": null}],
+            "currencies": [
+                {"code": "AZN", "name": "Azerbaijani manat", "symbol": null}
+            ],
             "capital": "Baku",
             "calling_codes": ["994"],
-            "alt_spellings": ["AZ", "Republic of Azerbaijan", "Az\u0259rbaycan Respublikas\u0131"],
+            "alt_spellings": [
+                "AZ",
+                "Republic of Azerbaijan",
+                "Az\u0259rbaycan Respublikas\u0131",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Western Asia",
@@ -855,7 +928,12 @@ WorldData = {
             "name": "Bahamas",
             "numeric_code": "044",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/bhs.svg",
             "regional_blocs": [
@@ -875,7 +953,9 @@ WorldData = {
         "bahrain": {
             "alpha2_code": "BH",
             "alpha3_code": "BHR",
-            "currencies": [{"code": "BHD", "name": "Bahraini dinar", "symbol": ".\u062f.\u0628"}],
+            "currencies": [
+                {"code": "BHD", "name": "Bahraini dinar", "symbol": ".\u062f.\u0628"}
+            ],
             "capital": "Manama",
             "calling_codes": ["973"],
             "alt_spellings": ["BH", "Kingdom of Bahrain", "Mamlakat al-Ba\u1e25rayn"],
@@ -930,7 +1010,9 @@ WorldData = {
         "bangladesh": {
             "alpha2_code": "BD",
             "alpha3_code": "BGD",
-            "currencies": [{"code": "BDT", "name": "Bangladeshi taka", "symbol": "\u09f3"}],
+            "currencies": [
+                {"code": "BDT", "name": "Bangladeshi taka", "symbol": "\u09f3"}
+            ],
             "capital": "Dhaka",
             "calling_codes": ["880"],
             "alt_spellings": [
@@ -1015,7 +1097,12 @@ WorldData = {
             "name": "Barbados",
             "numeric_code": "052",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/brb.svg",
             "regional_blocs": [
@@ -1143,18 +1230,33 @@ WorldData = {
             "name": "Belgium",
             "numeric_code": "056",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"},
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"},
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                },
             ],
             "flag": "https://restcountries.eu/data/bel.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "BEL",
         },
@@ -1191,7 +1293,12 @@ WorldData = {
             "name": "Belize",
             "numeric_code": "084",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "es",
                     "iso639_2": "spa",
@@ -1223,10 +1330,16 @@ WorldData = {
         "benin": {
             "alpha2_code": "BJ",
             "alpha3_code": "BEN",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Porto-Novo",
             "calling_codes": ["229"],
-            "alt_spellings": ["BJ", "Republic of Benin", "R\u00e9publique du B\u00e9nin"],
+            "alt_spellings": [
+                "BJ",
+                "Republic of Benin",
+                "R\u00e9publique du B\u00e9nin",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Western Africa",
@@ -1283,7 +1396,12 @@ WorldData = {
             "currencies": [{"code": "BMD", "name": "Bermudian dollar", "symbol": "$"}],
             "capital": "Hamilton",
             "calling_codes": ["1441"],
-            "alt_spellings": ["BM", "The Islands of Bermuda", "The Bermudas", "Somers Isles"],
+            "alt_spellings": [
+                "BM",
+                "The Islands of Bermuda",
+                "The Bermudas",
+                "Somers Isles",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Northern America",
@@ -1310,7 +1428,12 @@ WorldData = {
             "name": "Bermuda",
             "numeric_code": "060",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/bmu.svg",
             "regional_blocs": [],
@@ -1373,7 +1496,9 @@ WorldData = {
         "bolivia (plurinational state of)": {
             "alpha2_code": "BO",
             "alpha3_code": "BOL",
-            "currencies": [{"code": "BOB", "name": "Bolivian boliviano", "symbol": "Bs."}],
+            "currencies": [
+                {"code": "BOB", "name": "Bolivian boliviano", "symbol": "Bs."}
+            ],
             "capital": "Sucre",
             "calling_codes": ["591"],
             "alt_spellings": [
@@ -1418,7 +1543,12 @@ WorldData = {
                     "name": "Spanish",
                     "nativeName": "Espa\u00f1ol",
                 },
-                {"iso639_1": "ay", "iso639_2": "aym", "name": "Aymara", "nativeName": "aymar aru"},
+                {
+                    "iso639_1": "ay",
+                    "iso639_2": "aym",
+                    "name": "Aymara",
+                    "nativeName": "aymar aru",
+                },
                 {
                     "iso639_1": "qu",
                     "iso639_2": "que",
@@ -1446,7 +1576,9 @@ WorldData = {
             "top_level_domain": [".an", ".nl"],
             "alpha2_code": "BQ",
             "alpha3_code": "BES",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Kralendijk",
             "calling_codes": ["5997"],
             "alt_spellings": ["BQ", "Boneiru"],
@@ -1476,7 +1608,12 @@ WorldData = {
             "name": "Bonaire, Sint Eustatius and Saba",
             "numeric_code": "535",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"}
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                }
             ],
             "flag": "https://restcountries.eu/data/bes.svg",
             "regional_blocs": [],
@@ -1486,7 +1623,11 @@ WorldData = {
             "alpha2_code": "BA",
             "alpha3_code": "BIH",
             "currencies": [
-                {"code": "BAM", "name": "Bosnia and Herzegovina convertible mark", "symbol": null}
+                {
+                    "code": "BAM",
+                    "name": "Bosnia and Herzegovina convertible mark",
+                    "symbol": null,
+                }
             ],
             "capital": "Sarajevo",
             "calling_codes": ["387"],
@@ -1584,8 +1725,18 @@ WorldData = {
             "name": "Botswana",
             "numeric_code": "072",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
-                {"iso639_1": "tn", "iso639_2": "tsn", "name": "Tswana", "nativeName": "Setswana"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
+                {
+                    "iso639_1": "tn",
+                    "iso639_2": "tsn",
+                    "name": "Tswana",
+                    "nativeName": "Setswana",
+                },
             ],
             "flag": "https://restcountries.eu/data/bwa.svg",
             "regional_blocs": [
@@ -1637,7 +1788,12 @@ WorldData = {
             "name": "Bouvet Island",
             "numeric_code": "074",
             "languages": [
-                {"iso639_1": "no", "iso639_2": "nor", "name": "Norwegian", "nativeName": "Norsk"},
+                {
+                    "iso639_1": "no",
+                    "iso639_2": "nor",
+                    "name": "Norwegian",
+                    "nativeName": "Norsk",
+                },
                 {
                     "iso639_1": "nb",
                     "iso639_2": "nob",
@@ -1688,7 +1844,18 @@ WorldData = {
             "area": 8515767.0,
             "gini": 54.7,
             "timezones": ["UTC-05:00", "UTC-04:00", "UTC-03:00", "UTC-02:00"],
-            "borders": ["ARG", "BOL", "COL", "GUF", "GUY", "PRY", "PER", "SUR", "URY", "VEN"],
+            "borders": [
+                "ARG",
+                "BOL",
+                "COL",
+                "GUF",
+                "GUY",
+                "PRY",
+                "PER",
+                "SUR",
+                "URY",
+                "VEN",
+            ],
             "native_name": "Brasil",
             "name": "Brazil",
             "numeric_code": "076",
@@ -1719,7 +1886,9 @@ WorldData = {
         "british indian ocean territory": {
             "alpha2_code": "IO",
             "alpha3_code": "IOT",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Diego Garcia",
             "calling_codes": ["246"],
             "alt_spellings": ["IO"],
@@ -1749,7 +1918,12 @@ WorldData = {
             "name": "British Indian Ocean Territory",
             "numeric_code": "086",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/iot.svg",
             "regional_blocs": [
@@ -1771,7 +1945,9 @@ WorldData = {
         "united states minor outlying islands": {
             "alpha2_code": "UM",
             "alpha3_code": "UMI",
-            "currencies": [{"code": "USD", "name": "United States Dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States Dollar", "symbol": "$"}
+            ],
             "capital": "",
             "calling_codes": [""],
             "alt_spellings": ["UM"],
@@ -1801,7 +1977,12 @@ WorldData = {
             "name": "United States Minor Outlying Islands",
             "numeric_code": "581",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/umi.svg",
             "regional_blocs": [],
@@ -1843,7 +2024,12 @@ WorldData = {
             "name": "Virgin Islands (British)",
             "numeric_code": "092",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/vgb.svg",
             "regional_blocs": [],
@@ -1852,10 +2038,17 @@ WorldData = {
         "virgin islands (u.s.)": {
             "alpha2_code": "VI",
             "alpha3_code": "VIR",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Charlotte Amalie",
             "calling_codes": ["1 340"],
-            "alt_spellings": ["VI", "USVI", "American Virgin Islands", "U.S. Virgin Islands"],
+            "alt_spellings": [
+                "VI",
+                "USVI",
+                "American Virgin Islands",
+                "U.S. Virgin Islands",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Caribbean",
@@ -1882,7 +2075,12 @@ WorldData = {
             "name": "Virgin Islands (U.S.)",
             "numeric_code": "850",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/vir.svg",
             "regional_blocs": [],
@@ -1945,7 +2143,9 @@ WorldData = {
         "bulgaria": {
             "alpha2_code": "BG",
             "alpha3_code": "BGR",
-            "currencies": [{"code": "BGN", "name": "Bulgarian lev", "symbol": "\u043b\u0432"}],
+            "currencies": [
+                {"code": "BGN", "name": "Bulgarian lev", "symbol": "\u043b\u0432"}
+            ],
             "capital": "Sofia",
             "calling_codes": ["359"],
             "alt_spellings": [
@@ -1988,14 +2188,21 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/bgr.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "BUL",
         },
         "burkina faso": {
             "alpha2_code": "BF",
             "alpha3_code": "BFA",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Ouagadougou",
             "calling_codes": ["226"],
             "alt_spellings": ["BF"],
@@ -2031,7 +2238,12 @@ WorldData = {
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "ff", "iso639_2": "ful", "name": "Fula", "nativeName": "Fulfulde"},
+                {
+                    "iso639_1": "ff",
+                    "iso639_2": "ful",
+                    "name": "Fula",
+                    "nativeName": "Fulfulde",
+                },
             ],
             "flag": "https://restcountries.eu/data/bfa.svg",
             "regional_blocs": [
@@ -2094,7 +2306,12 @@ WorldData = {
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "rn", "iso639_2": "run", "name": "Kirundi", "nativeName": "Ikirundi"},
+                {
+                    "iso639_1": "rn",
+                    "iso639_2": "run",
+                    "name": "Kirundi",
+                    "nativeName": "Ikirundi",
+                },
             ],
             "flag": "https://restcountries.eu/data/bdi.svg",
             "regional_blocs": [
@@ -2170,10 +2387,16 @@ WorldData = {
         "cameroon": {
             "alpha2_code": "CM",
             "alpha3_code": "CMR",
-            "currencies": [{"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Yaound\u00e9",
             "calling_codes": ["237"],
-            "alt_spellings": ["CM", "Republic of Cameroon", "R\u00e9publique du Cameroun"],
+            "alt_spellings": [
+                "CM",
+                "Republic of Cameroon",
+                "R\u00e9publique du Cameroun",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Middle Africa",
@@ -2200,7 +2423,12 @@ WorldData = {
             "name": "Cameroon",
             "numeric_code": "120",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
@@ -2265,7 +2493,12 @@ WorldData = {
             "name": "Canada",
             "numeric_code": "124",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
@@ -2290,10 +2523,16 @@ WorldData = {
         "cabo verde": {
             "alpha2_code": "CV",
             "alpha3_code": "CPV",
-            "currencies": [{"code": "CVE", "name": "Cape Verdean escudo", "symbol": "Esc"}],
+            "currencies": [
+                {"code": "CVE", "name": "Cape Verdean escudo", "symbol": "Esc"}
+            ],
             "capital": "Praia",
             "calling_codes": ["238"],
-            "alt_spellings": ["CV", "Republic of Cabo Verde", "Rep\u00fablica de Cabo Verde"],
+            "alt_spellings": [
+                "CV",
+                "Republic of Cabo Verde",
+                "Rep\u00fablica de Cabo Verde",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Western Africa",
@@ -2347,7 +2586,9 @@ WorldData = {
         "cayman islands": {
             "alpha2_code": "KY",
             "alpha3_code": "CYM",
-            "currencies": [{"code": "KYD", "name": "Cayman Islands dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "KYD", "name": "Cayman Islands dollar", "symbol": "$"}
+            ],
             "capital": "George Town",
             "calling_codes": ["1345"],
             "alt_spellings": ["KY"],
@@ -2377,7 +2618,12 @@ WorldData = {
             "name": "Cayman Islands",
             "numeric_code": "136",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/cym.svg",
             "regional_blocs": [],
@@ -2386,10 +2632,16 @@ WorldData = {
         "central african republic": {
             "alpha2_code": "CF",
             "alpha3_code": "CAF",
-            "currencies": [{"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Bangui",
             "calling_codes": ["236"],
-            "alt_spellings": ["CF", "Central African Republic", "R\u00e9publique centrafricaine"],
+            "alt_spellings": [
+                "CF",
+                "Central African Republic",
+                "R\u00e9publique centrafricaine",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Middle Africa",
@@ -2449,10 +2701,17 @@ WorldData = {
         "chad": {
             "alpha2_code": "TD",
             "alpha3_code": "TCD",
-            "currencies": [{"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "N'Djamena",
             "calling_codes": ["235"],
-            "alt_spellings": ["TD", "Tchad", "Republic of Chad", "R\u00e9publique du Tchad"],
+            "alt_spellings": [
+                "TD",
+                "Tchad",
+                "Republic of Chad",
+                "R\u00e9publique du Tchad",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Middle Africa",
@@ -2672,7 +2931,12 @@ WorldData = {
             "name": "Christmas Island",
             "numeric_code": "162",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/cxr.svg",
             "regional_blocs": [],
@@ -2684,7 +2948,11 @@ WorldData = {
             "currencies": [{"code": "AUD", "name": "Australian dollar", "symbol": "$"}],
             "capital": "West Island",
             "calling_codes": ["61"],
-            "alt_spellings": ["CC", "Territory of the Cocos (Keeling) Islands", "Keeling Islands"],
+            "alt_spellings": [
+                "CC",
+                "Territory of the Cocos (Keeling) Islands",
+                "Keeling Islands",
+            ],
             "relevance": null,
             "region": "Oceania",
             "subregion": "Australia and New Zealand",
@@ -2711,7 +2979,12 @@ WorldData = {
             "name": "Cocos (Keeling) Islands",
             "numeric_code": "166",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/cck.svg",
             "regional_blocs": [],
@@ -2723,7 +2996,11 @@ WorldData = {
             "currencies": [{"code": "COP", "name": "Colombian peso", "symbol": "$"}],
             "capital": "Bogot\u00e1",
             "calling_codes": ["57"],
-            "alt_spellings": ["CO", "Republic of Colombia", "Rep\u00fablica de Colombia"],
+            "alt_spellings": [
+                "CO",
+                "Republic of Colombia",
+                "Rep\u00fablica de Colombia",
+            ],
             "relevance": null,
             "region": "South America",
             "subregion": "South America",
@@ -2861,7 +3138,9 @@ WorldData = {
         "congo": {
             "alpha2_code": "CG",
             "alpha3_code": "COG",
-            "currencies": [{"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Brazzaville",
             "calling_codes": ["242"],
             "alt_spellings": ["CG", "Congo-Brazzaville"],
@@ -2966,7 +3245,12 @@ WorldData = {
                     "name": "Lingala",
                     "nativeName": "Ling\u00e1la",
                 },
-                {"iso639_1": "kg", "iso639_2": "kon", "name": "Kongo", "nativeName": "Kikongo"},
+                {
+                    "iso639_1": "kg",
+                    "iso639_2": "kon",
+                    "name": "Kongo",
+                    "nativeName": "Kikongo",
+                },
                 {
                     "iso639_1": "sw",
                     "iso639_2": "swa",
@@ -3033,7 +3317,12 @@ WorldData = {
             "name": "Cook Islands",
             "numeric_code": "184",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/cok.svg",
             "regional_blocs": [],
@@ -3042,10 +3331,16 @@ WorldData = {
         "costa rica": {
             "alpha2_code": "CR",
             "alpha3_code": "CRI",
-            "currencies": [{"code": "CRC", "name": "Costa Rican col\u00f3n", "symbol": "\u20a1"}],
+            "currencies": [
+                {"code": "CRC", "name": "Costa Rican col\u00f3n", "symbol": "\u20a1"}
+            ],
             "capital": "San Jos\u00e9",
             "calling_codes": ["506"],
-            "alt_spellings": ["CR", "Republic of Costa Rica", "Rep\u00fablica de Costa Rica"],
+            "alt_spellings": [
+                "CR",
+                "Republic of Costa Rica",
+                "Rep\u00fablica de Costa Rica",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Central America",
@@ -3096,7 +3391,12 @@ WorldData = {
             "currencies": [{"code": "HRK", "name": "Croatian kuna", "symbol": "kn"}],
             "capital": "Zagreb",
             "calling_codes": ["385"],
-            "alt_spellings": ["HR", "Hrvatska", "Republic of Croatia", "Republika Hrvatska"],
+            "alt_spellings": [
+                "HR",
+                "Hrvatska",
+                "Republic of Croatia",
+                "Republika Hrvatska",
+            ],
             "relevance": null,
             "region": "Europe",
             "subregion": "Southern Europe",
@@ -3132,7 +3432,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/hrv.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "CRO",
         },
@@ -3187,7 +3492,11 @@ WorldData = {
             "alpha2_code": "CW",
             "alpha3_code": "CUW",
             "currencies": [
-                {"code": "ANG", "name": "Netherlands Antillean guilder", "symbol": "\u0192"}
+                {
+                    "code": "ANG",
+                    "name": "Netherlands Antillean guilder",
+                    "symbol": "\u0192",
+                }
             ],
             "capital": "Willemstad",
             "calling_codes": ["599"],
@@ -3225,14 +3534,24 @@ WorldData = {
             "name": "Cura\u00e7ao",
             "numeric_code": "531",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"},
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                },
                 {
                     "iso639_1": "pa",
                     "iso639_2": "pan",
                     "name": "(Eastern) Punjabi",
                     "nativeName": "\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/cuw.svg",
             "regional_blocs": [],
@@ -3299,14 +3618,21 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/cyp.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "CYP",
         },
         "czech republic": {
             "alpha2_code": "CZ",
             "alpha3_code": "CZE",
-            "currencies": [{"code": "CZK", "name": "Czech koruna", "symbol": "K\u010d"}],
+            "currencies": [
+                {"code": "CZK", "name": "Czech koruna", "symbol": "K\u010d"}
+            ],
             "capital": "Prague",
             "calling_codes": ["420"],
             "alt_spellings": ["CZ", "\u010cesk\u00e1 republika", "\u010cesko"],
@@ -3351,7 +3677,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/cze.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "CZE",
         },
@@ -3361,7 +3692,12 @@ WorldData = {
             "currencies": [{"code": "DKK", "name": "Danish krone", "symbol": "kr"}],
             "capital": "Copenhagen",
             "calling_codes": ["45"],
-            "alt_spellings": ["DK", "Danmark", "Kingdom of Denmark", "Kongeriget Danmark"],
+            "alt_spellings": [
+                "DK",
+                "Danmark",
+                "Kingdom of Denmark",
+                "Kongeriget Danmark",
+            ],
             "relevance": null,
             "region": "Europe",
             "subregion": "Northern Europe",
@@ -3382,17 +3718,33 @@ WorldData = {
             "demonym": "Danish",
             "area": 43094.0,
             "gini": 24.0,
-            "timezones": ["UTC-04:00", "UTC-03:00", "UTC-01:00", "UTC+00:00", "UTC+01:00"],
+            "timezones": [
+                "UTC-04:00",
+                "UTC-03:00",
+                "UTC-01:00",
+                "UTC+00:00",
+                "UTC+01:00",
+            ],
             "borders": ["DEU"],
             "native_name": "Danmark",
             "name": "Denmark",
             "numeric_code": "208",
             "languages": [
-                {"iso639_1": "da", "iso639_2": "dan", "name": "Danish", "nativeName": "dansk"}
+                {
+                    "iso639_1": "da",
+                    "iso639_2": "dan",
+                    "name": "Danish",
+                    "nativeName": "dansk",
+                }
             ],
             "flag": "https://restcountries.eu/data/dnk.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "DEN",
         },
@@ -3480,10 +3832,17 @@ WorldData = {
         "dominica": {
             "alpha2_code": "DM",
             "alpha3_code": "DMA",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "Roseau",
             "calling_codes": ["1767"],
-            "alt_spellings": ["DM", "Dominique", "Wai\u2018tu kubuli", "Commonwealth of Dominica"],
+            "alt_spellings": [
+                "DM",
+                "Dominique",
+                "Wai\u2018tu kubuli",
+                "Commonwealth of Dominica",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Caribbean",
@@ -3510,7 +3869,12 @@ WorldData = {
             "name": "Dominica",
             "numeric_code": "212",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/dma.svg",
             "regional_blocs": [],
@@ -3580,10 +3944,16 @@ WorldData = {
         "ecuador": {
             "alpha2_code": "EC",
             "alpha3_code": "ECU",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Quito",
             "calling_codes": ["593"],
-            "alt_spellings": ["EC", "Republic of Ecuador", "Rep\u00fablica del Ecuador"],
+            "alt_spellings": [
+                "EC",
+                "Republic of Ecuador",
+                "Rep\u00fablica del Ecuador",
+            ],
             "relevance": null,
             "region": "South America",
             "subregion": "South America",
@@ -3636,7 +4006,9 @@ WorldData = {
         "egypt": {
             "alpha2_code": "EG",
             "alpha3_code": "EGY",
-            "currencies": [{"code": "EGP", "name": "Egyptian pound", "symbol": "\u00a3"}],
+            "currencies": [
+                {"code": "EGP", "name": "Egyptian pound", "symbol": "\u00a3"}
+            ],
             "capital": "Cairo",
             "calling_codes": ["20"],
             "alt_spellings": ["EG", "Arab Republic of Egypt"],
@@ -3703,10 +4075,16 @@ WorldData = {
         "el salvador": {
             "alpha2_code": "SV",
             "alpha3_code": "SLV",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "San Salvador",
             "calling_codes": ["503"],
-            "alt_spellings": ["SV", "Republic of El Salvador", "Rep\u00fablica de El Salvador"],
+            "alt_spellings": [
+                "SV",
+                "Republic of El Salvador",
+                "Rep\u00fablica de El Salvador",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Central America",
@@ -3754,7 +4132,9 @@ WorldData = {
         "equatorial guinea": {
             "alpha2_code": "GQ",
             "alpha3_code": "GNQ",
-            "currencies": [{"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Malabo",
             "calling_codes": ["240"],
             "alt_spellings": [
@@ -3873,7 +4253,12 @@ WorldData = {
                     "name": "Arabic",
                     "nativeName": "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/eri.svg",
             "regional_blocs": [
@@ -3925,11 +4310,21 @@ WorldData = {
             "name": "Estonia",
             "numeric_code": "233",
             "languages": [
-                {"iso639_1": "et", "iso639_2": "est", "name": "Estonian", "nativeName": "eesti"}
+                {
+                    "iso639_1": "et",
+                    "iso639_2": "est",
+                    "name": "Estonian",
+                    "nativeName": "eesti",
+                }
             ],
             "flag": "https://restcountries.eu/data/est.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "EST",
         },
@@ -3998,7 +4393,9 @@ WorldData = {
         "falkland islands (malvinas)": {
             "alpha2_code": "FK",
             "alpha3_code": "FLK",
-            "currencies": [{"code": "FKP", "name": "Falkland Islands pound", "symbol": "\u00a3"}],
+            "currencies": [
+                {"code": "FKP", "name": "Falkland Islands pound", "symbol": "\u00a3"}
+            ],
             "capital": "Stanley",
             "calling_codes": ["500"],
             "alt_spellings": ["FK", "Islas Malvinas"],
@@ -4028,7 +4425,12 @@ WorldData = {
             "name": "Falkland Islands (Malvinas)",
             "numeric_code": "238",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/flk.svg",
             "regional_blocs": [
@@ -4091,7 +4493,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/fro.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "",
         },
@@ -4134,7 +4541,12 @@ WorldData = {
             "name": "Fiji",
             "numeric_code": "242",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fj",
                     "iso639_2": "fij",
@@ -4197,12 +4609,27 @@ WorldData = {
             "name": "Finland",
             "numeric_code": "246",
             "languages": [
-                {"iso639_1": "fi", "iso639_2": "fin", "name": "Finnish", "nativeName": "suomi"},
-                {"iso639_1": "sv", "iso639_2": "swe", "name": "Swedish", "nativeName": "svenska"},
+                {
+                    "iso639_1": "fi",
+                    "iso639_2": "fin",
+                    "name": "Finnish",
+                    "nativeName": "suomi",
+                },
+                {
+                    "iso639_1": "sv",
+                    "iso639_2": "swe",
+                    "name": "Swedish",
+                    "nativeName": "svenska",
+                },
             ],
             "flag": "https://restcountries.eu/data/fin.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "FIN",
         },
@@ -4212,7 +4639,11 @@ WorldData = {
             "currencies": [{"code": "EUR", "name": "Euro", "symbol": "\u20ac"}],
             "capital": "Paris",
             "calling_codes": ["33"],
-            "alt_spellings": ["FR", "French Republic", "R\u00e9publique fran\u00e7aise"],
+            "alt_spellings": [
+                "FR",
+                "French Republic",
+                "R\u00e9publique fran\u00e7aise",
+            ],
             "relevance": null,
             "region": "Europe",
             "subregion": "Western Europe",
@@ -4261,7 +4692,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/fra.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "FRA",
         },
@@ -4318,7 +4754,12 @@ WorldData = {
                         "South American Union",
                     ],
                 },
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []},
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                },
             ],
             "cioc": "",
         },
@@ -4431,7 +4872,9 @@ WorldData = {
         "gabon": {
             "alpha2_code": "GA",
             "alpha3_code": "GAB",
-            "currencies": [{"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XAF", "name": "Central African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Libreville",
             "calling_codes": ["241"],
             "alt_spellings": ["GA", "Gabonese Republic", "R\u00e9publique Gabonaise"],
@@ -4518,7 +4961,12 @@ WorldData = {
             "name": "Gambia",
             "numeric_code": "270",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/gmb.svg",
             "regional_blocs": [
@@ -4540,7 +4988,9 @@ WorldData = {
         "georgia": {
             "alpha2_code": "GE",
             "alpha3_code": "GEO",
-            "currencies": [{"code": "GEL", "name": "Georgian Lari", "symbol": "\u10da"}],
+            "currencies": [
+                {"code": "GEL", "name": "Georgian Lari", "symbol": "\u10da"}
+            ],
             "capital": "Tbilisi",
             "calling_codes": ["995"],
             "alt_spellings": ["GE", "Sakartvelo"],
@@ -4587,7 +5037,11 @@ WorldData = {
             "currencies": [{"code": "EUR", "name": "Euro", "symbol": "\u20ac"}],
             "capital": "Berlin",
             "calling_codes": ["49"],
-            "alt_spellings": ["DE", "Federal Republic of Germany", "Bundesrepublik Deutschland"],
+            "alt_spellings": [
+                "DE",
+                "Federal Republic of Germany",
+                "Bundesrepublik Deutschland",
+            ],
             "relevance": null,
             "region": "Europe",
             "subregion": "Western Europe",
@@ -4614,18 +5068,30 @@ WorldData = {
             "name": "Germany",
             "numeric_code": "276",
             "languages": [
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"}
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                }
             ],
             "flag": "https://restcountries.eu/data/deu.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "GER",
         },
         "ghana": {
             "alpha2_code": "GH",
             "alpha3_code": "GHA",
-            "currencies": [{"code": "GHS", "name": "Ghanaian cedi", "symbol": "\u20b5"}],
+            "currencies": [
+                {"code": "GHS", "name": "Ghanaian cedi", "symbol": "\u20b5"}
+            ],
             "capital": "Accra",
             "calling_codes": ["233"],
             "alt_spellings": ["GH"],
@@ -4655,7 +5121,12 @@ WorldData = {
             "name": "Ghana",
             "numeric_code": "288",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/gha.svg",
             "regional_blocs": [
@@ -4677,7 +5148,9 @@ WorldData = {
         "gibraltar": {
             "alpha2_code": "GI",
             "alpha3_code": "GIB",
-            "currencies": [{"code": "GIP", "name": "Gibraltar pound", "symbol": "\u00a3"}],
+            "currencies": [
+                {"code": "GIP", "name": "Gibraltar pound", "symbol": "\u00a3"}
+            ],
             "capital": "Gibraltar",
             "calling_codes": ["350"],
             "alt_spellings": ["GI"],
@@ -4707,11 +5180,21 @@ WorldData = {
             "name": "Gibraltar",
             "numeric_code": "292",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/gib.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "",
         },
@@ -4762,7 +5245,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/grc.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "GRE",
         },
@@ -4813,7 +5301,9 @@ WorldData = {
         "grenada": {
             "alpha2_code": "GD",
             "alpha3_code": "GRD",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "St. George's",
             "calling_codes": ["1473"],
             "alt_spellings": ["GD"],
@@ -4843,7 +5333,12 @@ WorldData = {
             "name": "Grenada",
             "numeric_code": "308",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/grd.svg",
             "regional_blocs": [
@@ -4907,7 +5402,9 @@ WorldData = {
         "guam": {
             "alpha2_code": "GU",
             "alpha3_code": "GUM",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Hag\u00e5t\u00f1a",
             "calling_codes": ["1671"],
             "alt_spellings": ["GU", "Gu\u00e5h\u00e5n"],
@@ -4937,8 +5434,18 @@ WorldData = {
             "name": "Guam",
             "numeric_code": "316",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
-                {"iso639_1": "ch", "iso639_2": "cha", "name": "Chamorro", "nativeName": "Chamoru"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
+                {
+                    "iso639_1": "ch",
+                    "iso639_2": "cha",
+                    "name": "Chamorro",
+                    "nativeName": "Chamoru",
+                },
                 {
                     "iso639_1": "es",
                     "iso639_2": "spa",
@@ -4953,7 +5460,9 @@ WorldData = {
         "guatemala": {
             "alpha2_code": "GT",
             "alpha3_code": "GTM",
-            "currencies": [{"code": "GTQ", "name": "Guatemalan quetzal", "symbol": "Q"}],
+            "currencies": [
+                {"code": "GTQ", "name": "Guatemalan quetzal", "symbol": "Q"}
+            ],
             "capital": "Guatemala City",
             "calling_codes": ["502"],
             "alt_spellings": ["GT"],
@@ -5037,7 +5546,12 @@ WorldData = {
             "name": "Guernsey",
             "numeric_code": "831",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
@@ -5055,7 +5569,11 @@ WorldData = {
             "currencies": [{"code": "GNF", "name": "Guinean franc", "symbol": "Fr"}],
             "capital": "Conakry",
             "calling_codes": ["224"],
-            "alt_spellings": ["GN", "Republic of Guinea", "R\u00e9publique de Guin\u00e9e"],
+            "alt_spellings": [
+                "GN",
+                "Republic of Guinea",
+                "R\u00e9publique de Guin\u00e9e",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Western Africa",
@@ -5088,7 +5606,12 @@ WorldData = {
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "ff", "iso639_2": "ful", "name": "Fula", "nativeName": "Fulfulde"},
+                {
+                    "iso639_1": "ff",
+                    "iso639_2": "ful",
+                    "name": "Fula",
+                    "nativeName": "Fulfulde",
+                },
             ],
             "flag": "https://restcountries.eu/data/gin.svg",
             "regional_blocs": [
@@ -5110,7 +5633,9 @@ WorldData = {
         "guinea-bissau": {
             "alpha2_code": "GW",
             "alpha3_code": "GNB",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Bissau",
             "calling_codes": ["245"],
             "alt_spellings": [
@@ -5201,7 +5726,12 @@ WorldData = {
             "name": "Guyana",
             "numeric_code": "328",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/guy.svg",
             "regional_blocs": [
@@ -5329,7 +5859,12 @@ WorldData = {
             "name": "Heard Island and McDonald Islands",
             "numeric_code": "334",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/hmd.svg",
             "regional_blocs": [],
@@ -5368,15 +5903,30 @@ WorldData = {
             "name": "Holy See",
             "numeric_code": "336",
             "languages": [
-                {"iso639_1": "la", "iso639_2": "lat", "name": "Latin", "nativeName": "latine"},
-                {"iso639_1": "it", "iso639_2": "ita", "name": "Italian", "nativeName": "Italiano"},
+                {
+                    "iso639_1": "la",
+                    "iso639_2": "lat",
+                    "name": "Latin",
+                    "nativeName": "latine",
+                },
+                {
+                    "iso639_1": "it",
+                    "iso639_2": "ita",
+                    "name": "Italian",
+                    "nativeName": "Italiano",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"},
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                },
             ],
             "flag": "https://restcountries.eu/data/vat.svg",
             "regional_blocs": [],
@@ -5388,7 +5938,11 @@ WorldData = {
             "currencies": [{"code": "HNL", "name": "Honduran lempira", "symbol": "L"}],
             "capital": "Tegucigalpa",
             "calling_codes": ["504"],
-            "alt_spellings": ["HN", "Republic of Honduras", "Rep\u00fablica de Honduras"],
+            "alt_spellings": [
+                "HN",
+                "Republic of Honduras",
+                "Rep\u00fablica de Honduras",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Central America",
@@ -5466,7 +6020,12 @@ WorldData = {
             "name": "Hong Kong",
             "numeric_code": "344",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "zh",
                     "iso639_2": "zho",
@@ -5511,18 +6070,30 @@ WorldData = {
             "name": "Hungary",
             "numeric_code": "348",
             "languages": [
-                {"iso639_1": "hu", "iso639_2": "hun", "name": "Hungarian", "nativeName": "magyar"}
+                {
+                    "iso639_1": "hu",
+                    "iso639_2": "hun",
+                    "name": "Hungarian",
+                    "nativeName": "magyar",
+                }
             ],
             "flag": "https://restcountries.eu/data/hun.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "HUN",
         },
         "iceland": {
             "alpha2_code": "IS",
             "alpha3_code": "ISL",
-            "currencies": [{"code": "ISK", "name": "Icelandic kr\u00f3na", "symbol": "kr"}],
+            "currencies": [
+                {"code": "ISK", "name": "Icelandic kr\u00f3na", "symbol": "kr"}
+            ],
             "capital": "Reykjav\u00edk",
             "calling_codes": ["354"],
             "alt_spellings": [
@@ -5581,7 +6152,12 @@ WorldData = {
             "currencies": [{"code": "INR", "name": "Indian rupee", "symbol": "\u20b9"}],
             "capital": "New Delhi",
             "calling_codes": ["91"],
-            "alt_spellings": ["IN", "Bh\u0101rat", "Republic of India", "Bharat Ganrajya"],
+            "alt_spellings": [
+                "IN",
+                "Bh\u0101rat",
+                "Republic of India",
+                "Bharat Ganrajya",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Southern Asia",
@@ -5614,7 +6190,12 @@ WorldData = {
                     "name": "Hindi",
                     "nativeName": "\u0939\u093f\u0928\u094d\u0926\u0940",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/ind.svg",
             "regional_blocs": [
@@ -5630,7 +6211,9 @@ WorldData = {
         "indonesia": {
             "alpha2_code": "ID",
             "alpha3_code": "IDN",
-            "currencies": [{"code": "IDR", "name": "Indonesian rupiah", "symbol": "Rp"}],
+            "currencies": [
+                {"code": "IDR", "name": "Indonesian rupiah", "symbol": "Rp"}
+            ],
             "capital": "Jakarta",
             "calling_codes": ["62"],
             "alt_spellings": ["ID", "Republic of Indonesia", "Republik Indonesia"],
@@ -5681,7 +6264,9 @@ WorldData = {
         "c\u00f4te d'ivoire": {
             "alpha2_code": "CI",
             "alpha3_code": "CIV",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Yamoussoukro",
             "calling_codes": ["225"],
             "alt_spellings": [
@@ -5791,10 +6376,16 @@ WorldData = {
         "iraq": {
             "alpha2_code": "IQ",
             "alpha3_code": "IRQ",
-            "currencies": [{"code": "IQD", "name": "Iraqi dinar", "symbol": "\u0639.\u062f"}],
+            "currencies": [
+                {"code": "IQD", "name": "Iraqi dinar", "symbol": "\u0639.\u062f"}
+            ],
             "capital": "Baghdad",
             "calling_codes": ["964"],
-            "alt_spellings": ["IQ", "Republic of Iraq", "Jumh\u016briyyat al-\u2018Ir\u0101q"],
+            "alt_spellings": [
+                "IQ",
+                "Republic of Iraq",
+                "Jumh\u016briyyat al-\u2018Ir\u0101q",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Western Asia",
@@ -5887,12 +6478,27 @@ WorldData = {
             "name": "Ireland",
             "numeric_code": "372",
             "languages": [
-                {"iso639_1": "ga", "iso639_2": "gle", "name": "Irish", "nativeName": "Gaeilge"},
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "ga",
+                    "iso639_2": "gle",
+                    "name": "Irish",
+                    "nativeName": "Gaeilge",
+                },
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/irl.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "IRL",
         },
@@ -5932,19 +6538,36 @@ WorldData = {
             "name": "Isle of Man",
             "numeric_code": "833",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
-                {"iso639_1": "gv", "iso639_2": "glv", "name": "Manx", "nativeName": "Gaelg"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
+                {
+                    "iso639_1": "gv",
+                    "iso639_2": "glv",
+                    "name": "Manx",
+                    "nativeName": "Gaelg",
+                },
             ],
             "flag": "https://restcountries.eu/data/imn.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "",
         },
         "israel": {
             "alpha2_code": "IL",
             "alpha3_code": "ISR",
-            "currencies": [{"code": "ILS", "name": "Israeli new shekel", "symbol": "\u20aa"}],
+            "currencies": [
+                {"code": "ILS", "name": "Israeli new shekel", "symbol": "\u20aa"}
+            ],
             "capital": "Jerusalem",
             "calling_codes": ["972"],
             "alt_spellings": ["IL", "State of Israel", "Med\u012bnat Yisr\u0101'el"],
@@ -6024,11 +6647,21 @@ WorldData = {
             "name": "Italy",
             "numeric_code": "380",
             "languages": [
-                {"iso639_1": "it", "iso639_2": "ita", "name": "Italian", "nativeName": "Italiano"}
+                {
+                    "iso639_1": "it",
+                    "iso639_2": "ita",
+                    "name": "Italian",
+                    "nativeName": "Italiano",
+                }
             ],
             "flag": "https://restcountries.eu/data/ita.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "ITA",
         },
@@ -6065,7 +6698,12 @@ WorldData = {
             "name": "Jamaica",
             "numeric_code": "388",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/jam.svg",
             "regional_blocs": [
@@ -6167,7 +6805,12 @@ WorldData = {
             "name": "Jersey",
             "numeric_code": "832",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
@@ -6182,7 +6825,9 @@ WorldData = {
         "jordan": {
             "alpha2_code": "JO",
             "alpha3_code": "JOR",
-            "currencies": [{"code": "JOD", "name": "Jordanian dinar", "symbol": "\u062f.\u0627"}],
+            "currencies": [
+                {"code": "JOD", "name": "Jordanian dinar", "symbol": "\u062f.\u0627"}
+            ],
             "capital": "Amman",
             "calling_codes": ["962"],
             "alt_spellings": [
@@ -6242,7 +6887,9 @@ WorldData = {
             "top_level_domain": [".kz", ".\u049b\u0430\u0437"],
             "alpha2_code": "KZ",
             "alpha3_code": "KAZ",
-            "currencies": [{"code": "KZT", "name": "Kazakhstani tenge", "symbol": null}],
+            "currencies": [
+                {"code": "KZT", "name": "Kazakhstani tenge", "symbol": null}
+            ],
             "capital": "Astana",
             "calling_codes": ["76", "77"],
             "alt_spellings": [
@@ -6338,7 +6985,12 @@ WorldData = {
             "name": "Kenya",
             "numeric_code": "404",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "sw",
                     "iso639_2": "swa",
@@ -6399,7 +7051,12 @@ WorldData = {
             "name": "Kiribati",
             "numeric_code": "296",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/kir.svg",
             "regional_blocs": [],
@@ -6408,7 +7065,9 @@ WorldData = {
         "kuwait": {
             "alpha2_code": "KW",
             "alpha3_code": "KWT",
-            "currencies": [{"code": "KWD", "name": "Kuwaiti dinar", "symbol": "\u062f.\u0643"}],
+            "currencies": [
+                {"code": "KWD", "name": "Kuwaiti dinar", "symbol": "\u062f.\u0643"}
+            ],
             "capital": "Kuwait City",
             "calling_codes": ["965"],
             "alt_spellings": ["KW", "State of Kuwait", "Dawlat al-Kuwait"],
@@ -6463,7 +7122,9 @@ WorldData = {
         "kyrgyzstan": {
             "alpha2_code": "KG",
             "alpha3_code": "KGZ",
-            "currencies": [{"code": "KGS", "name": "Kyrgyzstani som", "symbol": "\u0441"}],
+            "currencies": [
+                {"code": "KGS", "name": "Kyrgyzstani som", "symbol": "\u0441"}
+            ],
             "capital": "Bishkek",
             "calling_codes": ["996"],
             "alt_spellings": [
@@ -6622,14 +7283,21 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/lva.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "LAT",
         },
         "lebanon": {
             "alpha2_code": "LB",
             "alpha3_code": "LBN",
-            "currencies": [{"code": "LBP", "name": "Lebanese pound", "symbol": "\u0644.\u0644"}],
+            "currencies": [
+                {"code": "LBP", "name": "Lebanese pound", "symbol": "\u0644.\u0644"}
+            ],
             "capital": "Beirut",
             "calling_codes": ["961"],
             "alt_spellings": [
@@ -6727,7 +7395,12 @@ WorldData = {
             "name": "Lesotho",
             "numeric_code": "426",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "st",
                     "iso639_2": "sot",
@@ -6785,7 +7458,12 @@ WorldData = {
             "name": "Liberia",
             "numeric_code": "430",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/lbr.svg",
             "regional_blocs": [
@@ -6807,7 +7485,9 @@ WorldData = {
         "libya": {
             "alpha2_code": "LY",
             "alpha3_code": "LBY",
-            "currencies": [{"code": "LYD", "name": "Libyan dinar", "symbol": "\u0644.\u062f"}],
+            "currencies": [
+                {"code": "LYD", "name": "Libyan dinar", "symbol": "\u0644.\u062f"}
+            ],
             "capital": "Tripoli",
             "calling_codes": ["218"],
             "alt_spellings": ["LY", "State of Libya", "Dawlat Libya"],
@@ -6908,7 +7588,12 @@ WorldData = {
             "name": "Liechtenstein",
             "numeric_code": "438",
             "languages": [
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"}
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                }
             ],
             "flag": "https://restcountries.eu/data/lie.svg",
             "regional_blocs": [
@@ -6963,7 +7648,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/ltu.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "LTU",
         },
@@ -7012,7 +7702,12 @@ WorldData = {
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"},
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                },
                 {
                     "iso639_1": "lb",
                     "iso639_2": "ltz",
@@ -7022,7 +7717,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/lux.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "LUX",
         },
@@ -7086,7 +7786,11 @@ WorldData = {
             "alpha2_code": "MK",
             "alpha3_code": "MKD",
             "currencies": [
-                {"code": "MKD", "name": "Macedonian denar", "symbol": "\u0434\u0435\u043d"}
+                {
+                    "code": "MKD",
+                    "name": "Macedonian denar",
+                    "symbol": "\u0434\u0435\u043d",
+                }
             ],
             "capital": "Skopje",
             "calling_codes": ["389"],
@@ -7240,7 +7944,12 @@ WorldData = {
             "name": "Malawi",
             "numeric_code": "454",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "ny",
                     "iso639_2": "nya",
@@ -7268,7 +7977,9 @@ WorldData = {
         "malaysia": {
             "alpha2_code": "MY",
             "alpha3_code": "MYS",
-            "currencies": [{"code": "MYR", "name": "Malaysian ringgit", "symbol": "RM"}],
+            "currencies": [
+                {"code": "MYR", "name": "Malaysian ringgit", "symbol": "RM"}
+            ],
             "capital": "Kuala Lumpur",
             "calling_codes": ["60"],
             "alt_spellings": ["MY"],
@@ -7319,7 +8030,9 @@ WorldData = {
         "maldives": {
             "alpha2_code": "MV",
             "alpha3_code": "MDV",
-            "currencies": [{"code": "MVR", "name": "Maldivian rufiyaa", "symbol": ".\u0783"}],
+            "currencies": [
+                {"code": "MVR", "name": "Maldivian rufiyaa", "symbol": ".\u0783"}
+            ],
             "capital": "Mal\u00e9",
             "calling_codes": ["960"],
             "alt_spellings": [
@@ -7375,7 +8088,9 @@ WorldData = {
         "mali": {
             "alpha2_code": "ML",
             "alpha3_code": "MLI",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Bamako",
             "calling_codes": ["223"],
             "alt_spellings": ["ML", "Republic of Mali", "R\u00e9publique du Mali"],
@@ -7462,19 +8177,36 @@ WorldData = {
             "name": "Malta",
             "numeric_code": "470",
             "languages": [
-                {"iso639_1": "mt", "iso639_2": "mlt", "name": "Maltese", "nativeName": "Malti"},
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "mt",
+                    "iso639_2": "mlt",
+                    "name": "Maltese",
+                    "nativeName": "Malti",
+                },
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/mlt.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "MLT",
         },
         "marshall islands": {
             "alpha2_code": "MH",
             "alpha3_code": "MHL",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Majuro",
             "calling_codes": ["692"],
             "alt_spellings": [
@@ -7508,7 +8240,12 @@ WorldData = {
             "name": "Marshall Islands",
             "numeric_code": "584",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "mh",
                     "iso639_2": "mah",
@@ -7567,7 +8304,9 @@ WorldData = {
         "mauritania": {
             "alpha2_code": "MR",
             "alpha3_code": "MRT",
-            "currencies": [{"code": "MRO", "name": "Mauritanian ouguiya", "symbol": "UM"}],
+            "currencies": [
+                {"code": "MRO", "name": "Mauritanian ouguiya", "symbol": "UM"}
+            ],
             "capital": "Nouakchott",
             "calling_codes": ["222"],
             "alt_spellings": [
@@ -7638,10 +8377,16 @@ WorldData = {
         "mauritius": {
             "alpha2_code": "MU",
             "alpha3_code": "MUS",
-            "currencies": [{"code": "MUR", "name": "Mauritian rupee", "symbol": "\u20a8"}],
+            "currencies": [
+                {"code": "MUR", "name": "Mauritian rupee", "symbol": "\u20a8"}
+            ],
             "capital": "Port Louis",
             "calling_codes": ["230"],
-            "alt_spellings": ["MU", "Republic of Mauritius", "R\u00e9publique de Maurice"],
+            "alt_spellings": [
+                "MU",
+                "Republic of Mauritius",
+                "R\u00e9publique de Maurice",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Eastern Africa",
@@ -7668,7 +8413,12 @@ WorldData = {
             "name": "Mauritius",
             "numeric_code": "480",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/mus.svg",
             "regional_blocs": [
@@ -7693,7 +8443,11 @@ WorldData = {
             "currencies": [{"code": "EUR", "name": "Euro", "symbol": "\u20ac"}],
             "capital": "Mamoudzou",
             "calling_codes": ["262"],
-            "alt_spellings": ["YT", "Department of Mayotte", "D\u00e9partement de Mayotte"],
+            "alt_spellings": [
+                "YT",
+                "Department of Mayotte",
+                "D\u00e9partement de Mayotte",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Eastern Africa",
@@ -7845,7 +8599,12 @@ WorldData = {
             "name": "Micronesia (Federated States of)",
             "numeric_code": "583",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/fsm.svg",
             "regional_blocs": [],
@@ -7908,7 +8667,11 @@ WorldData = {
             "currencies": [{"code": "EUR", "name": "Euro", "symbol": "\u20ac"}],
             "capital": "Monaco",
             "calling_codes": ["377"],
-            "alt_spellings": ["MC", "Principality of Monaco", "Principaut\u00e9 de Monaco"],
+            "alt_spellings": [
+                "MC",
+                "Principality of Monaco",
+                "Principaut\u00e9 de Monaco",
+            ],
             "relevance": null,
             "region": "Europe",
             "subregion": "Western Europe",
@@ -7950,7 +8713,11 @@ WorldData = {
             "alpha2_code": "MN",
             "alpha3_code": "MNG",
             "currencies": [
-                {"code": "MNT", "name": "Mongolian t\u00f6gr\u00f6g", "symbol": "\u20ae"}
+                {
+                    "code": "MNT",
+                    "name": "Mongolian t\u00f6gr\u00f6g",
+                    "symbol": "\u20ae",
+                }
             ],
             "capital": "Ulan Bator",
             "calling_codes": ["976"],
@@ -8037,7 +8804,12 @@ WorldData = {
                     "name": "Bosnian",
                     "nativeName": "bosanski jezik",
                 },
-                {"iso639_1": "sq", "iso639_2": "sqi", "name": "Albanian", "nativeName": "Shqip"},
+                {
+                    "iso639_1": "sq",
+                    "iso639_2": "sqi",
+                    "name": "Albanian",
+                    "nativeName": "Shqip",
+                },
                 {
                     "iso639_1": "hr",
                     "iso639_2": "hrv",
@@ -8059,7 +8831,9 @@ WorldData = {
         "montserrat": {
             "alpha2_code": "MS",
             "alpha3_code": "MSR",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "Plymouth",
             "calling_codes": ["1664"],
             "alt_spellings": ["MS"],
@@ -8089,7 +8863,12 @@ WorldData = {
             "name": "Montserrat",
             "numeric_code": "500",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/msr.svg",
             "regional_blocs": [
@@ -8109,10 +8888,16 @@ WorldData = {
         "morocco": {
             "alpha2_code": "MA",
             "alpha3_code": "MAR",
-            "currencies": [{"code": "MAD", "name": "Moroccan dirham", "symbol": "\u062f.\u0645."}],
+            "currencies": [
+                {"code": "MAD", "name": "Moroccan dirham", "symbol": "\u062f.\u0645."}
+            ],
             "capital": "Rabat",
             "calling_codes": ["212"],
-            "alt_spellings": ["MA", "Kingdom of Morocco", "Al-Mamlakah al-Ma\u0121ribiyah"],
+            "alt_spellings": [
+                "MA",
+                "Kingdom of Morocco",
+                "Al-Mamlakah al-Ma\u0121ribiyah",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Northern Africa",
@@ -8176,10 +8961,16 @@ WorldData = {
         "mozambique": {
             "alpha2_code": "MZ",
             "alpha3_code": "MOZ",
-            "currencies": [{"code": "MZN", "name": "Mozambican metical", "symbol": "MT"}],
+            "currencies": [
+                {"code": "MZN", "name": "Mozambican metical", "symbol": "MT"}
+            ],
             "capital": "Maputo",
             "calling_codes": ["258"],
-            "alt_spellings": ["MZ", "Republic of Mozambique", "Rep\u00fablica de Mo\u00e7ambique"],
+            "alt_spellings": [
+                "MZ",
+                "Republic of Mozambique",
+                "Rep\u00fablica de Mo\u00e7ambique",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Eastern Africa",
@@ -8322,7 +9113,12 @@ WorldData = {
             "name": "Namibia",
             "numeric_code": "516",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "af",
                     "iso639_2": "afr",
@@ -8389,7 +9185,12 @@ WorldData = {
             "name": "Nauru",
             "numeric_code": "520",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "na",
                     "iso639_2": "nau",
@@ -8404,7 +9205,9 @@ WorldData = {
         "nepal": {
             "alpha2_code": "NP",
             "alpha3_code": "NPL",
-            "currencies": [{"code": "NPR", "name": "Nepalese rupee", "symbol": "\u20a8"}],
+            "currencies": [
+                {"code": "NPR", "name": "Nepalese rupee", "symbol": "\u20a8"}
+            ],
             "capital": "Kathmandu",
             "calling_codes": ["977"],
             "alt_spellings": [
@@ -8489,11 +9292,21 @@ WorldData = {
             "name": "Netherlands",
             "numeric_code": "528",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"}
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                }
             ],
             "flag": "https://restcountries.eu/data/nld.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "NED",
         },
@@ -8544,7 +9357,9 @@ WorldData = {
         "new zealand": {
             "alpha2_code": "NZ",
             "alpha3_code": "NZL",
-            "currencies": [{"code": "NZD", "name": "New Zealand dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "NZD", "name": "New Zealand dollar", "symbol": "$"}
+            ],
             "capital": "Wellington",
             "calling_codes": ["64"],
             "alt_spellings": ["NZ", "Aotearoa"],
@@ -8568,13 +9383,24 @@ WorldData = {
             "demonym": "New Zealander",
             "area": 270467.0,
             "gini": 36.2,
-            "timezones": ["UTC-11:00", "UTC-10:00", "UTC+12:00", "UTC+12:45", "UTC+13:00"],
+            "timezones": [
+                "UTC-11:00",
+                "UTC-10:00",
+                "UTC+12:00",
+                "UTC+12:45",
+                "UTC+13:00",
+            ],
             "borders": [],
             "native_name": "New Zealand",
             "name": "New Zealand",
             "numeric_code": "554",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "mi",
                     "iso639_2": "mri",
@@ -8589,10 +9415,16 @@ WorldData = {
         "nicaragua": {
             "alpha2_code": "NI",
             "alpha3_code": "NIC",
-            "currencies": [{"code": "NIO", "name": "Nicaraguan c\u00f3rdoba", "symbol": "C$"}],
+            "currencies": [
+                {"code": "NIO", "name": "Nicaraguan c\u00f3rdoba", "symbol": "C$"}
+            ],
             "capital": "Managua",
             "calling_codes": ["505"],
-            "alt_spellings": ["NI", "Republic of Nicaragua", "Rep\u00fablica de Nicaragua"],
+            "alt_spellings": [
+                "NI",
+                "Republic of Nicaragua",
+                "Rep\u00fablica de Nicaragua",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Central America",
@@ -8640,10 +9472,17 @@ WorldData = {
         "niger": {
             "alpha2_code": "NE",
             "alpha3_code": "NER",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Niamey",
             "calling_codes": ["227"],
-            "alt_spellings": ["NE", "Nijar", "Republic of Niger", "R\u00e9publique du Niger"],
+            "alt_spellings": [
+                "NE",
+                "Nijar",
+                "Republic of Niger",
+                "R\u00e9publique du Niger",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Western Africa",
@@ -8697,7 +9536,9 @@ WorldData = {
         "nigeria": {
             "alpha2_code": "NG",
             "alpha3_code": "NGA",
-            "currencies": [{"code": "NGN", "name": "Nigerian naira", "symbol": "\u20a6"}],
+            "currencies": [
+                {"code": "NGN", "name": "Nigerian naira", "symbol": "\u20a6"}
+            ],
             "capital": "Abuja",
             "calling_codes": ["234"],
             "alt_spellings": [
@@ -8732,7 +9573,12 @@ WorldData = {
             "name": "Nigeria",
             "numeric_code": "566",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/nga.svg",
             "regional_blocs": [
@@ -8787,7 +9633,12 @@ WorldData = {
             "name": "Niue",
             "numeric_code": "570",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/niu.svg",
             "regional_blocs": [],
@@ -8799,7 +9650,11 @@ WorldData = {
             "currencies": [{"code": "AUD", "name": "Australian dollar", "symbol": "$"}],
             "capital": "Kingston",
             "calling_codes": ["672"],
-            "alt_spellings": ["NF", "Territory of Norfolk Island", "Teratri of Norf'k Ailen"],
+            "alt_spellings": [
+                "NF",
+                "Territory of Norfolk Island",
+                "Teratri of Norf'k Ailen",
+            ],
             "relevance": null,
             "region": "Oceania",
             "subregion": "Australia and New Zealand",
@@ -8826,7 +9681,12 @@ WorldData = {
             "name": "Norfolk Island",
             "numeric_code": "574",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/nfk.svg",
             "regional_blocs": [],
@@ -8835,7 +9695,9 @@ WorldData = {
         "korea (democratic people's republic of)": {
             "alpha2_code": "KP",
             "alpha3_code": "PRK",
-            "currencies": [{"code": "KPW", "name": "North Korean won", "symbol": "\u20a9"}],
+            "currencies": [
+                {"code": "KPW", "name": "North Korean won", "symbol": "\u20a9"}
+            ],
             "capital": "Pyongyang",
             "calling_codes": ["850"],
             "alt_spellings": [
@@ -8884,7 +9746,9 @@ WorldData = {
         "northern mariana islands": {
             "alpha2_code": "MP",
             "alpha3_code": "MNP",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Saipan",
             "calling_codes": ["1670"],
             "alt_spellings": [
@@ -8918,8 +9782,18 @@ WorldData = {
             "name": "Northern Mariana Islands",
             "numeric_code": "580",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
-                {"iso639_1": "ch", "iso639_2": "cha", "name": "Chamorro", "nativeName": "Chamoru"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
+                {
+                    "iso639_1": "ch",
+                    "iso639_2": "cha",
+                    "name": "Chamorro",
+                    "nativeName": "Chamoru",
+                },
             ],
             "flag": "https://restcountries.eu/data/mnp.svg",
             "regional_blocs": [],
@@ -8965,7 +9839,12 @@ WorldData = {
             "name": "Norway",
             "numeric_code": "578",
             "languages": [
-                {"iso639_1": "no", "iso639_2": "nor", "name": "Norwegian", "nativeName": "Norsk"},
+                {
+                    "iso639_1": "no",
+                    "iso639_2": "nor",
+                    "name": "Norwegian",
+                    "nativeName": "Norsk",
+                },
                 {
                     "iso639_1": "nb",
                     "iso639_2": "nob",
@@ -8993,10 +9872,16 @@ WorldData = {
         "oman": {
             "alpha2_code": "OM",
             "alpha3_code": "OMN",
-            "currencies": [{"code": "OMR", "name": "Omani rial", "symbol": "\u0631.\u0639."}],
+            "currencies": [
+                {"code": "OMR", "name": "Omani rial", "symbol": "\u0631.\u0639."}
+            ],
             "capital": "Muscat",
             "calling_codes": ["968"],
-            "alt_spellings": ["OM", "Sultanate of Oman", "Sal\u1e6danat \u02bbUm\u0101n"],
+            "alt_spellings": [
+                "OM",
+                "Sultanate of Oman",
+                "Sal\u1e6danat \u02bbUm\u0101n",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Western Asia",
@@ -9048,7 +9933,9 @@ WorldData = {
         "pakistan": {
             "alpha2_code": "PK",
             "alpha3_code": "PAK",
-            "currencies": [{"code": "PKR", "name": "Pakistani rupee", "symbol": "\u20a8"}],
+            "currencies": [
+                {"code": "PKR", "name": "Pakistani rupee", "symbol": "\u20a8"}
+            ],
             "capital": "Islamabad",
             "calling_codes": ["92"],
             "alt_spellings": [
@@ -9083,7 +9970,12 @@ WorldData = {
             "name": "Pakistan",
             "numeric_code": "586",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "ur",
                     "iso639_2": "urd",
@@ -9138,7 +10030,12 @@ WorldData = {
             "name": "Palau",
             "numeric_code": "585",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/plw.svg",
             "regional_blocs": [],
@@ -9147,7 +10044,9 @@ WorldData = {
         "palestine, state of": {
             "alpha2_code": "PS",
             "alpha3_code": "PSE",
-            "currencies": [{"code": "ILS", "name": "Israeli new sheqel", "symbol": "\u20aa"}],
+            "currencies": [
+                {"code": "ILS", "name": "Israeli new sheqel", "symbol": "\u20aa"}
+            ],
             "capital": "Ramallah",
             "calling_codes": ["970"],
             "alt_spellings": ["PS", "State of Palestine", "Dawlat Filas\u1e6din"],
@@ -9208,7 +10107,11 @@ WorldData = {
             ],
             "capital": "Panama City",
             "calling_codes": ["507"],
-            "alt_spellings": ["PA", "Republic of Panama", "Rep\u00fablica de Panam\u00e1"],
+            "alt_spellings": [
+                "PA",
+                "Republic of Panama",
+                "Rep\u00fablica de Panam\u00e1",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Central America",
@@ -9256,7 +10159,9 @@ WorldData = {
         "papua new guinea": {
             "alpha2_code": "PG",
             "alpha3_code": "PNG",
-            "currencies": [{"code": "PGK", "name": "Papua New Guinean kina", "symbol": "K"}],
+            "currencies": [
+                {"code": "PGK", "name": "Papua New Guinean kina", "symbol": "K"}
+            ],
             "capital": "Port Moresby",
             "calling_codes": ["675"],
             "alt_spellings": [
@@ -9290,7 +10195,12 @@ WorldData = {
             "name": "Papua New Guinea",
             "numeric_code": "598",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/png.svg",
             "regional_blocs": [],
@@ -9299,7 +10209,9 @@ WorldData = {
         "paraguay": {
             "alpha2_code": "PY",
             "alpha3_code": "PRY",
-            "currencies": [{"code": "PYG", "name": "Paraguayan guaran\u00ed", "symbol": "\u20b2"}],
+            "currencies": [
+                {"code": "PYG", "name": "Paraguayan guaran\u00ed", "symbol": "\u20b2"}
+            ],
             "capital": "Asunci\u00f3n",
             "calling_codes": ["595"],
             "alt_spellings": [
@@ -9369,7 +10281,11 @@ WorldData = {
             "currencies": [{"code": "PEN", "name": "Peruvian sol", "symbol": "S/."}],
             "capital": "Lima",
             "calling_codes": ["51"],
-            "alt_spellings": ["PE", "Republic of Peru", " Rep\u00fablica del Per\u00fa"],
+            "alt_spellings": [
+                "PE",
+                "Republic of Peru",
+                " Rep\u00fablica del Per\u00fa",
+            ],
             "relevance": null,
             "region": "South America",
             "subregion": "South America",
@@ -9428,10 +10344,16 @@ WorldData = {
         "philippines": {
             "alpha2_code": "PH",
             "alpha3_code": "PHL",
-            "currencies": [{"code": "PHP", "name": "Philippine peso", "symbol": "\u20b1"}],
+            "currencies": [
+                {"code": "PHP", "name": "Philippine peso", "symbol": "\u20b1"}
+            ],
             "capital": "Manila",
             "calling_codes": ["63"],
-            "alt_spellings": ["PH", "Republic of the Philippines", "Rep\u00fablika ng Pilipinas"],
+            "alt_spellings": [
+                "PH",
+                "Republic of the Philippines",
+                "Rep\u00fablika ng Pilipinas",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "South-Eastern Asia",
@@ -9458,7 +10380,12 @@ WorldData = {
             "name": "Philippines",
             "numeric_code": "608",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/phl.svg",
             "regional_blocs": [
@@ -9507,7 +10434,12 @@ WorldData = {
             "name": "Pitcairn",
             "numeric_code": "612",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/pcn.svg",
             "regional_blocs": [],
@@ -9516,7 +10448,9 @@ WorldData = {
         "poland": {
             "alpha2_code": "PL",
             "alpha3_code": "POL",
-            "currencies": [{"code": "PLN", "name": "Polish z\u0142oty", "symbol": "z\u0142"}],
+            "currencies": [
+                {"code": "PLN", "name": "Polish z\u0142oty", "symbol": "z\u0142"}
+            ],
             "capital": "Warsaw",
             "calling_codes": ["48"],
             "alt_spellings": ["PL", "Republic of Poland", "Rzeczpospolita Polska"],
@@ -9555,7 +10489,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/pol.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "POL",
         },
@@ -9606,14 +10545,21 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/prt.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "POR",
         },
         "puerto rico": {
             "alpha2_code": "PR",
             "alpha3_code": "PRI",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "San Juan",
             "calling_codes": ["1787", "1939"],
             "alt_spellings": [
@@ -9653,7 +10599,12 @@ WorldData = {
                     "name": "Spanish",
                     "nativeName": "Espa\u00f1ol",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/pri.svg",
             "regional_blocs": [],
@@ -9662,7 +10613,9 @@ WorldData = {
         "qatar": {
             "alpha2_code": "QA",
             "alpha3_code": "QAT",
-            "currencies": [{"code": "QAR", "name": "Qatari riyal", "symbol": "\u0631.\u0642"}],
+            "currencies": [
+                {"code": "QAR", "name": "Qatari riyal", "symbol": "\u0631.\u0642"}
+            ],
             "capital": "Doha",
             "calling_codes": ["974"],
             "alt_spellings": ["QA", "State of Qatar", "Dawlat Qa\u1e6dar"],
@@ -9750,7 +10703,12 @@ WorldData = {
             "name": "Republic of Kosovo",
             "numeric_code": null,
             "languages": [
-                {"iso639_1": "sq", "iso639_2": "sqi", "name": "Albanian", "nativeName": "Shqip"},
+                {
+                    "iso639_1": "sq",
+                    "iso639_2": "sqi",
+                    "name": "Albanian",
+                    "nativeName": "Shqip",
+                },
                 {
                     "iso639_1": "sr",
                     "iso639_2": "srp",
@@ -9868,14 +10826,21 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/rou.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "ROU",
         },
         "russian federation": {
             "alpha2_code": "RU",
             "alpha3_code": "RUS",
-            "currencies": [{"code": "RUB", "name": "Russian ruble", "symbol": "\u20bd"}],
+            "currencies": [
+                {"code": "RUB", "name": "Russian ruble", "symbol": "\u20bd"}
+            ],
             "capital": "Moscow",
             "calling_codes": ["7"],
             "alt_spellings": [
@@ -9998,7 +10963,12 @@ WorldData = {
                     "name": "Kinyarwanda",
                     "nativeName": "Ikinyarwanda",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
@@ -10075,7 +11045,9 @@ WorldData = {
         "saint helena, ascension and tristan da cunha": {
             "alpha2_code": "SH",
             "alpha3_code": "SHN",
-            "currencies": [{"code": "SHP", "name": "Saint Helena pound", "symbol": "\u00a3"}],
+            "currencies": [
+                {"code": "SHP", "name": "Saint Helena pound", "symbol": "\u00a3"}
+            ],
             "capital": "Jamestown",
             "calling_codes": ["290"],
             "alt_spellings": ["SH"],
@@ -10105,7 +11077,12 @@ WorldData = {
             "name": "Saint Helena, Ascension and Tristan da Cunha",
             "numeric_code": "654",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/shn.svg",
             "regional_blocs": [
@@ -10127,7 +11104,9 @@ WorldData = {
         "saint kitts and nevis": {
             "alpha2_code": "KN",
             "alpha3_code": "KNA",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "Basseterre",
             "calling_codes": ["1869"],
             "alt_spellings": ["KN", "Federation of Saint Christopher and Nevis"],
@@ -10157,7 +11136,12 @@ WorldData = {
             "name": "Saint Kitts and Nevis",
             "numeric_code": "659",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/kna.svg",
             "regional_blocs": [
@@ -10177,7 +11161,9 @@ WorldData = {
         "saint lucia": {
             "alpha2_code": "LC",
             "alpha3_code": "LCA",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "Castries",
             "calling_codes": ["1758"],
             "alt_spellings": ["LC"],
@@ -10207,7 +11193,12 @@ WorldData = {
             "name": "Saint Lucia",
             "numeric_code": "662",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/lca.svg",
             "regional_blocs": [
@@ -10262,14 +11253,24 @@ WorldData = {
             "name": "Saint Martin (French part)",
             "numeric_code": "663",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"},
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                },
             ],
             "flag": "https://restcountries.eu/data/maf.svg",
             "regional_blocs": [],
@@ -10281,7 +11282,10 @@ WorldData = {
             "currencies": [{"code": "EUR", "name": "Euro", "symbol": "\u20ac"}],
             "capital": "Saint-Pierre",
             "calling_codes": ["508"],
-            "alt_spellings": ["PM", "Collectivit\u00e9 territoriale de Saint-Pierre-et-Miquelon"],
+            "alt_spellings": [
+                "PM",
+                "Collectivit\u00e9 territoriale de Saint-Pierre-et-Miquelon",
+            ],
             "relevance": null,
             "region": "North America",
             "subregion": "Northern America",
@@ -10322,7 +11326,9 @@ WorldData = {
         "saint vincent and the grenadines": {
             "alpha2_code": "VC",
             "alpha3_code": "VCT",
-            "currencies": [{"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "XCD", "name": "East Caribbean dollar", "symbol": "$"}
+            ],
             "capital": "Kingstown",
             "calling_codes": ["1784"],
             "alt_spellings": ["VC"],
@@ -10352,7 +11358,12 @@ WorldData = {
             "name": "Saint Vincent and the Grenadines",
             "numeric_code": "670",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/vct.svg",
             "regional_blocs": [
@@ -10372,7 +11383,9 @@ WorldData = {
         "samoa": {
             "alpha2_code": "WS",
             "alpha3_code": "WSM",
-            "currencies": [{"code": "WST", "name": "Samoan t\u0101l\u0101", "symbol": "T"}],
+            "currencies": [
+                {"code": "WST", "name": "Samoan t\u0101l\u0101", "symbol": "T"}
+            ],
             "capital": "Apia",
             "calling_codes": ["685"],
             "alt_spellings": [
@@ -10412,7 +11425,12 @@ WorldData = {
                     "name": "Samoan",
                     "nativeName": "gagana fa'a Samoa",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/wsm.svg",
             "regional_blocs": [],
@@ -10424,7 +11442,11 @@ WorldData = {
             "currencies": [{"code": "EUR", "name": "Euro", "symbol": "\u20ac"}],
             "capital": "City of San Marino",
             "calling_codes": ["378"],
-            "alt_spellings": ["SM", "Republic of San Marino", "Repubblica di San Marino"],
+            "alt_spellings": [
+                "SM",
+                "Republic of San Marino",
+                "Repubblica di San Marino",
+            ],
             "relevance": null,
             "region": "Europe",
             "subregion": "Southern Europe",
@@ -10451,7 +11473,12 @@ WorldData = {
             "name": "San Marino",
             "numeric_code": "674",
             "languages": [
-                {"iso639_1": "it", "iso639_2": "ita", "name": "Italian", "nativeName": "Italiano"}
+                {
+                    "iso639_1": "it",
+                    "iso639_2": "ita",
+                    "name": "Italian",
+                    "nativeName": "Italiano",
+                }
             ],
             "flag": "https://restcountries.eu/data/smr.svg",
             "regional_blocs": [],
@@ -10527,7 +11554,9 @@ WorldData = {
         "saudi arabia": {
             "alpha2_code": "SA",
             "alpha3_code": "SAU",
-            "currencies": [{"code": "SAR", "name": "Saudi riyal", "symbol": "\u0631.\u0633"}],
+            "currencies": [
+                {"code": "SAR", "name": "Saudi riyal", "symbol": "\u0631.\u0633"}
+            ],
             "capital": "Riyadh",
             "calling_codes": ["966"],
             "alt_spellings": [
@@ -10586,10 +11615,16 @@ WorldData = {
         "senegal": {
             "alpha2_code": "SN",
             "alpha3_code": "SEN",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Dakar",
             "calling_codes": ["221"],
-            "alt_spellings": ["SN", "Republic of Senegal", "R\u00e9publique du S\u00e9n\u00e9gal"],
+            "alt_spellings": [
+                "SN",
+                "Republic of Senegal",
+                "R\u00e9publique du S\u00e9n\u00e9gal",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Western Africa",
@@ -10644,7 +11679,11 @@ WorldData = {
             "alpha2_code": "RS",
             "alpha3_code": "SRB",
             "currencies": [
-                {"code": "RSD", "name": "Serbian dinar", "symbol": "\u0434\u0438\u043d."}
+                {
+                    "code": "RSD",
+                    "name": "Serbian dinar",
+                    "symbol": "\u0434\u0438\u043d.",
+                }
             ],
             "capital": "Belgrade",
             "calling_codes": ["381"],
@@ -10702,7 +11741,9 @@ WorldData = {
         "seychelles": {
             "alpha2_code": "SC",
             "alpha3_code": "SYC",
-            "currencies": [{"code": "SCR", "name": "Seychellois rupee", "symbol": "\u20a8"}],
+            "currencies": [
+                {"code": "SCR", "name": "Seychellois rupee", "symbol": "\u20a8"}
+            ],
             "capital": "Victoria",
             "calling_codes": ["248"],
             "alt_spellings": [
@@ -10743,7 +11784,12 @@ WorldData = {
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/syc.svg",
             "regional_blocs": [
@@ -10765,7 +11811,9 @@ WorldData = {
         "sierra leone": {
             "alpha2_code": "SL",
             "alpha3_code": "SLE",
-            "currencies": [{"code": "SLL", "name": "Sierra Leonean leone", "symbol": "Le"}],
+            "currencies": [
+                {"code": "SLL", "name": "Sierra Leonean leone", "symbol": "Le"}
+            ],
             "capital": "Freetown",
             "calling_codes": ["232"],
             "alt_spellings": ["SL", "Republic of Sierra Leone"],
@@ -10795,7 +11843,12 @@ WorldData = {
             "name": "Sierra Leone",
             "numeric_code": "694",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/sle.svg",
             "regional_blocs": [
@@ -10855,7 +11908,12 @@ WorldData = {
             "name": "Singapore",
             "numeric_code": "702",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "ms",
                     "iso639_2": "msa",
@@ -10890,7 +11948,11 @@ WorldData = {
             "alpha2_code": "SX",
             "alpha3_code": "SXM",
             "currencies": [
-                {"code": "ANG", "name": "Netherlands Antillean guilder", "symbol": "\u0192"}
+                {
+                    "code": "ANG",
+                    "name": "Netherlands Antillean guilder",
+                    "symbol": "\u0192",
+                }
             ],
             "capital": "Philipsburg",
             "calling_codes": ["1721"],
@@ -10921,8 +11983,18 @@ WorldData = {
             "name": "Sint Maarten (Dutch part)",
             "numeric_code": "534",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"},
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                },
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/sxm.svg",
             "regional_blocs": [],
@@ -10970,7 +12042,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/svk.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "SVK",
         },
@@ -11016,14 +12093,21 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/svn.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "SLO",
         },
         "solomon islands": {
             "alpha2_code": "SB",
             "alpha3_code": "SLB",
-            "currencies": [{"code": "SBD", "name": "Solomon Islands dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "SBD", "name": "Solomon Islands dollar", "symbol": "$"}
+            ],
             "capital": "Honiara",
             "calling_codes": ["677"],
             "alt_spellings": ["SB"],
@@ -11053,7 +12137,12 @@ WorldData = {
             "name": "Solomon Islands",
             "numeric_code": "090",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/slb.svg",
             "regional_blocs": [],
@@ -11141,7 +12230,9 @@ WorldData = {
         "south africa": {
             "alpha2_code": "ZA",
             "alpha3_code": "ZAF",
-            "currencies": [{"code": "ZAR", "name": "South African rand", "symbol": "R"}],
+            "currencies": [
+                {"code": "ZAR", "name": "South African rand", "symbol": "R"}
+            ],
             "capital": "Pretoria",
             "calling_codes": ["27"],
             "alt_spellings": ["ZA", "RSA", "Suid-Afrika", "Republic of South Africa"],
@@ -11177,7 +12268,12 @@ WorldData = {
                     "name": "Afrikaans",
                     "nativeName": "Afrikaans",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "nr",
                     "iso639_2": "nbl",
@@ -11190,17 +12286,42 @@ WorldData = {
                     "name": "Southern Sotho",
                     "nativeName": "Sesotho",
                 },
-                {"iso639_1": "ss", "iso639_2": "ssw", "name": "Swati", "nativeName": "SiSwati"},
-                {"iso639_1": "tn", "iso639_2": "tsn", "name": "Tswana", "nativeName": "Setswana"},
-                {"iso639_1": "ts", "iso639_2": "tso", "name": "Tsonga", "nativeName": "Xitsonga"},
+                {
+                    "iso639_1": "ss",
+                    "iso639_2": "ssw",
+                    "name": "Swati",
+                    "nativeName": "SiSwati",
+                },
+                {
+                    "iso639_1": "tn",
+                    "iso639_2": "tsn",
+                    "name": "Tswana",
+                    "nativeName": "Setswana",
+                },
+                {
+                    "iso639_1": "ts",
+                    "iso639_2": "tso",
+                    "name": "Tsonga",
+                    "nativeName": "Xitsonga",
+                },
                 {
                     "iso639_1": "ve",
                     "iso639_2": "ven",
                     "name": "Venda",
                     "nativeName": "Tshiven\u1e13a",
                 },
-                {"iso639_1": "xh", "iso639_2": "xho", "name": "Xhosa", "nativeName": "isiXhosa"},
-                {"iso639_1": "zu", "iso639_2": "zul", "name": "Zulu", "nativeName": "isiZulu"},
+                {
+                    "iso639_1": "xh",
+                    "iso639_2": "xho",
+                    "name": "Xhosa",
+                    "nativeName": "isiXhosa",
+                },
+                {
+                    "iso639_1": "zu",
+                    "iso639_2": "zul",
+                    "name": "Zulu",
+                    "nativeName": "isiZulu",
+                },
             ],
             "flag": "https://restcountries.eu/data/zaf.svg",
             "regional_blocs": [
@@ -11255,7 +12376,12 @@ WorldData = {
             "name": "South Georgia and the South Sandwich Islands",
             "numeric_code": "239",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/sgs.svg",
             "regional_blocs": [
@@ -11276,7 +12402,9 @@ WorldData = {
         "korea (republic of)": {
             "alpha2_code": "KR",
             "alpha3_code": "KOR",
-            "currencies": [{"code": "KRW", "name": "South Korean won", "symbol": "\u20a9"}],
+            "currencies": [
+                {"code": "KRW", "name": "South Korean won", "symbol": "\u20a9"}
+            ],
             "capital": "Seoul",
             "calling_codes": ["82"],
             "alt_spellings": ["KR", "Republic of Korea"],
@@ -11320,7 +12448,9 @@ WorldData = {
         "south sudan": {
             "alpha2_code": "SS",
             "alpha3_code": "SSD",
-            "currencies": [{"code": "SSP", "name": "South Sudanese pound", "symbol": "\u00a3"}],
+            "currencies": [
+                {"code": "SSP", "name": "South Sudanese pound", "symbol": "\u00a3"}
+            ],
             "capital": "Juba",
             "calling_codes": ["211"],
             "alt_spellings": ["SS"],
@@ -11350,7 +12480,12 @@ WorldData = {
             "name": "South Sudan",
             "numeric_code": "728",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/ssd.svg",
             "regional_blocs": [
@@ -11411,7 +12546,12 @@ WorldData = {
             ],
             "flag": "https://restcountries.eu/data/esp.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "ESP",
         },
@@ -11421,7 +12561,11 @@ WorldData = {
             "currencies": [{"code": "LKR", "name": "Sri Lankan rupee", "symbol": "Rs"}],
             "capital": "Colombo",
             "calling_codes": ["94"],
-            "alt_spellings": ["LK", "ila\u1e45kai", "Democratic Socialist Republic of Sri Lanka"],
+            "alt_spellings": [
+                "LK",
+                "ila\u1e45kai",
+                "Democratic Socialist Republic of Sri Lanka",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Southern Asia",
@@ -11475,7 +12619,9 @@ WorldData = {
         "sudan": {
             "alpha2_code": "SD",
             "alpha3_code": "SDN",
-            "currencies": [{"code": "SDG", "name": "Sudanese pound", "symbol": "\u062c.\u0633."}],
+            "currencies": [
+                {"code": "SDG", "name": "Sudanese pound", "symbol": "\u062c.\u0633."}
+            ],
             "capital": "Khartoum",
             "calling_codes": ["249"],
             "alt_spellings": [
@@ -11515,7 +12661,12 @@ WorldData = {
                     "name": "Arabic",
                     "nativeName": "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/sdn.svg",
             "regional_blocs": [
@@ -11583,7 +12734,12 @@ WorldData = {
             "name": "Suriname",
             "numeric_code": "740",
             "languages": [
-                {"iso639_1": "nl", "iso639_2": "nld", "name": "Dutch", "nativeName": "Nederlands"}
+                {
+                    "iso639_1": "nl",
+                    "iso639_2": "nld",
+                    "name": "Dutch",
+                    "nativeName": "Nederlands",
+                }
             ],
             "flag": "https://restcountries.eu/data/sur.svg",
             "regional_blocs": [
@@ -11644,7 +12800,12 @@ WorldData = {
             "name": "Svalbard and Jan Mayen",
             "numeric_code": "744",
             "languages": [
-                {"iso639_1": "no", "iso639_2": "nor", "name": "Norwegian", "nativeName": "Norsk"}
+                {
+                    "iso639_1": "no",
+                    "iso639_2": "nor",
+                    "name": "Norwegian",
+                    "nativeName": "Norsk",
+                }
             ],
             "flag": "https://restcountries.eu/data/sjm.svg",
             "regional_blocs": [],
@@ -11690,8 +12851,18 @@ WorldData = {
             "name": "Swaziland",
             "numeric_code": "748",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
-                {"iso639_1": "ss", "iso639_2": "ssw", "name": "Swati", "nativeName": "SiSwati"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
+                {
+                    "iso639_1": "ss",
+                    "iso639_2": "ssw",
+                    "name": "Swati",
+                    "nativeName": "SiSwati",
+                },
             ],
             "flag": "https://restcountries.eu/data/swz.svg",
             "regional_blocs": [
@@ -11743,11 +12914,21 @@ WorldData = {
             "name": "Sweden",
             "numeric_code": "752",
             "languages": [
-                {"iso639_1": "sv", "iso639_2": "swe", "name": "Swedish", "nativeName": "svenska"}
+                {
+                    "iso639_1": "sv",
+                    "iso639_2": "swe",
+                    "name": "Swedish",
+                    "nativeName": "svenska",
+                }
             ],
             "flag": "https://restcountries.eu/data/swe.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "SWE",
         },
@@ -11791,14 +12972,24 @@ WorldData = {
             "name": "Switzerland",
             "numeric_code": "756",
             "languages": [
-                {"iso639_1": "de", "iso639_2": "deu", "name": "German", "nativeName": "Deutsch"},
+                {
+                    "iso639_1": "de",
+                    "iso639_2": "deu",
+                    "name": "German",
+                    "nativeName": "Deutsch",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
                     "name": "French",
                     "nativeName": "fran\u00e7ais",
                 },
-                {"iso639_1": "it", "iso639_2": "ita", "name": "Italian", "nativeName": "Italiano"},
+                {
+                    "iso639_1": "it",
+                    "iso639_2": "ita",
+                    "name": "Italian",
+                    "nativeName": "Italiano",
+                },
             ],
             "flag": "https://restcountries.eu/data/che.svg",
             "regional_blocs": [
@@ -11981,7 +13172,9 @@ WorldData = {
         "tanzania, united republic of": {
             "alpha2_code": "TZ",
             "alpha3_code": "TZA",
-            "currencies": [{"code": "TZS", "name": "Tanzanian shilling", "symbol": "Sh"}],
+            "currencies": [
+                {"code": "TZS", "name": "Tanzanian shilling", "symbol": "Sh"}
+            ],
             "capital": "Dodoma",
             "calling_codes": ["255"],
             "alt_spellings": [
@@ -12021,7 +13214,12 @@ WorldData = {
                     "name": "Swahili",
                     "nativeName": "Kiswahili",
                 },
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
             ],
             "flag": "https://restcountries.eu/data/tza.svg",
             "regional_blocs": [
@@ -12154,10 +13352,17 @@ WorldData = {
         "togo": {
             "alpha2_code": "TG",
             "alpha3_code": "TGO",
-            "currencies": [{"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}],
+            "currencies": [
+                {"code": "XOF", "name": "West African CFA franc", "symbol": "Fr"}
+            ],
             "capital": "Lom\u00e9",
             "calling_codes": ["228"],
-            "alt_spellings": ["TG", "Togolese", "Togolese Republic", "R\u00e9publique Togolaise"],
+            "alt_spellings": [
+                "TG",
+                "Togolese",
+                "Togolese Republic",
+                "R\u00e9publique Togolaise",
+            ],
             "relevance": null,
             "region": "Africa",
             "subregion": "Western Africa",
@@ -12211,7 +13416,9 @@ WorldData = {
         "tokelau": {
             "alpha2_code": "TK",
             "alpha3_code": "TKL",
-            "currencies": [{"code": "NZD", "name": "New Zealand dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "NZD", "name": "New Zealand dollar", "symbol": "$"}
+            ],
             "capital": "Fakaofo",
             "calling_codes": ["690"],
             "alt_spellings": ["TK"],
@@ -12241,7 +13448,12 @@ WorldData = {
             "name": "Tokelau",
             "numeric_code": "772",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/tkl.svg",
             "regional_blocs": [],
@@ -12250,7 +13462,9 @@ WorldData = {
         "tonga": {
             "alpha2_code": "TO",
             "alpha3_code": "TON",
-            "currencies": [{"code": "TOP", "name": "Tongan pa\u02bbanga", "symbol": "T$"}],
+            "currencies": [
+                {"code": "TOP", "name": "Tongan pa\u02bbanga", "symbol": "T$"}
+            ],
             "capital": "Nuku'alofa",
             "calling_codes": ["676"],
             "alt_spellings": ["TO"],
@@ -12280,7 +13494,12 @@ WorldData = {
             "name": "Tonga",
             "numeric_code": "776",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "to",
                     "iso639_2": "ton",
@@ -12295,7 +13514,9 @@ WorldData = {
         "trinidad and tobago": {
             "alpha2_code": "TT",
             "alpha3_code": "TTO",
-            "currencies": [{"code": "TTD", "name": "Trinidad and Tobago dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "TTD", "name": "Trinidad and Tobago dollar", "symbol": "$"}
+            ],
             "capital": "Port of Spain",
             "calling_codes": ["1868"],
             "alt_spellings": ["TT", "Republic of Trinidad and Tobago"],
@@ -12325,7 +13546,12 @@ WorldData = {
             "name": "Trinidad and Tobago",
             "numeric_code": "780",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/tto.svg",
             "regional_blocs": [
@@ -12345,7 +13571,9 @@ WorldData = {
         "tunisia": {
             "alpha2_code": "TN",
             "alpha3_code": "TUN",
-            "currencies": [{"code": "TND", "name": "Tunisian dinar", "symbol": "\u062f.\u062a"}],
+            "currencies": [
+                {"code": "TND", "name": "Tunisian dinar", "symbol": "\u062f.\u062a"}
+            ],
             "capital": "Tunis",
             "calling_codes": ["216"],
             "alt_spellings": [
@@ -12419,7 +13647,12 @@ WorldData = {
             "currencies": [{"code": "TRY", "name": "Turkish lira", "symbol": null}],
             "capital": "Ankara",
             "calling_codes": ["90"],
-            "alt_spellings": ["TR", "Turkiye", "Republic of Turkey", "T\u00fcrkiye Cumhuriyeti"],
+            "alt_spellings": [
+                "TR",
+                "Turkiye",
+                "Republic of Turkey",
+                "T\u00fcrkiye Cumhuriyeti",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Western Asia",
@@ -12460,7 +13693,9 @@ WorldData = {
         "turkmenistan": {
             "alpha2_code": "TM",
             "alpha3_code": "TKM",
-            "currencies": [{"code": "TMT", "name": "Turkmenistan manat", "symbol": "m"}],
+            "currencies": [
+                {"code": "TMT", "name": "Turkmenistan manat", "symbol": "m"}
+            ],
             "capital": "Ashgabat",
             "calling_codes": ["993"],
             "alt_spellings": ["TM"],
@@ -12510,7 +13745,9 @@ WorldData = {
         "turks and caicos islands": {
             "alpha2_code": "TC",
             "alpha3_code": "TCA",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Cockburn Town",
             "calling_codes": ["1649"],
             "alt_spellings": ["TC"],
@@ -12540,7 +13777,12 @@ WorldData = {
             "name": "Turks and Caicos Islands",
             "numeric_code": "796",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/tca.svg",
             "regional_blocs": [],
@@ -12582,7 +13824,12 @@ WorldData = {
             "name": "Tuvalu",
             "numeric_code": "798",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/tuv.svg",
             "regional_blocs": [],
@@ -12621,7 +13868,12 @@ WorldData = {
             "name": "Uganda",
             "numeric_code": "800",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "sw",
                     "iso639_2": "swa",
@@ -12649,7 +13901,9 @@ WorldData = {
         "ukraine": {
             "alpha2_code": "UA",
             "alpha3_code": "UKR",
-            "currencies": [{"code": "UAH", "name": "Ukrainian hryvnia", "symbol": "\u20b4"}],
+            "currencies": [
+                {"code": "UAH", "name": "Ukrainian hryvnia", "symbol": "\u20b4"}
+            ],
             "capital": "Kiev",
             "calling_codes": ["380"],
             "alt_spellings": ["UA", "Ukrayina"],
@@ -12694,7 +13948,11 @@ WorldData = {
             "alpha2_code": "AE",
             "alpha3_code": "ARE",
             "currencies": [
-                {"code": "AED", "name": "United Arab Emirates dirham", "symbol": "\u062f.\u0625"}
+                {
+                    "code": "AED",
+                    "name": "United Arab Emirates dirham",
+                    "symbol": "\u062f.\u0625",
+                }
             ],
             "capital": "Abu Dhabi",
             "calling_codes": ["971"],
@@ -12750,7 +14008,9 @@ WorldData = {
         "united kingdom": {
             "alpha2_code": "GB",
             "alpha3_code": "GBR",
-            "currencies": [{"code": "GBP", "name": "British pound", "symbol": "\u00a3"}],
+            "currencies": [
+                {"code": "GBP", "name": "British pound", "symbol": "\u00a3"}
+            ],
             "capital": "London",
             "calling_codes": ["44"],
             "alt_spellings": ["GB", "UK", "Great Britain"],
@@ -12790,18 +14050,30 @@ WorldData = {
             "name": "United Kingdom",
             "numeric_code": "826",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/gbr.svg",
             "regional_blocs": [
-                {"acronym": "EU", "name": "European Union", "otherAcronyms": [], "otherNames": []}
+                {
+                    "acronym": "EU",
+                    "name": "European Union",
+                    "otherAcronyms": [],
+                    "otherNames": [],
+                }
             ],
             "cioc": "GBR",
         },
         "united states": {
             "alpha2_code": "US",
             "alpha3_code": "USA",
-            "currencies": [{"code": "USD", "name": "United States dollar", "symbol": "$"}],
+            "currencies": [
+                {"code": "USD", "name": "United States dollar", "symbol": "$"}
+            ],
             "capital": "Washington, D.C.",
             "calling_codes": ["1"],
             "alt_spellings": ["US", "USA", "United States of America"],
@@ -12843,7 +14115,12 @@ WorldData = {
             "name": "United States of America",
             "numeric_code": "840",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/usa.svg",
             "regional_blocs": [
@@ -13012,8 +14289,18 @@ WorldData = {
             "name": "Vanuatu",
             "numeric_code": "548",
             "languages": [
-                {"iso639_1": "bi", "iso639_2": "bis", "name": "Bislama", "nativeName": "Bislama"},
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
+                {
+                    "iso639_1": "bi",
+                    "iso639_2": "bis",
+                    "name": "Bislama",
+                    "nativeName": "Bislama",
+                },
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
                 {
                     "iso639_1": "fr",
                     "iso639_2": "fra",
@@ -13028,7 +14315,9 @@ WorldData = {
         "venezuela (bolivarian republic of)": {
             "alpha2_code": "VE",
             "alpha3_code": "VEN",
-            "currencies": [{"code": "VEF", "name": "Venezuelan bol\u00edvar", "symbol": "Bs F"}],
+            "currencies": [
+                {"code": "VEF", "name": "Venezuelan bol\u00edvar", "symbol": "Bs F"}
+            ],
             "capital": "Caracas",
             "calling_codes": ["58"],
             "alt_spellings": [
@@ -13256,7 +14545,11 @@ WorldData = {
             "currencies": [{"code": "YER", "name": "Yemeni rial", "symbol": "\ufdfc"}],
             "capital": "Sana'a",
             "calling_codes": ["967"],
-            "alt_spellings": ["YE", "Yemeni Republic", "al-Jumh\u016briyyah al-Yamaniyyah"],
+            "alt_spellings": [
+                "YE",
+                "Yemeni Republic",
+                "al-Jumh\u016briyyah al-Yamaniyyah",
+            ],
             "relevance": null,
             "region": "Asia",
             "subregion": "Western Asia",
@@ -13338,7 +14631,12 @@ WorldData = {
             "name": "Zambia",
             "numeric_code": "894",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"}
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                }
             ],
             "flag": "https://restcountries.eu/data/zmb.svg",
             "regional_blocs": [
@@ -13400,8 +14698,18 @@ WorldData = {
             "name": "Zimbabwe",
             "numeric_code": "716",
             "languages": [
-                {"iso639_1": "en", "iso639_2": "eng", "name": "English", "nativeName": "English"},
-                {"iso639_1": "sn", "iso639_2": "sna", "name": "Shona", "nativeName": "chiShona"},
+                {
+                    "iso639_1": "en",
+                    "iso639_2": "eng",
+                    "name": "English",
+                    "nativeName": "English",
+                },
+                {
+                    "iso639_1": "sn",
+                    "iso639_2": "sna",
+                    "name": "Shona",
+                    "nativeName": "chiShona",
+                },
                 {
                     "iso639_1": "nd",
                     "iso639_2": "nde",

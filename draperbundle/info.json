@@ -1,14 +1,29 @@
 {
-    "author": ["Drapersniper"],
-    "name": "Draper cogs",
-    "disabled": false,
-    "description": "A bundle of Cogs.",
-    "tags": [
+    "author" : [
+        "Drapersniper"
+    ],
+    "description" : "A bundle of Cogs.",
+    "disabled" : false,
+    "end_user_data_statement" : "This cog does not persistently store data or metadata about users.",
+    "hidden" : false,
+    "install_msg" : "Thanks for installing",
+    "max_bot_version" : "0.0.0",
+    "min_bot_version" : "3.4.0",
+    "min_python_version" : [3, 8, 1],
+    "name" : "Draper cogs",
+    "permissions" : [],
+    "required_cogs" : {},
+    "requirements" : [
+        "regex",
+        "python-dateutil",
+        "pytz"
+    ],
+    "short" : "Thanks for installing",
+    "tags" : [
         "voice-channels",
         "gaming",
         "profile",
         "utility"
     ],
-    "hidden": false,
-    "requirements": ["regex", "python-dateutil", "pytz"]
+    "type" : "COG"
 }

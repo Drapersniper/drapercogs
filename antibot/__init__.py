@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Cog Relative Imports
 from .antibot import AntiBot
 
 

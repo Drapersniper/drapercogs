@@ -122,7 +122,9 @@ class AudioEvents(MixinMeta, metaclass=CompositeMetaClass):
                     bot=self.bot,
                 )
             except Exception as err:
-                debug_exc_log(log, err, f"Failed to delete daily playlist ID: {too_old_id}")
+                debug_exc_log(
+                    log, err, f"Failed to delete daily playlist ID: {too_old_id}"
+                )
             try:
                 await delete_playlist(
                     scope=PlaylistScope.GLOBAL.value,
@@ -133,7 +135,9 @@ class AudioEvents(MixinMeta, metaclass=CompositeMetaClass):
                     bot=self.bot,
                 )
             except Exception as err:
-                debug_exc_log(log, err, f"Failed to delete global daily playlist ID: {too_old_id}")
+                debug_exc_log(
+                    log, err, f"Failed to delete global daily playlist ID: {too_old_id}"
+                )
         persist_cache = self._persist_queue_cache.setdefault(
             guild.id, await self.config.guild(guild).persist_queue()
         )

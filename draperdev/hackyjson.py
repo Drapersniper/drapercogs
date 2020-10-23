@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import importlib
-import json
+import json as stblib_json
 
 MODULES = ("orjson", "ujson")
 
 mainjson = None
 
-__all__ = ["dump", "dumps", "load", "loads", "overload_stdlib"]
+__all__ = [
+    "dump",
+    "dumps",
+    "load",
+    "loads",
+    "overload_stdlib",
+    "json_module",
+]
 
 backup_dumps = None
 backup_dump = None
@@ -31,13 +37,16 @@ for item in MODULES:
         mainjson = MODULES_IMPORTS[index]
 
         if mainjson:
+            json_module = item
             break
+
 if mainjson is None:
-    mainjson = json
+    mainjson = stblib_json
+    json_module = "json"
 
 
 def reset_modules():
-    global MODULES_IMPORTS, MODULES_NAME, mainjson
+    global MODULES_IMPORTS, MODULES_NAME, mainjson, json_module
     MODULES_IMPORTS = list(import_modules())
     MODULES_NAME = [module.__name__ for module in MODULES_IMPORTS]
     for item in MODULES:
@@ -46,29 +55,37 @@ def reset_modules():
             mainjson = MODULES_IMPORTS[index]
 
             if mainjson:
+                json_module = item
                 break
     if mainjson is None:
-        mainjson = json
+        mainjson = stblib_json
+        json_module = "json"
 
 
 def dumps(obj, **kw):
     output = mainjson.dumps(obj)
-    with contextlib.suppress(AttributeError):
+    if json_module == "orjson" and hasattr(output, "decode"):
         output = output.decode("utf-8")
     return output
 
 
 def loads(obj, **kw):
-    return mainjson.loads(obj)
+    try:
+        output = mainjson.loads(obj)
+    except ValueError as e:
+        raise stblib_json.JSONDecodeError(str(e), "", 0)
+    if json_module == "orjson" and hasattr(output, "decode"):
+        output = output.decode("utf-8")
+    return output
 
 
 def dump(obj, fp, **kw):
-    return fp.write(dumps(obj))
+    return fp.write(dumps(obj, **kw))
 
 
 def load(fp, **kw):
     data = fp.read()
-    return mainjson.loads(data)
+    return loads(data, **kw)
 
 
 def overload_stdlib():

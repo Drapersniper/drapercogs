@@ -58,7 +58,9 @@ class DynamicChannels(commands.Cog):
 
         async with self.config.guild(ctx.guild).blacklist() as blacklist:
             blacklisted_users = blacklist["blacklist"]
-            blacklisted_users = [u for u in blacklisted_users if u not in [m.id for m in users]]
+            blacklisted_users = [
+                u for u in blacklisted_users if u not in [m.id for m in users]
+            ]
             blacklist["blacklist"] = list(set(blacklisted_users))
 
         self.config_cache[ctx.guild.id]["blacklist"] = await self.config.guild(
@@ -68,11 +70,18 @@ class DynamicChannels(commands.Cog):
 
     @_button.command(name="add")
     async def _button_add(
-        self, ctx: commands.Context, category_id: str, size: Optional[int] = 0, *, room_name: str
+        self,
+        ctx: commands.Context,
+        category_id: str,
+        size: Optional[int] = 0,
+        *,
+        room_name: str,
     ):
         """Whitelist a category to have multiple types of Dynamic voice channels."""
         valid_categories = {
-            str(category.id): category.name for category in ctx.guild.categories if category
+            str(category.id): category.name
+            for category in ctx.guild.categories
+            if category
         }
 
         if valid_categories and category_id not in valid_categories:
@@ -86,7 +95,9 @@ class DynamicChannels(commands.Cog):
             await ctx.send(f"ERROR: No valid categories in {ctx.guild.name}")
             return
 
-        category = next((c for c in ctx.guild.categories if c.id == int(category_id)), None)
+        category = next(
+            (c for c in ctx.guild.categories if c.id == int(category_id)), None
+        )
         await ctx.guild.create_voice_channel(
             user_limit=size,
             name=room_name.format(number=1),
@@ -111,7 +122,9 @@ class DynamicChannels(commands.Cog):
     ):
         """Whitelist a category to have multiple types of Dynamic voice channels."""
         valid_categories = {
-            f"{category.id}": category.name for category in ctx.guild.categories if category
+            f"{category.id}": category.name
+            for category in ctx.guild.categories
+            if category
         }
         whitelisted_cat = await ConfigHolder.DynamicChannels.guild(
             ctx.guild
@@ -133,7 +146,9 @@ class DynamicChannels(commands.Cog):
             )
             return
 
-        category = next((c for c in ctx.guild.categories if c.id == int(category_id)), None)
+        category = next(
+            (c for c in ctx.guild.categories if c.id == int(category_id)), None
+        )
         await ctx.guild.create_voice_channel(
             user_limit=size,
             name=room_name.format(number=1),
@@ -171,15 +186,18 @@ class DynamicChannels(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(
-        self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
+        self,
+        channel: Union[
+            discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel
+        ],
     ):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
         if "dynamic_channels" not in self.config_cache[channel.guild.id]:
-            self.config_cache[channel.guild.id]["dynamic_channels"] = await self.config.guild(
-                channel.guild
-            ).dynamic_channels()
+            self.config_cache[channel.guild.id][
+                "dynamic_channels"
+            ] = await self.config.guild(channel.guild).dynamic_channels()
         if (
             isinstance(channel, discord.VoiceChannel)
             and channel.category
@@ -192,34 +210,44 @@ class DynamicChannels(commands.Cog):
             channel_group = self.config.guild(channel.guild)
             async with channel_group.user_created_voice_channels() as channel_data:
                 if f"{channel.id}" in channel_data:
-                    log.debug(f"Dynamic Channel ({channel.id}) has been deleted from database")
+                    log.debug(
+                        f"Dynamic Channel ({channel.id}) has been deleted from database"
+                    )
                     del channel_data[f"{channel.id}"]
 
     @commands.Cog.listener()
     async def on_guild_channel_create(
-        self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
+        self,
+        channel: Union[
+            discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel
+        ],
     ):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
             return
         if "dynamic_channels" not in self.config_cache[channel.guild.id]:
-            self.config_cache[channel.guild.id]["dynamic_channels"] = await self.config.guild(
-                channel.guild
-            ).dynamic_channels()
+            self.config_cache[channel.guild.id][
+                "dynamic_channels"
+            ] = await self.config.guild(channel.guild).dynamic_channels()
         if (
             isinstance(channel, discord.VoiceChannel)
             and channel.category
             and f"{channel.category.id}"
             in (self.config_cache[channel.guild.id]["dynamic_channels"])
         ):
-            log.debug(f"Dynamic Channel ({channel.id}) has been created adding to database")
+            log.debug(
+                f"Dynamic Channel ({channel.id}) has been created adding to database"
+            )
             channel_group = self.config.guild(channel.guild)
             async with channel_group.user_created_voice_channels() as channel_data:
                 channel_data.update({channel.id: channel.name})
 
     @commands.Cog.listener()
     async def on_voice_state_update(
-        self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
+        self,
+        member: discord.Member,
+        before: discord.VoiceState,
+        after: discord.VoiceState,
     ):
         guild = member.guild
         has_perm = guild.me.guild_permissions.manage_channels
@@ -228,9 +256,9 @@ class DynamicChannels(commands.Cog):
         if member.bot:
             return
         if "dynamic_channels" not in self.config_cache[member.guild.id]:
-            self.config_cache[member.guild.id]["dynamic_channels"] = await self.config.guild(
-                member.guild
-            ).dynamic_channels()
+            self.config_cache[member.guild.id][
+                "dynamic_channels"
+            ] = await self.config.guild(member.guild).dynamic_channels()
         if not self.config_cache[member.guild.id]["dynamic_channels"]:
             return
         if "blacklist" not in self.config_cache[member.guild.id]:
@@ -259,7 +287,9 @@ class DynamicChannels(commands.Cog):
             ):
                 voice_channels = category.voice_channels
                 voice_channels_empty = [
-                    channel for channel in voice_channels if sum(1 for _ in channel.members) < 1
+                    channel
+                    for channel in voice_channels
+                    if sum(1 for _ in channel.members) < 1
                 ]
                 category_config = whitelist[f"{after.channel.category.id}"]
                 for room_name, room_size in category_config:
@@ -307,7 +337,9 @@ class DynamicChannels(commands.Cog):
                 category = before.channel.category
                 voice_channels = category.voice_channels
                 voice_channels_empty = [
-                    channel for channel in voice_channels if sum(1 for _ in channel.members) < 1
+                    channel
+                    for channel in voice_channels
+                    if sum(1 for _ in channel.members) < 1
                 ]
                 category_config = whitelist[f"{before.channel.category.id}"]
                 for room_name, room_size in category_config:
@@ -335,7 +367,9 @@ class DynamicChannels(commands.Cog):
                             category=category,
                             bitrate=member.guild.bitrate_limit,
                         )
-                        log.debug(f"New dynamic channel has been created: {created_channel.name}")
+                        log.debug(
+                            f"New dynamic channel has been created: {created_channel.name}"
+                        )
                         guild_group = self.config.guild(member.guild)
                         async with guild_group.user_created_voice_channels() as user_voice:
                             user_voice.update({created_channel.id: created_channel.id})
@@ -352,7 +386,9 @@ class DynamicChannels(commands.Cog):
                     channel, _ = channel_data
                     log.debug(f"{channel.name} will be deleted")
                     with contextlib.suppress(discord.HTTPException):
-                        await channel.delete(reason="Deleting channel due to it being empty")
+                        await channel.delete(
+                            reason="Deleting channel due to it being empty"
+                        )
                         log.debug(f"{channel.name} has been deleted")
                     if f"{channel.id}" in user_voice:
                         del user_voice[f"{channel.id}"]
@@ -367,7 +403,9 @@ class DynamicChannels(commands.Cog):
                     for guild in guilds:
                         has_perm = guild.me.guild_permissions.manage_channels
                         keep_id = {}
-                        data = await self.config.guild(guild).user_created_voice_channels()
+                        data = await self.config.guild(
+                            guild
+                        ).user_created_voice_channels()
                         for channel_id in list(data.items()):
                             channel = guild.get_channel(channel_id)
                             if channel:
@@ -382,7 +420,9 @@ class DynamicChannels(commands.Cog):
                                         )
                                 else:
                                     keep_id.update({channel_id: channel_id})
-                        await self.config.guild(guild).user_created_voice_channels.set(keep_id)
+                        await self.config.guild(guild).user_created_voice_channels.set(
+                            keep_id
+                        )
                     await asyncio.sleep(60)
             except Exception as e:
                 log.exception("Error on channel cleanup", exc_info=e)

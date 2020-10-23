@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import logging
 
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Tuple, Union, Mapping
 
-# Cog Dependencies
 import aiohttp
 import discord
 
 from redbot.core import Config, commands
 from redbot.core.utils.mod import get_audit_reason, is_allowed_by_hierarchy
 
-# Cog Relative Imports
 from .converters import ConvertUserAPI
 
 try:
@@ -23,7 +20,9 @@ except Exception as e:
 
 log = logging.getLogger("red.cogs.AntiBot")
 
-discord_base_avatar_re = regex.compile(r"discordapp\.com\/embed\/avatars\/\d+", regex.IGNORECASE)
+discord_base_avatar_re = regex.compile(
+    r"discordapp\.com\/embed\/avatars\/\d+", regex.IGNORECASE
+)
 discord_name_re = regex.compile(
     r"^\p{Letter}+\p{Number}+$|"
     r"^(\p{Letter}+\.)+(\p{Letter}+\p{Number}?)?$|"
@@ -48,7 +47,9 @@ _ = lambda s: s
 class AntiBot(commands.Cog):
     def __init__(self, bot, *args, **kwargs):
         self.bot = bot
-        self.config = Config.get_conf(self, identifier=8475527184, force_registration=True)
+        self.config = Config.get_conf(
+            self, identifier=8475527184, force_registration=True
+        )
         self.config.register_guild(**_default_guild)
         self.session = aiohttp.ClientSession()
         self.ban_api = {}
@@ -82,7 +83,9 @@ class AntiBot(commands.Cog):
             enabled = not await self.config.guild(ctx.guild).automod()
         await self.config.guild(ctx.guild).automod.set(enabled)
         await ctx.maybe_send_embed(
-            _("Auto mod is: {status}").format(status=_("enabled") if enabled else _("disabled"))
+            _("Auto mod is: {status}").format(
+                status=_("enabled") if enabled else _("disabled")
+            )
         )
 
     @commands.admin()
@@ -93,7 +96,9 @@ class AntiBot(commands.Cog):
             days = 0
         await self.config.guild(ctx.guild).daythreshold.set(days)
         await ctx.maybe_send_embed(
-            _("Accounts older than {days} will bypass auto moderation").format(days=days)
+            _("Accounts older than {days} will bypass auto moderation").format(
+                days=days
+            )
         )
 
     @commands.admin()
@@ -103,12 +108,14 @@ class AntiBot(commands.Cog):
         await self.config.guild(ctx.guild).appealinvite.set(invite)
         if invite:
             await ctx.maybe_send_embed(
-                _("On auto moderation I will now send users `{invite}` so they can appeal").format(
-                    invite=invite
-                )
+                _(
+                    "On auto moderation I will now send users `{invite}` so they can appeal"
+                ).format(invite=invite)
             )
         else:
-            await ctx.maybe_send_embed(_("I'll silently auto moderate with no option to appeal"))
+            await ctx.maybe_send_embed(
+                _("I'll silently auto moderate with no option to appeal")
+            )
 
     @_automod.command()
     async def whitelist(
@@ -123,7 +130,9 @@ class AntiBot(commands.Cog):
             if user.id not in data:
                 data.append(user.id)
                 await ctx.maybe_send_embed(
-                    _("{user} ({user.id}) will bypass the automation check").format(user=user)
+                    _("{user} ({user.id}) will bypass the automation check").format(
+                        user=user
+                    )
                 )
             else:
                 data.remove(user.id)
@@ -146,7 +155,9 @@ class AntiBot(commands.Cog):
             if user.id not in data:
                 data.append(user.id)
                 await ctx.maybe_send_embed(
-                    _("{user} ({user.id}) will always be kicked on rejoin").format(user=user)
+                    _("{user} ({user.id}) will always be kicked on rejoin").format(
+                        user=user
+                    )
                 )
             else:
                 data.remove(user.id)
@@ -176,7 +187,9 @@ class AntiBot(commands.Cog):
         extendedmodlog = self.bot.get_cog("ExtendedModLog")
         if extendedmodlog is None:
             return await ctx.maybe_send_embed(
-                _("You need the `{dep}`cog for this to work").format(dep="ExtendedModLog")
+                _("You need the `{dep}`cog for this to work").format(
+                    dep="ExtendedModLog"
+                )
             )
         added = []
         removed = []
@@ -191,7 +204,9 @@ class AntiBot(commands.Cog):
         if added:
             added = "\n".join(added)
             await ctx.maybe_send_embed(
-                _("I've marked the following invites as spammy:\n\n{invs}").format(invs=added)
+                _("I've marked the following invites as spammy:\n\n{invs}").format(
+                    invs=added
+                )
             )
         if added:
             removed = "\n".join(removed)
@@ -208,7 +223,9 @@ class AntiBot(commands.Cog):
         extendedmodlog = self.bot.get_cog("ExtendedModLog")
         if extendedmodlog is None:
             return await ctx.maybe_send_embed(
-                _("You need the `{dep}` cog for this to work").format(dep="ExtendedModLog")
+                _("You need the `{dep}` cog for this to work").format(
+                    dep="ExtendedModLog"
+                )
             )
         added = []
         removed = []
@@ -230,9 +247,9 @@ class AntiBot(commands.Cog):
         if added:
             removed = "\n".join(removed)
             await ctx.maybe_send_embed(
-                _("The following links will no longer bypass auto moderation:\n\n{invs}").format(
-                    invs=removed
-                )
+                _(
+                    "The following links will no longer bypass auto moderation:\n\n{invs}"
+                ).format(invs=removed)
             )
 
     @commands.Cog.listener()
@@ -244,7 +261,9 @@ class AntiBot(commands.Cog):
         guild = member.guild
         whitelist = await self.config.guild(guild).whitelist()
         if member.id in whitelist:
-            log.info(f"{member} has been added to guild whitelist skipping automated checks")
+            log.info(
+                f"{member} has been added to guild whitelist skipping automated checks"
+            )
             return
         toggle = await self.config.guild(guild).autoban()
         ban = False
@@ -346,7 +365,9 @@ class AntiBot(commands.Cog):
                     self.kick_queue.remove(queue_entry)
             if queue_entry not in self.kick_queue:
                 if appeal:
-                    await self.send_appeal_info(member, guild, "kick", invite=appeal, is_auto=True)
+                    await self.send_appeal_info(
+                        member, guild, "kick", invite=appeal, is_auto=True
+                    )
                 # noinspection PyTypeChecker
                 await self.kick_user(
                     member,
@@ -369,7 +390,9 @@ class AntiBot(commands.Cog):
             return True
 
     @staticmethod
-    async def send_appeal_info(user, guild, action, invite, is_auto=False, reason=None) -> None:
+    async def send_appeal_info(
+        user, guild, action, invite, is_auto=False, reason=None
+    ) -> None:
         with contextlib.suppress(discord.HTTPException, discord.Forbidden):
             # We don't want blocked DMs preventing us from banning/kicking
             if is_auto:
@@ -397,7 +420,9 @@ class AntiBot(commands.Cog):
                     )
                 )
             await user.send(
-                _("Here is an invite to the appeal server: {invite}").format(invite=invite)
+                _("Here is an invite to the appeal server: {invite}").format(
+                    invite=invite
+                )
             )
 
     async def kick_user(
@@ -421,7 +446,9 @@ class AntiBot(commands.Cog):
 
         if author == user:
             return "I cannot let you do that. Self-harm is bad \N{PENSIVE FACE}"
-        elif not await is_allowed_by_hierarchy(self.bot, self.config, guild, author, user):
+        elif not await is_allowed_by_hierarchy(
+            self.bot, self.config, guild, author, user
+        ):
             return (
                 "I cannot let you do that. You are "
                 "not higher than the user in the role "
@@ -490,7 +517,9 @@ class AntiBot(commands.Cog):
 
         if author == user:
             return "I cannot let you do that. Self-harm is bad \N{PENSIVE FACE}"
-        elif not await is_allowed_by_hierarchy(self.bot, self.config, guild, author, user):
+        elif not await is_allowed_by_hierarchy(
+            self.bot, self.config, guild, author, user
+        ):
             return (
                 "I cannot let you do that. You are "
                 "not higher than the user in the role "
@@ -525,7 +554,15 @@ class AntiBot(commands.Cog):
         try:
             if modlog:
                 await modlog.create_case(
-                    self.bot, guild, now, "ban", user, author, reason, until=None, channel=None
+                    self.bot,
+                    guild,
+                    now,
+                    "ban",
+                    user,
+                    author,
+                    reason,
+                    until=None,
+                    channel=None,
                 )
         except RuntimeError as err:
             return (

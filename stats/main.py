@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-# Standard Library
 import datetime
 
 from collections import Counter, defaultdict
 
-# Cog Dependencies
 from types import SimpleNamespace
 
 import discord
@@ -13,7 +11,11 @@ import lavalink
 from redbot.core import commands
 from redbot.core.bot import Red
 from redbot.core.utils import AsyncIter
-from redbot.core.utils.chat_formatting import bold, humanize_number, humanize_timedelta, pagify
+from redbot.core.utils.chat_formatting import (
+    bold,
+    humanize_number,
+    humanize_timedelta,
+)
 
 _ = lambda s: s
 
@@ -182,7 +184,9 @@ class Stats(commands.Cog):
                         counter["user_voice_channel_count"] += len(vc.members)
 
                         if s.me in vc.members:
-                            counter["user_voice_channel_with_me_count"] += len(vc.members) - 1
+                            counter["user_voice_channel_with_me_count"] += (
+                                len(vc.members) - 1
+                            )
                             counter["bots_voice_channel_with_me_count"] += (
                                 sum(1 for m in vc.members if m.bot) - 1
                             )
@@ -305,10 +309,16 @@ class Stats(commands.Cog):
                     "\N{MEDIUM WHITE CIRCLE}": counter["offline_users"],
                     "\N{LARGE PURPLE CIRCLE}": counter["streaming_users"],
                     "\N{MOBILE PHONE}": counter["mobile_users"],
-                    "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter["streaming_users"],
+                    "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter[
+                        "streaming_users"
+                    ],
                     "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": counter["gaming_users"],
-                    "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter["listening_users"],
-                    "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter["watching_users"],
+                    "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter[
+                        "listening_users"
+                    ],
+                    "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter[
+                        "watching_users"
+                    ],
                     _("Custom"): counter["custom_users"],
                 }
                 online_stats_web = {
@@ -335,7 +345,9 @@ class Stats(commands.Cog):
                     "\N{LARGE RED CIRCLE}": counter["do_not_disturb_bots"],
                     "\N{MEDIUM WHITE CIRCLE}": counter["offline_bots"],
                     "\N{LARGE PURPLE CIRCLE}": counter["streaming_bots"],
-                    "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter["streaming_bots"],
+                    "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter[
+                        "streaming_bots"
+                    ],
                     "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": counter["gaming_bots"],
                     "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter["listening_bots"],
                     "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter["watching_bots"],
@@ -347,22 +359,38 @@ class Stats(commands.Cog):
                     "\N{LARGE RED CIRCLE}": counter["do_not_disturb_human"],
                     "\N{MEDIUM WHITE CIRCLE}": counter["offline_human"],
                     "\N{LARGE PURPLE CIRCLE}": counter["streaming_human"],
-                    "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter["streaming_human"],
+                    "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": counter[
+                        "streaming_human"
+                    ],
                     "\N{VIDEO GAME}\N{VARIATION SELECTOR-16}": counter["gaming_human"],
-                    "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter["listening_human"],
-                    "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter["watching_human"],
+                    "\N{HEADPHONE}\N{VARIATION SELECTOR-16}": counter[
+                        "listening_human"
+                    ],
+                    "\N{TELEVISION}\N{VARIATION SELECTOR-16}": counter[
+                        "watching_human"
+                    ],
                     _("Custom"): counter["custom_human"],
                 }
             else:
                 online_stats = {
-                    "\N{LARGE GREEN CIRCLE}": getattr(self.bot.stats.bot, "Users Online", 0),
-                    "\N{LARGE ORANGE CIRCLE}": getattr(self.bot.stats.bot, "Idle Users", 0),
+                    "\N{LARGE GREEN CIRCLE}": getattr(
+                        self.bot.stats.bot, "Users Online", 0
+                    ),
+                    "\N{LARGE ORANGE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Idle Users", 0
+                    ),
                     "\N{LARGE RED CIRCLE}": getattr(
                         self.bot.stats.bot, "Users in Do Not Disturb", 0
                     ),
-                    "\N{MEDIUM WHITE CIRCLE}": getattr(self.bot.stats.bot, "Users Offline", 0),
-                    "\N{LARGE PURPLE CIRCLE}": getattr(self.bot.stats.bot, "Users Streaming", 0),
-                    "\N{MOBILE PHONE}": getattr(self.bot.stats.bot, "Users Online on Mobile", 0),
+                    "\N{MEDIUM WHITE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Users Offline", 0
+                    ),
+                    "\N{LARGE PURPLE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Users Streaming", 0
+                    ),
+                    "\N{MOBILE PHONE}": getattr(
+                        self.bot.stats.bot, "Users Online on Mobile", 0
+                    ),
                     "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Users Streaming", 0
                     ),
@@ -375,7 +403,9 @@ class Stats(commands.Cog):
                     "\N{TELEVISION}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Users Watching", 0
                     ),
-                    _("Custom"): getattr(self.bot.stats.bot, "Users with Custom Status", 0),
+                    _("Custom"): getattr(
+                        self.bot.stats.bot, "Users with Custom Status", 0
+                    ),
                 }
                 online_stats_web = {
                     "\N{LARGE GREEN CIRCLE}": getattr(
@@ -420,13 +450,21 @@ class Stats(commands.Cog):
                     ),
                 }
                 online_stats_bots = {
-                    "\N{LARGE GREEN CIRCLE}": getattr(self.bot.stats.bot, "Bots Online", 0),
-                    "\N{LARGE ORANGE CIRCLE}": getattr(self.bot.stats.bot, "Idle Bots", 0),
+                    "\N{LARGE GREEN CIRCLE}": getattr(
+                        self.bot.stats.bot, "Bots Online", 0
+                    ),
+                    "\N{LARGE ORANGE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Idle Bots", 0
+                    ),
                     "\N{LARGE RED CIRCLE}": getattr(
                         self.bot.stats.bot, "Bots in Do Not Disturb", 0
                     ),
-                    "\N{MEDIUM WHITE CIRCLE}": getattr(self.bot.stats.bot, "Bots Offline", 0),
-                    "\N{LARGE PURPLE CIRCLE}": getattr(self.bot.stats.bot, "Bots Streaming", 0),
+                    "\N{MEDIUM WHITE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Bots Offline", 0
+                    ),
+                    "\N{LARGE PURPLE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Bots Streaming", 0
+                    ),
                     "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Bots Streaming", 0
                     ),
@@ -439,16 +477,26 @@ class Stats(commands.Cog):
                     "\N{TELEVISION}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Bots Watching", 0
                     ),
-                    _("Custom"): getattr(self.bot.stats.bot, "Bots with Custom Status", 0),
+                    _("Custom"): getattr(
+                        self.bot.stats.bot, "Bots with Custom Status", 0
+                    ),
                 }
                 online_stats_humans = {
-                    "\N{LARGE GREEN CIRCLE}": getattr(self.bot.stats.bot, "Humans Online", 0),
-                    "\N{LARGE ORANGE CIRCLE}": getattr(self.bot.stats.bot, "Idle Humans", 0),
+                    "\N{LARGE GREEN CIRCLE}": getattr(
+                        self.bot.stats.bot, "Humans Online", 0
+                    ),
+                    "\N{LARGE ORANGE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Idle Humans", 0
+                    ),
                     "\N{LARGE RED CIRCLE}": getattr(
                         self.bot.stats.bot, "Humans in Do Not Disturb", 0
                     ),
-                    "\N{MEDIUM WHITE CIRCLE}": getattr(self.bot.stats.bot, "Humans Offline", 0),
-                    "\N{LARGE PURPLE CIRCLE}": getattr(self.bot.stats.bot, "Humans Streaming", 0),
+                    "\N{MEDIUM WHITE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Humans Offline", 0
+                    ),
+                    "\N{LARGE PURPLE CIRCLE}": getattr(
+                        self.bot.stats.bot, "Humans Streaming", 0
+                    ),
                     "\N{CLAPPER BOARD}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Humans Streaming", 0
                     ),
@@ -461,7 +509,9 @@ class Stats(commands.Cog):
                     "\N{TELEVISION}\N{VARIATION SELECTOR-16}": getattr(
                         self.bot.stats.bot, "Humans Watching", 0
                     ),
-                    _("Custom"): getattr(self.bot.stats.bot, "Humans with Custom Status", 0),
+                    _("Custom"): getattr(
+                        self.bot.stats.bot, "Humans with Custom Status", 0
+                    ),
                 }
 
         since = self.bot.uptime.strftime("%Y-%m-%d %H:%M:%S")
@@ -489,10 +539,18 @@ class Stats(commands.Cog):
             member_msg = _(
                 "Users online: {online}/{total_users}\nHumans: {humans}\nBots: {bots}\n"
             ).format(
-                online=bold(humanize_number(getattr(self.bot.stats.bot, "Users Online", 0))),
-                total_users=bold(humanize_number(getattr(self.bot.stats.bot, "Unique Users", 0))),
-                humans=bold(humanize_number(getattr(self.bot.stats.bot, "Humans Online", 0))),
-                bots=bold(humanize_number(getattr(self.bot.stats.bot, "Bots Online", 0))),
+                online=bold(
+                    humanize_number(getattr(self.bot.stats.bot, "Users Online", 0))
+                ),
+                total_users=bold(
+                    humanize_number(getattr(self.bot.stats.bot, "Unique Users", 0))
+                ),
+                humans=bold(
+                    humanize_number(getattr(self.bot.stats.bot, "Humans Online", 0))
+                ),
+                bots=bold(
+                    humanize_number(getattr(self.bot.stats.bot, "Bots Online", 0))
+                ),
             )
         count = 1
         for emoji, value in online_stats.items():
@@ -530,13 +588,27 @@ class Stats(commands.Cog):
                     "Unchunked servers: {chuncked}\n"
                     "Unavailable servers: {unavaliable}\n"
                 ).format(
-                    lat=bold(humanize_number(getattr(self.bot.stats.bot, "Discord Latency", 0))),
-                    shards=bold(humanize_number(getattr(self.bot.stats.bot, "Shards", 0))),
-                    total=bold(humanize_number(getattr(self.bot.stats.guilds, "Total", 0))),
-                    large=bold(humanize_number(getattr(self.bot.stats.guilds, "Large", 0))),
-                    chuncked=bold(humanize_number(getattr(self.bot.stats.guilds, "Unchunked", 0))),
+                    lat=bold(
+                        humanize_number(
+                            getattr(self.bot.stats.bot, "Discord Latency", 0)
+                        )
+                    ),
+                    shards=bold(
+                        humanize_number(getattr(self.bot.stats.bot, "Shards", 0))
+                    ),
+                    total=bold(
+                        humanize_number(getattr(self.bot.stats.guilds, "Total", 0))
+                    ),
+                    large=bold(
+                        humanize_number(getattr(self.bot.stats.guilds, "Large", 0))
+                    ),
+                    chuncked=bold(
+                        humanize_number(getattr(self.bot.stats.guilds, "Unchunked", 0))
+                    ),
                     unavaliable=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Unavailable", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Unavailable", 0)
+                        )
                     ),
                 ),
             )
@@ -578,11 +650,25 @@ class Stats(commands.Cog):
                     "\N{DIGIT THREE}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP} Levels: {users}"
                 ).format(
                     total=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Nitro Boosted", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Nitro Boosted", 0)
+                        )
                     ),
-                    text=bold(humanize_number(getattr(self.bot.stats.guilds, "Tier 1 Nitro", 0))),
-                    voice=bold(humanize_number(getattr(self.bot.stats.guilds, "Tier 2 Nitro", 0))),
-                    users=bold(humanize_number(getattr(self.bot.stats.guilds, "Tier 3 Nitro", 0))),
+                    text=bold(
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Tier 1 Nitro", 0)
+                        )
+                    ),
+                    voice=bold(
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Tier 2 Nitro", 0)
+                        )
+                    ),
+                    users=bold(
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Tier 3 Nitro", 0)
+                        )
+                    ),
                 ),
             )
         if not bot_has_stats:
@@ -604,14 +690,22 @@ class Stats(commands.Cog):
                     store=bold(humanize_number(counter["store_text_channel_count"])),
                     nsfw=bold(humanize_number(counter["nsfw_text_channel_count"])),
                     news=bold(humanize_number(counter["news_text_channel_count"])),
-                    users_mobile=bold(humanize_number(counter["user_voice_channel_mobile_count"])),
+                    users_mobile=bold(
+                        humanize_number(counter["user_voice_channel_mobile_count"])
+                    ),
                     total=bold(humanize_number(counter["guild_channel_count"])),
                     text=bold(humanize_number(counter["guild_text_channel_count"])),
                     voice=bold(humanize_number(counter["guild_voice_channel_count"])),
                     users=bold(humanize_number(counter["user_voice_channel_count"])),
-                    with_me=bold(humanize_number(counter["user_voice_channel_with_me_count"])),
-                    categories=bold(humanize_number(counter["channel_categories_count"])),
-                    bot_with_me=bold(humanize_number(counter["bots_voice_channel_with_me_count"])),
+                    with_me=bold(
+                        humanize_number(counter["user_voice_channel_with_me_count"])
+                    ),
+                    categories=bold(
+                        humanize_number(counter["channel_categories_count"])
+                    ),
+                    bot_with_me=bold(
+                        humanize_number(counter["bots_voice_channel_with_me_count"])
+                    ),
                 ),
             )
         else:
@@ -631,35 +725,59 @@ class Stats(commands.Cog):
                     "\N{ROBOT FACE}\N{STUDIO MICROPHONE}\N{VARIATION SELECTOR-16} Bots in VC with me: {bot_with_me}\n"
                 ).format(
                     store=bold(
-                        humanize_number(getattr(self.bot.stats.bot, "Store Text Channels", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.bot, "Store Text Channels", 0)
+                        )
                     ),
                     nsfw=bold(
-                        humanize_number(getattr(self.bot.stats.bot, "NSFW Text Channels", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.bot, "NSFW Text Channels", 0)
+                        )
                     ),
                     news=bold(
-                        humanize_number(getattr(self.bot.stats.bot, "News Text Channels", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.bot, "News Text Channels", 0)
+                        )
                     ),
                     users_mobile=bold(
-                        humanize_number(getattr(self.bot.stats.bot, "Users in a VC on Mobile", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.bot, "Users in a VC on Mobile", 0)
+                        )
                     ),
                     total=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Server Channels", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Server Channels", 0)
+                        )
                     ),
-                    text=bold(humanize_number(getattr(self.bot.stats.guilds, "Text Channels", 0))),
+                    text=bold(
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Text Channels", 0)
+                        )
+                    ),
                     voice=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Voice Channels", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Voice Channels", 0)
+                        )
                     ),
                     users=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Users in a VC", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Users in a VC", 0)
+                        )
                     ),
                     with_me=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Users in a VC with me", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Users in a VC with me", 0)
+                        )
                     ),
                     categories=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Channel Categories", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Channel Categories", 0)
+                        )
                     ),
                     bot_with_me=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Bots in a VC with me", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Bots in a VC with me", 0)
+                        )
                     ),
                 ),
             )
@@ -668,11 +786,17 @@ class Stats(commands.Cog):
         if not bot_has_stats:
             for r, value in sorted(region_count.items(), reverse=False):
                 if value:
-                    region_data += f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
+                    region_data += (
+                        f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
+                    )
         else:
-            for r, value in sorted(self.bot.stats.guilds_regions.__dict__.items(), reverse=False):
+            for r, value in sorted(
+                self.bot.stats.guilds_regions.__dict__.items(), reverse=False
+            ):
                 if value:
-                    region_data += f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
+                    region_data += (
+                        f"{bold(humanize_number(value))} - {vc_regions.get(r)}\n"
+                    )
         if region_data:
             data.add_field(name=_("Regions:"), value=region_data)
 
@@ -680,9 +804,13 @@ class Stats(commands.Cog):
         if not bot_has_stats:
             for r, value in sorted(features_count.items(), reverse=False):
                 if value:
-                    features_data += f"{bold(humanize_number(value))} - {features.get(r) or r}\n"
+                    features_data += (
+                        f"{bold(humanize_number(value))} - {features.get(r) or r}\n"
+                    )
         else:
-            for k, value in sorted(self.bot.stats.guild_features.__dict__.items(), reverse=False):
+            for k, value in sorted(
+                self.bot.stats.guild_features.__dict__.items(), reverse=False
+            ):
                 if value:
                     features_data += f"{bold(humanize_number(value))} - {k}\n"
         if features_data:
@@ -712,17 +840,27 @@ class Stats(commands.Cog):
                     "Total Static Emojis: {static_emojis}\n"
                     "Total Currency: {currency}\n"
                 ).format(
-                    total=bold(humanize_number(getattr(self.bot.stats.guilds, "Roles", 0))),
-                    emoji_count=bold(humanize_number(getattr(self.bot.stats.guilds, "Emojis", 0))),
+                    total=bold(
+                        humanize_number(getattr(self.bot.stats.guilds, "Roles", 0))
+                    ),
+                    emoji_count=bold(
+                        humanize_number(getattr(self.bot.stats.guilds, "Emojis", 0))
+                    ),
                     animated_emoji=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Animated Emojis", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Animated Emojis", 0)
+                        )
                     ),
                     static_emojis=bold(
-                        humanize_number(getattr(self.bot.stats.guilds, "Static Emojis", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.guilds, "Static Emojis", 0)
+                        )
                     ),
                     currency=bold(
                         humanize_number(
-                            getattr(self.bot.stats.currency, "Currency In Circulation", 0)
+                            getattr(
+                                self.bot.stats.currency, "Currency In Circulation", 0
+                            )
                         )
                     ),
                 ),
@@ -820,12 +958,20 @@ class Stats(commands.Cog):
                     "Active Players: {active}\n"
                     "Inactive Players: {inactive}"
                 ).format(
-                    total=bold(humanize_number(getattr(self.bot.stats.audio, "Music Players", 0))),
+                    total=bold(
+                        humanize_number(
+                            getattr(self.bot.stats.audio, "Music Players", 0)
+                        )
+                    ),
                     active=bold(
-                        humanize_number(getattr(self.bot.stats.audio, "Active Music Players", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.audio, "Active Music Players", 0)
+                        )
                     ),
                     inactive=bold(
-                        humanize_number(getattr(self.bot.stats.audio, "Inactive Music Players", 0))
+                        humanize_number(
+                            getattr(self.bot.stats.audio, "Inactive Music Players", 0)
+                        )
                     ),
                 ),
             )

@@ -95,7 +95,9 @@ class CustomChannels(commands.Cog):
 
         async with self.config.guild(ctx.guild).blacklist() as blacklist:
             blacklisted_users = blacklist["blacklist"]
-            blacklisted_users = [u for u in blacklisted_users if u not in [m.id for m in users]]
+            blacklisted_users = [
+                u for u in blacklisted_users if u not in [m.id for m in users]
+            ]
             blacklist["blacklist"] = list(set(blacklisted_users))
         self.config_cache[ctx.guild.id]["blacklist"] = await self.config.guild(
             ctx.guild
@@ -129,7 +131,9 @@ class CustomChannels(commands.Cog):
         guild_data = self.config.guild(ctx.guild)
         async with guild_data.category_with_button() as whitelist:
             whitelist.update({category_id: room_id})
-            await ctx.send(f"Added {category_id} to the whitelist\nRooms ID is {room_id}")
+            await ctx.send(
+                f"Added {category_id} to the whitelist\nRooms ID is {room_id}"
+            )
 
     @_button.command(name="remove")
     async def _button_remove(self, ctx: commands.Context, category_id: str):
@@ -152,7 +156,9 @@ class CustomChannels(commands.Cog):
     ):
         """Whitelist roles to have manager permission on user created rooms."""
         roles_ids = [role.id for role in roles]
-        await self.config.guild(ctx.guild).user_created_voice_channels_bypass_roles.set(roles_ids)
+        await self.config.guild(ctx.guild).user_created_voice_channels_bypass_roles.set(
+            roles_ids
+        )
 
     @_button_roles.command(name="muted")
     async def _button_roles_manager(
@@ -164,7 +170,10 @@ class CustomChannels(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(
-        self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
+        self,
+        channel: Union[
+            discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel
+        ],
     ):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
@@ -181,12 +190,17 @@ class CustomChannels(commands.Cog):
             channel_group = self.config.guild(channel.guild)
             async with channel_group.custom_channels() as channel_data:
                 if f"{channel.id}" in channel_data:
-                    logger.debug(f"Custom Channel ({channel.id}) has been deleted from database")
+                    logger.debug(
+                        f"Custom Channel ({channel.id}) has been deleted from database"
+                    )
                     del channel_data[f"{channel.id}"]
 
     @commands.Cog.listener()
     async def on_guild_channel_create(
-        self, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]
+        self,
+        channel: Union[
+            discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel
+        ],
     ):
         has_perm = channel.guild.me.guild_permissions.manage_channels
         if not has_perm:
@@ -197,7 +211,9 @@ class CustomChannels(commands.Cog):
             and f"{channel.category.id}"
             in (await self.config.guild(channel.guild).category_with_button())
         ):
-            logger.debug(f"Custom Channel ({channel.id}) has been created adding to database")
+            logger.debug(
+                f"Custom Channel ({channel.id}) has been created adding to database"
+            )
             channel_group = self.config.guild(channel.guild)
             async with channel_group.custom_channels() as channel_data:
                 data = {channel.id: channel.name}
@@ -205,7 +221,10 @@ class CustomChannels(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(
-        self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
+        self,
+        member: discord.Member,
+        before: discord.VoiceState,
+        after: discord.VoiceState,
     ):
         guild = member.guild
         has_perm = guild.me.guild_permissions.manage_channels
@@ -226,16 +245,18 @@ class CustomChannels(commands.Cog):
             return
 
         if "category_with_button" not in self.config_cache[member.guild.id]:
-            self.config_cache[member.guild.id]["category_with_button"] = await self.config.guild(
-                member.guild
-            ).category_with_button()
+            self.config_cache[member.guild.id][
+                "category_with_button"
+            ] = await self.config.guild(member.guild).category_with_button()
         if "user_created_voice_channels" not in self.config_cache[member.guild.id]:
             self.config_cache[member.guild.id][
                 "user_created_voice_channels"
             ] = await self.config.guild(member.guild).user_created_voice_channels()
 
         whitelist = self.config_cache[member.guild.id]["category_with_button"]
-        user_created_channels = self.config_cache[member.guild.id]["user_created_voice_channels"]
+        user_created_channels = self.config_cache[member.guild.id][
+            "user_created_voice_channels"
+        ]
 
         if (
             after
@@ -247,8 +268,12 @@ class CustomChannels(commands.Cog):
         ):
             self.antispam[guild.id][member.id].stamp()
             logger.debug(f"User joined {after.channel.name} creating a new room")
-            max_position = max([channel.position for channel in after.channel.category.channels])
-            overwrites = await self._get_overrides(after.channel or before.channel, member)
+            max_position = max(
+                [channel.position for channel in after.channel.category.channels]
+            )
+            overwrites = await self._get_overrides(
+                after.channel or before.channel, member
+            )
             logger.debug(f"Creating channel: Rename me - {member}")
             created_channel = await member.guild.create_voice_channel(
                 name=f"Rename me - {member}",
@@ -263,7 +288,9 @@ class CustomChannels(commands.Cog):
                 voice_channel=created_channel,
                 reason=f"Moving {member.display_name} to newly created custom room",
             )
-            logger.debug(f"User {member.display_name} has been moved to: Rename me - {member}")
+            logger.debug(
+                f"User {member.display_name} has been moved to: Rename me - {member}"
+            )
             guild_group = self.config.guild(member.guild)
             async with guild_group.user_created_voice_channels() as user_voice:
                 logger.debug(
@@ -275,7 +302,9 @@ class CustomChannels(commands.Cog):
             ] = await self.config.guild(member.guild).user_created_voice_channels()
             member_group = self.config.member(member)
             async with member_group.currentRooms() as user_voice:
-                logger.debug(f"Adding {created_channel.name} to user rooms ({created_channel.id})")
+                logger.debug(
+                    f"Adding {created_channel.name} to user rooms ({created_channel.id})"
+                )
                 user_voice.update({created_channel.id: created_channel.id})
 
         await self.channel_cleaner(before, after, member.guild, user_created_channels)
@@ -286,7 +315,9 @@ class CustomChannels(commands.Cog):
         if owner:
             overwrites.update({owner: creator_permissions})
         overwrites.update({guild.default_role: default_permission})
-        for role_id in await self.config.guild(guild).user_created_voice_channels_bypass_roles():
+        for role_id in await self.config.guild(
+            guild
+        ).user_created_voice_channels_bypass_roles():
             if role_id:
                 role = guild.get_role(role_id)
                 if role:
@@ -323,10 +354,14 @@ class CustomChannels(commands.Cog):
                 if channel and sum(1 for _ in channel.members) < 1:
                     logger.debug(f"{channel.name} is empty trying to delete it")
                     try:
-                        await channel.delete(reason="User created room is empty cleaning up")
+                        await channel.delete(
+                            reason="User created room is empty cleaning up"
+                        )
                         logger.debug(f"{channel.name} has been removed")
                     except discord.NotFound:
-                        logger.debug(f"{channel.name} does not exist and couldn't be deleted")
+                        logger.debug(
+                            f"{channel.name} does not exist and couldn't be deleted"
+                        )
                     delete_id.update({channel_id_str: channel_id})
 
             for player in await self.config.all_members(guild):
@@ -341,8 +376,12 @@ class CustomChannels(commands.Cog):
             custom_channels_to_keep = {
                 k: v for k, v in custom_channels.items() if k not in delete_id
             }
-            await self.config.guild(guild).user_created_voice_channels.set(custom_channels_to_keep)
-            self.config_cache[guild.id]["user_created_voice_channels"] = custom_channels_to_keep
+            await self.config.guild(guild).user_created_voice_channels.set(
+                custom_channels_to_keep
+            )
+            self.config_cache[guild.id][
+                "user_created_voice_channels"
+            ] = custom_channels_to_keep
 
     async def clean_up_custom_channels(self):
         with contextlib.suppress(asyncio.CancelledError):
@@ -365,7 +404,9 @@ class CustomChannels(commands.Cog):
                         if channel:
                             logger.debug(f"Checking if {channel.name} is empty")
                             if sum(1 for _ in channel.members) < 1:
-                                logger.debug(f"{channel.name} is empty queueing it for deletion")
+                                logger.debug(
+                                    f"{channel.name} is empty queueing it for deletion"
+                                )
                                 if has_perm:
                                     await asyncio.sleep(5)
                                     await channel.delete(
@@ -375,7 +416,9 @@ class CustomChannels(commands.Cog):
                             else:
                                 logger.debug(f"{channel.name} is not empty")
                                 keep_id.update({channel_id_str: channel_id})
-                    await self.config.guild(guild).user_created_voice_channels.set(keep_id)
+                    await self.config.guild(guild).user_created_voice_channels.set(
+                        keep_id
+                    )
                     self.config_cache[guild.id]["user_created_voice_channels"] = keep_id
                 logger.debug(
                     f"clean_up_custom_channels scheduled has finished sleeping for {timer}s"

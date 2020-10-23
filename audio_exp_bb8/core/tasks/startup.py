@@ -41,14 +41,19 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
                 str(cog_data_path(self.bot.get_cog("Audio")) / "Audio.db")
             )
             self.api_interface = AudioAPIInterface(
-                self.bot, self.config, self.session, self.db_conn, self.bot.get_cog("Audio")
+                self.bot,
+                self.config,
+                self.session,
+                self.db_conn,
+                self.bot.get_cog("Audio"),
             )
             self.playlist_api = PlaylistWrapper(self.bot, self.config, self.db_conn)
             await self.playlist_api.init()
             await self.api_interface.initialize()
             self.global_api_user = await self.api_interface.global_cache_api.get_perms()
             await self.data_schema_migration(
-                from_version=await self.config.schema_version(), to_version=_SCHEMA_VERSION
+                from_version=await self.config.schema_version(),
+                to_version=_SCHEMA_VERSION,
             )
             await self.playlist_api.delete_scheduled()
             await self.api_interface.persistent_queue_api.delete_scheduled()
@@ -60,7 +65,9 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
             lavalink.register_event_listener(self.lavalink_event_handler)
             await self.restore_players()
         except Exception as err:
-            log.exception("Audio failed to start up, please report this issue.", exc_info=err)
+            log.exception(
+                "Audio failed to start up, please report this issue.", exc_info=err
+            )
             raise err
 
         self.cog_ready_event.set()
@@ -68,7 +75,9 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
     async def restore_players(self):
         tries = 0
         tracks_to_restore = await self.api_interface.persistent_queue_api.fetch_all()
-        for guild_id, track_data in itertools.groupby(tracks_to_restore, key=lambda x: x.guild_id):
+        for guild_id, track_data in itertools.groupby(
+            tracks_to_restore, key=lambda x: x.guild_id
+        ):
             await asyncio.sleep(0)
             try:
                 player: Optional[lavalink.Player]
@@ -105,7 +114,9 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
                             await asyncio.sleep(5)
                             tries += 1
                         except Exception as exc:
-                            debug_exc_log(log, exc, "Failed to restore music voice channel")
+                            debug_exc_log(
+                                log, exc, "Failed to restore music voice channel"
+                            )
                             if vc is None:
                                 break
 
@@ -124,7 +135,10 @@ class StartUpTasks(MixinMeta, metaclass=CompositeMetaClass):
                     await player.set_volume(volume)
                 for track in track_data:
                     track = track.track_object
-                    player.add(guild.get_member(track.extras.get("requester")) or guild.me, track)
+                    player.add(
+                        guild.get_member(track.extras.get("requester")) or guild.me,
+                        track,
+                    )
                 player.maybe_shuffle()
 
                 await player.play()

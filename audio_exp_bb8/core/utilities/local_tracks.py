@@ -34,7 +34,9 @@ class LocalTrackUtilities(MixinMeta, metaclass=CompositeMetaClass):
             else await audio_data.subfolders()
         )
 
-    async def get_localtrack_folder_list(self, ctx: commands.Context, query: Query) -> List[Query]:
+    async def get_localtrack_folder_list(
+        self, ctx: commands.Context, query: Query
+    ) -> List[Query]:
         """Return a list of folders per the provided query."""
         if not await self.localtracks_folder_exists(ctx):
             return []
@@ -65,7 +67,9 @@ class LocalTrackUtilities(MixinMeta, metaclass=CompositeMetaClass):
         except ValueError:
             return []
         local_tracks = []
-        async for local_file in AsyncIter(await self.get_all_localtrack_folder_tracks(ctx, query)):
+        async for local_file in AsyncIter(
+            await self.get_all_localtrack_folder_tracks(ctx, query)
+        ):
             with contextlib.suppress(IndexError, TrackEnqueueError):
                 trackdata, called_api = await self.api_interface.fetch_track(
                     ctx, player, local_file
@@ -76,7 +80,10 @@ class LocalTrackUtilities(MixinMeta, metaclass=CompositeMetaClass):
     async def _local_play_all(
         self, ctx: commands.Context, query: Query, from_search: bool = False
     ) -> None:
-        if not await self.localtracks_folder_exists(ctx) or query.local_track_path is None:
+        if (
+            not await self.localtracks_folder_exists(ctx)
+            or query.local_track_path is None
+        ):
             return None
         if from_search:
             query = Query.process_input(
@@ -89,7 +96,10 @@ class LocalTrackUtilities(MixinMeta, metaclass=CompositeMetaClass):
     async def get_all_localtrack_folder_tracks(
         self, ctx: commands.Context, query: Query
     ) -> List[Query]:
-        if not await self.localtracks_folder_exists(ctx) or query.local_track_path is None:
+        if (
+            not await self.localtracks_folder_exists(ctx)
+            or query.local_track_path is None
+        ):
             return []
         return (
             await query.local_track_path.tracks_in_tree()
@@ -105,7 +115,9 @@ class LocalTrackUtilities(MixinMeta, metaclass=CompositeMetaClass):
             return True
         elif ctx.invoked_with != "start":
             await self.send_embed_msg(
-                ctx, title=_("Invalid Environment"), description=_("No localtracks folder.")
+                ctx,
+                title=_("Invalid Environment"),
+                description=_("No localtracks folder."),
             )
         return False
 

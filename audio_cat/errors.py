@@ -22,7 +22,9 @@ class LavalinkDownloadFailed(AudioError, RuntimeError):
         Whether or not the Audio cog should retry downloading the jar.
     """
 
-    def __init__(self, *args, response: aiohttp.ClientResponse, should_retry: bool = False):
+    def __init__(
+        self, *args, response: aiohttp.ClientResponse, should_retry: bool = False
+    ):
         super().__init__(*args)
         self.response = response
         self.should_retry = should_retry

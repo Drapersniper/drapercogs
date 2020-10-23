@@ -174,7 +174,10 @@ class HybridMenu(_dpy_menus.MenuPages, inherit_buttons=False):
         return payload.emoji in self.buttons
 
     def message_check(self, message: discord.Message):
-        if message.author.bot or message.author.id not in (*self.bot.owner_ids, self._author_id):
+        if message.author.bot or message.author.id not in (
+            *self.bot.owner_ids,
+            self._author_id,
+        ):
             return False
         return message.content.lower() in self._actions
 
@@ -189,13 +192,17 @@ class HybridMenu(_dpy_menus.MenuPages, inherit_buttons=False):
                         self.bot.wait_for("raw_reaction_add", check=self.reaction_check)
                     ),
                     asyncio.ensure_future(
-                        self.bot.wait_for("raw_reaction_remove", check=self.reaction_check)
+                        self.bot.wait_for(
+                            "raw_reaction_remove", check=self.reaction_check
+                        )
                     ),
                 ]
                 if self._actions:
                     tasks.append(
                         asyncio.ensure_future(
-                            self.bot.wait_for("message_without_command", check=self.message_check)
+                            self.bot.wait_for(
+                                "message_without_command", check=self.message_check
+                            )
                         )
                     )
 
@@ -441,8 +448,12 @@ class SimpleHybridMenu(HybridMenu, inherit_buttons=True):
     ):
         if accept_keywords:
             keyword_to_reaction_mapping = {
-                _("last"): ["\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\ufe0f"],
-                _("first"): ["\N{BLACK LEFT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\ufe0f"],
+                _("last"): [
+                    "\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\ufe0f"
+                ],
+                _("first"): [
+                    "\N{BLACK LEFT-POINTING DOUBLE TRIANGLE WITH VERTICAL BAR}\ufe0f"
+                ],
                 _("next"): [
                     "\N{BLACK RIGHT-POINTING TRIANGLE}\ufe0f",
                 ],

@@ -29,7 +29,8 @@ class ConvertMember(commands.MemberConverter):
             )
             if member is None:
                 member = discord.utils.find(
-                    lambda x: argument.lower() in x.display_name.lower(), ctx.guild.members
+                    lambda x: argument.lower() in x.display_name.lower(),
+                    ctx.guild.members,
                 )
             if member is None:
                 raise BadArgument(f'Member "{argument}" was not found')

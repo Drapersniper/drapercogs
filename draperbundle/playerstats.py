@@ -27,7 +27,9 @@ class PlayerStats(commands.Cog):
         """Shows users game stats"""
 
     @gstats.command(enabled=True, name="bfv")
-    async def stats_bfv(self, ctx: commands.Context, *, member: Optional[ConvertMember] = None):
+    async def stats_bfv(
+        self, ctx: commands.Context, *, member: Optional[ConvertMember] = None
+    ):
         """Shows a users Battlefield V stats"""
 
         if member is None:
@@ -71,20 +73,32 @@ class PlayerStats(commands.Cog):
                 Win_perc = player_class.get("Win %").get("displayValue")
                 Wins = player_class.get("Wins").get("displayValue")
                 Losses = player_class.get("Losses").get("displayValue")
-                rounds_played = player_class.get("Rounds Played", {}).get("displayValue")
+                rounds_played = player_class.get("Rounds Played", {}).get(
+                    "displayValue"
+                )
                 play_time = player_class.get("Time Played", {}).get("displayValue")
 
                 overview_embed = discord.Embed(title=f"{target} Overview")
                 overview_embed.set_author(name=target.display_name, icon_url=icon_url)
                 overview_embed.set_thumbnail(url=rank_url)
-                overview_embed.add_field(name="Played For", value=play_time, inline=True)
-                overview_embed.add_field(name="Rounds Played", value=rounds_played, inline=True)
+                overview_embed.add_field(
+                    name="Played For", value=play_time, inline=True
+                )
+                overview_embed.add_field(
+                    name="Rounds Played", value=rounds_played, inline=True
+                )
                 overview_embed.add_field(
                     name="Rank", value=f"{rank_number} ({rank_name})", inline=True
                 )
-                overview_embed.add_field(name="Score Per Min", value=score_min, inline=True)
-                overview_embed.add_field(name="Kill/Death Ratio", value=k_d, inline=True)
-                overview_embed.add_field(name="Win/Loss Ratio", value=Win_perc, inline=True)
+                overview_embed.add_field(
+                    name="Score Per Min", value=score_min, inline=True
+                )
+                overview_embed.add_field(
+                    name="Kill/Death Ratio", value=k_d, inline=True
+                )
+                overview_embed.add_field(
+                    name="Win/Loss Ratio", value=Win_perc, inline=True
+                )
                 overview_embed.add_field(name="Wins", value=Wins, inline=True)
                 overview_embed.add_field(name="Losses", value=Losses, inline=True)
                 overview_embed.add_field(name="Accuracy", value=Accuracy, inline=True)
@@ -94,12 +108,20 @@ class PlayerStats(commands.Cog):
                 overview_embed.add_field(name="Damage", value=Damage, inline=True)
                 overview_embed.add_field(name="Assists", value=Assists, inline=True)
                 overview_embed.add_field(name="Headshots", value=Headshots, inline=True)
-                overview_embed.add_field(name="Longest Headshot", value=Longest_hs, inline=True)
+                overview_embed.add_field(
+                    name="Longest Headshot", value=Longest_hs, inline=True
+                )
                 overview_embed.add_field(name="Kills/min", value=Kills_min, inline=True)
-                overview_embed.add_field(name="Dogtags Taken", value=Dogtags, inline=True)
-                overview_embed.add_field(name="Shots Taken", value=Shots_taken, inline=True)
+                overview_embed.add_field(
+                    name="Dogtags Taken", value=Dogtags, inline=True
+                )
+                overview_embed.add_field(
+                    name="Shots Taken", value=Shots_taken, inline=True
+                )
                 overview_embed.add_field(name="Shots Hit", value=Shots_hit, inline=True)
-                overview_embed.add_field(name="Kill Streak", value=Kill_streak, inline=True)
+                overview_embed.add_field(
+                    name="Kill Streak", value=Kill_streak, inline=True
+                )
                 embed_list.append(overview_embed)
 
             if classes:
@@ -128,7 +150,9 @@ class PlayerStats(commands.Cog):
                     embed.add_field(name="Time Played", value=Time_Played, inline=True)
                     embed.add_field(name="Shots Fired", value=Shots_Fired, inline=True)
                     embed.add_field(name="Shots Hit", value=Shots_Hit, inline=True)
-                    embed.add_field(name="Shots Accuracy", value=Shots_Accuracy, inline=True)
+                    embed.add_field(
+                        name="Shots Accuracy", value=Shots_Accuracy, inline=True
+                    )
                     embed.add_field(name="Score", value=Score, inline=True)
                     embed.add_field(name="Score/min", value=Score_min, inline=True)
                     if embed:
@@ -155,21 +179,33 @@ class PlayerStats(commands.Cog):
                     Bombs_Placed = data.get("Bombs Placed", {}).get("displayValue")
                     Bombs_Defused = data.get("Bombs Defused", {}).get("displayValue")
                     Carriers_Kills = data.get("Carriers Kills", {}).get("displayValue")
-                    Carriers_Released = data.get("Carriers Released", {}).get("displayValue")
-                    Messages_Written = data.get("Messages Written", {}).get("displayValue")
-                    Messages_Delivered = data.get("Messages Delivered", {}).get("displayValue")
+                    Carriers_Released = data.get("Carriers Released", {}).get(
+                        "displayValue"
+                    )
+                    Messages_Written = data.get("Messages Written", {}).get(
+                        "displayValue"
+                    )
+                    Messages_Delivered = data.get("Messages Delivered", {}).get(
+                        "displayValue"
+                    )
                     if Wins and Losses and win_perc and Score:
                         embed = discord.Embed(title=f"{game_mode} Overview")
                         embed.set_author(name=target.display_name, icon_url=rank_url)
                         embed.set_thumbnail(url=icon_url)
-                        embed.add_field(name="Win/Loss Ratio", value=win_perc, inline=True)
+                        embed.add_field(
+                            name="Win/Loss Ratio", value=win_perc, inline=True
+                        )
                         embed.add_field(name="Wins", value=Wins, inline=True)
                         embed.add_field(name="Losses", value=Losses, inline=True)
                         embed.add_field(name="Score", value=Score, inline=True)
                         if flaf_def:
-                            embed.add_field(name="Flag Defends", value=flaf_def, inline=True)
+                            embed.add_field(
+                                name="Flag Defends", value=flaf_def, inline=True
+                            )
                         if flaf_cap:
-                            embed.add_field(name="Flag Captures", value=flaf_cap, inline=True)
+                            embed.add_field(
+                                name="Flag Captures", value=flaf_cap, inline=True
+                            )
                         if Artillery_kill_def:
                             embed.add_field(
                                 name="Artillery Defense Kills",
@@ -177,24 +213,34 @@ class PlayerStats(commands.Cog):
                                 inline=True,
                             )
                         if Bombs_Placed:
-                            embed.add_field(name="Bombs Placed", value=Bombs_Placed, inline=True)
+                            embed.add_field(
+                                name="Bombs Placed", value=Bombs_Placed, inline=True
+                            )
                         if Bombs_Defused:
-                            embed.add_field(name="Bombs Defused", value=Bombs_Defused, inline=True)
+                            embed.add_field(
+                                name="Bombs Defused", value=Bombs_Defused, inline=True
+                            )
                         if Carriers_Kills:
                             embed.add_field(
                                 name="Carriers Kills", value=Carriers_Kills, inline=True
                             )
                         if Carriers_Released:
                             embed.add_field(
-                                name="Carriers Released", value=Carriers_Released, inline=True
+                                name="Carriers Released",
+                                value=Carriers_Released,
+                                inline=True,
                             )
                         if Messages_Written:
                             embed.add_field(
-                                name="Messages Written", value=Messages_Written, inline=True
+                                name="Messages Written",
+                                value=Messages_Written,
+                                inline=True,
                             )
                         if Messages_Delivered:
                             embed.add_field(
-                                name="Messages Delivered", value=Messages_Delivered, inline=True
+                                name="Messages Delivered",
+                                value=Messages_Delivered,
+                                inline=True,
                             )
                     if embed:
                         embed_list.append(embed)
@@ -207,7 +253,9 @@ class PlayerStats(commands.Cog):
 
 def _url_maker(game, username, platform="origin"):
     if game == "bfv":
-        return f"https://api.tracker.gg/api/v2/bfv/standard/profile/{platform}/{username}"
+        return (
+            f"https://api.tracker.gg/api/v2/bfv/standard/profile/{platform}/{username}"
+        )
     elif game == "apex":
         baseurl = "https://public-api.tracker.gg/apex/v1/standard/profile"
         return f"{baseurl}/5/{username}"
@@ -227,11 +275,17 @@ async def _parse_stats_apex_legends(player):
     heroname = hero["metadata"]["legend_name"]
     icon = hero["metadata"]["icon"]
     herostats = {
-        stat["metadata"]["key"]: {"value": stat["displayValue"], "rank": stat["displayRank"]}
+        stat["metadata"]["key"]: {
+            "value": stat["displayValue"],
+            "rank": stat["displayRank"],
+        }
         for stat in herostats
     }
     playerstats = {
-        stat["metadata"]["key"]: {"value": stat["displayValue"], "rank": stat["displayRank"]}
+        stat["metadata"]["key"]: {
+            "value": stat["displayValue"],
+            "rank": stat["displayRank"],
+        }
         for stat in playerstats
     }
     playerdata = {
@@ -299,7 +353,9 @@ async def _parse_stats_battlefield_v(player):
     player_url = player_data.get("platformInfo", {}).get("avatarUrl")
     formatted_data["display_url"] = player_url
     player_segments = player_data.get("segments", [])
-    player_segments = [s for s in player_segments if s.get("type") in wanted_player_segments]
+    player_segments = [
+        s for s in player_segments if s.get("type") in wanted_player_segments
+    ]
     for segment in player_segments:
         formatted_data = parse_bfv_segments(segment, formatted_data)
 

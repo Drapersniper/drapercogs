@@ -47,7 +47,10 @@ class PlayerTasks(MixinMeta, metaclass=CompositeMetaClass):
             servers.update(pause_times)
             async for sid in AsyncIter(servers, steps=5):
                 server_obj = self.bot.get_guild(sid)
-                if sid in stop_times and await self.config.guild(server_obj).emptydc_enabled():
+                if (
+                    sid in stop_times
+                    and await self.config.guild(server_obj).emptydc_enabled()
+                ):
                     emptydc_timer = await self.config.guild(server_obj).emptydc_timer()
                     if (time.time() - stop_times[sid]) >= emptydc_timer:
                         stop_times.pop(sid)
@@ -60,12 +63,17 @@ class PlayerTasks(MixinMeta, metaclass=CompositeMetaClass):
                             if "No such player for that guild" in str(err):
                                 stop_times.pop(sid, None)
                             debug_exc_log(
-                                log, err, f"Exception raised in Audio's emptydc_timer for {sid}."
+                                log,
+                                err,
+                                f"Exception raised in Audio's emptydc_timer for {sid}.",
                             )
                 elif (
-                    sid in pause_times and await self.config.guild(server_obj).emptypause_enabled()
+                    sid in pause_times
+                    and await self.config.guild(server_obj).emptypause_enabled()
                 ):
-                    emptypause_timer = await self.config.guild(server_obj).emptypause_timer()
+                    emptypause_timer = await self.config.guild(
+                        server_obj
+                    ).emptypause_timer()
                     if (time.time() - pause_times.get(sid, 0)) >= emptypause_timer:
                         try:
                             await lavalink.get_player(sid).pause()
@@ -73,6 +81,8 @@ class PlayerTasks(MixinMeta, metaclass=CompositeMetaClass):
                             if "No such player for that guild" in str(err):
                                 pause_times.pop(sid, None)
                             debug_exc_log(
-                                log, err, f"Exception raised in Audio's pausing for {sid}."
+                                log,
+                                err,
+                                f"Exception raised in Audio's pausing for {sid}.",
                             )
             await asyncio.sleep(5)

@@ -22,7 +22,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Lavalink server configuration options."""
 
     @command_llsetup.command(name="java")
-    async def command_llsetup_java(self, ctx: commands.Context, *, java_path: str = None):
+    async def command_llsetup_java(
+        self, ctx: commands.Context, *, java_path: str = None
+    ):
         """Change your Java executable path
 
         Enter nothing to reset to default.
@@ -59,9 +61,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Java Executable Changed"),
-                description=_("Audio will now use `{exc}` to run your Lavalink.jar").format(
-                    exc=exc_absolute
-                ),
+                description=_(
+                    "Audio will now use `{exc}` to run your Lavalink.jar"
+                ).format(exc=exc_absolute),
             )
         try:
             if self.player_manager is not None:
@@ -71,7 +73,8 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ctx,
                 title=_("Failed To Shutdown Lavalink"),
                 description=_(
-                    "For it to take effect please reload " "Audio (`{prefix}reload audio`)."
+                    "For it to take effect please reload "
+                    "Audio (`{prefix}reload audio`)."
                 ).format(
                     prefix=ctx.prefix,
                 ),
@@ -83,9 +86,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
                 await self.send_embed_msg(
                     ctx,
                     title=_("Failed To Shutdown Lavalink"),
-                    description=_("Please reload Audio (`{prefix}reload audio`).").format(
-                        prefix=ctx.prefix
-                    ),
+                    description=_(
+                        "Please reload Audio (`{prefix}reload audio`)."
+                    ).format(prefix=ctx.prefix),
                 )
 
     @command_llsetup.command(name="external")
@@ -172,7 +175,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.send_embed_msg(
             ctx,
             title=_("Setting Changed"),
-            description=_("Server password set to {password}.").format(password=password),
+            description=_("Server password set to {password}.").format(
+                password=password
+            ),
             footer=footer,
         )
 

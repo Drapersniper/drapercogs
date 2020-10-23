@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-# Standard Library
-from copy import copy
 from operator import attrgetter
 from typing import List
 
-# Cog Dependencies
 import discord
 
 from redbot.core import commands
@@ -55,10 +52,17 @@ class MemberStatus(commands.Cog):
                 ctx, playing_data, game_name, discord.ActivityType.playing
             )
             await menu(
-                ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
+                ctx,
+                pages=embed_list,
+                controls=DEFAULT_CONTROLS,
+                message=None,
+                page=0,
+                timeout=60,
             )
         else:
-            await ctx.maybe_send_embed(_("No one is playing{ending}").format(ending=ending))
+            await ctx.maybe_send_embed(
+                _("No one is playing{ending}").format(ending=ending)
+            )
 
     @commands.command()
     @commands.guild_only()
@@ -68,9 +72,16 @@ class MemberStatus(commands.Cog):
 
         data = await self.get_players_per_activity(ctx=ctx, movie=True)
         if data:
-            embed_list = await get_activity_list(ctx, data, None, discord.ActivityType.watching)
+            embed_list = await get_activity_list(
+                ctx, data, None, discord.ActivityType.watching
+            )
             await menu(
-                ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
+                ctx,
+                pages=embed_list,
+                controls=DEFAULT_CONTROLS,
+                message=None,
+                page=0,
+                timeout=60,
             )
         else:
             await ctx.maybe_send_embed(_("No one is watching anything."))
@@ -83,10 +94,17 @@ class MemberStatus(commands.Cog):
 
         data = await self.get_players_per_activity(ctx=ctx, music=True)
         if data:
-            embed_list = await get_activity_list(ctx, data, None, discord.ActivityType.listening)
+            embed_list = await get_activity_list(
+                ctx, data, None, discord.ActivityType.listening
+            )
 
             await menu(
-                ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
+                ctx,
+                pages=embed_list,
+                controls=DEFAULT_CONTROLS,
+                message=None,
+                page=0,
+                timeout=60,
             )
 
         else:
@@ -115,10 +133,17 @@ class MemberStatus(commands.Cog):
             )
 
             await menu(
-                ctx, pages=embed_list, controls=DEFAULT_CONTROLS, message=None, page=0, timeout=60
+                ctx,
+                pages=embed_list,
+                controls=DEFAULT_CONTROLS,
+                message=None,
+                page=0,
+                timeout=60,
             )
         else:
-            await ctx.maybe_send_embed(_("No one is streaming{ending}").format(ending=ending))
+            await ctx.maybe_send_embed(
+                _("No one is streaming{ending}").format(ending=ending)
+            )
 
     @staticmethod
     async def get_players_per_activity(
@@ -161,22 +186,26 @@ class MemberStatus(commands.Cog):
                             discord.ActivityType.playing,
                             discord.ActivityType.streaming,
                         ]:
-                            publisher = await ConfigHolder.PublisherManager.publisher.get_raw()
+                            publisher = (
+                                await ConfigHolder.PublisherManager.publisher.get_raw()
+                            )
                             publisher = publisher.get(game)
                         elif looking_for == discord.ActivityType.watching:
                             publisher = "movie"
                         else:
                             publisher = "spotify"
-                        accounts = (await ConfigHolder.AccountManager.user(member).get_raw()).get(
-                            "account", {}
-                        )
+                        accounts = (
+                            await ConfigHolder.AccountManager.user(member).get_raw()
+                        ).get("account", {})
                         account = accounts.get(publisher)
                         if not account:
                             account = None
 
                         hoisted_roles = [r for r in member.roles if r and r.hoist]
                         top_role = max(
-                            hoisted_roles, key=attrgetter("position"), default=member.top_role
+                            hoisted_roles,
+                            key=attrgetter("position"),
+                            default=member.top_role,
                         )
                         role_value = top_role.position * -1
                         if game in member_data_new:

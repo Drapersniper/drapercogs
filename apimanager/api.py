@@ -76,7 +76,7 @@ class API:
                 },
                 json={
                     "is_admin": 1 if admin else 0,
-                    "is_mod": 1 if mod else 0 ,
+                    "is_mod": 1 if mod else 0,
                     "is_contributor": 1 if contrib else 0,
                     "is_user": 1 if user else 0,
                     "is_guest": 0,
@@ -89,29 +89,29 @@ class API:
 
     @classmethod
     async def unban_user(
-            cls,
-            cog: APIManager,
-            member: Union[discord.abc.User, discord.Object],
+        cls,
+        cog: APIManager,
+        member: Union[discord.abc.User, discord.Object],
     ) -> Optional[User]:
         user = await cls.get_user(cog, member)
         if not user.is_blacklisted:
             return None
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             async with session.put(
-                    f"{API_ENDPOINT}/api/v2/users/user/{member.id}",
-                    headers=cog.headers,
-                    params={
-                        "revoke_token": "false",
-                        "blacklist": "false",
-                        "renew_token": "true",
-                    },
-                    json={
-                        "is_admin": 0,
-                        "is_mod": 0,
-                        "is_contributor":  0,
-                        "is_user": 1,
-                        "is_guest": 0,
-                    },
+                f"{API_ENDPOINT}/api/v2/users/user/{member.id}",
+                headers=cog.headers,
+                params={
+                    "revoke_token": "false",
+                    "blacklist": "false",
+                    "renew_token": "true",
+                },
+                json={
+                    "is_admin": 0,
+                    "is_mod": 0,
+                    "is_contributor": 0,
+                    "is_user": 1,
+                    "is_guest": 0,
+                },
             ) as resp:
                 if resp.status != 200:
                     return None
@@ -119,7 +119,9 @@ class API:
                 return User(**data)
 
     @classmethod
-    async def create_user(cls, cog: APIManager, member: discord.Member) -> Optional[User]:
+    async def create_user(
+        cls, cog: APIManager, member: discord.Member
+    ) -> Optional[User]:
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             async with session.post(
                 f"{API_ENDPOINT}/api/v2/users/user",

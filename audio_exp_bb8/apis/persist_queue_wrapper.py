@@ -46,7 +46,11 @@ except ImportError:
 
 class QueueInterface:
     def __init__(
-        self, bot: Red, config: Config, conn: APSWConnectionWrapper, cog: Union["Audio", Cog]
+        self,
+        bot: Red,
+        config: Config,
+        conn: APSWConnectionWrapper,
+        cog: Union["Audio", Cog],
     ):
         self.bot = bot
         self.database = conn
@@ -72,9 +76,15 @@ class QueueInterface:
     async def init(self) -> None:
         """Initialize the PersistQueue table"""
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(self.database.cursor().execute, self.statement.pragma_temp_store)
-            executor.submit(self.database.cursor().execute, self.statement.pragma_journal_mode)
-            executor.submit(self.database.cursor().execute, self.statement.pragma_read_uncommitted)
+            executor.submit(
+                self.database.cursor().execute, self.statement.pragma_temp_store
+            )
+            executor.submit(
+                self.database.cursor().execute, self.statement.pragma_journal_mode
+            )
+            executor.submit(
+                self.database.cursor().execute, self.statement.pragma_read_uncommitted
+            )
             executor.submit(self.database.cursor().execute, self.statement.create_table)
             executor.submit(self.database.cursor().execute, self.statement.create_index)
 
@@ -93,7 +103,9 @@ class QueueInterface:
                 try:
                     row_result = future.result()
                 except Exception as exc:
-                    debug_exc_log(log, exc, "Failed to complete playlist fetch from database")
+                    debug_exc_log(
+                        log, exc, "Failed to complete playlist fetch from database"
+                    )
                     return []
 
         async for index, row in AsyncIter(row_result).enumerate(start=1):
@@ -110,12 +122,16 @@ class QueueInterface:
 
     async def delete_scheduled(self):
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(self.database.cursor().execute, PERSIST_QUEUE_DELETE_SCHEDULED)
+            executor.submit(
+                self.database.cursor().execute, PERSIST_QUEUE_DELETE_SCHEDULED
+            )
 
     async def drop(self, guild_id: int):
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             executor.submit(
-                self.database.cursor().execute, PERSIST_QUEUE_BULK_PLAYED, ({"guild_id": guild_id})
+                self.database.cursor().execute,
+                PERSIST_QUEUE_BULK_PLAYED,
+                ({"guild_id": guild_id}),
             )
 
     async def enqueued(self, guild_id: int, room_id: int, track: lavalink.Track):

@@ -8,7 +8,13 @@ import discord
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from redbot.core.utils.menus import DEFAULT_CONTROLS, close_menu, menu, next_page, prev_page
+from redbot.core.utils.menus import (
+    DEFAULT_CONTROLS,
+    close_menu,
+    menu,
+    next_page,
+    prev_page,
+)
 
 from ...audio_dataclasses import LocalPath, Query
 from ..abc import MixinMeta
@@ -40,28 +46,34 @@ class LocalTrackCommands(MixinMeta, metaclass=CompositeMetaClass):
                 return await self.send_embed_msg(
                     ctx,
                     title=_("Folder Not Found"),
-                    description=_("Localtracks folder named {name} does not exist.").format(
-                        name=folder
-                    ),
+                    description=_(
+                        "Localtracks folder named {name} does not exist."
+                    ).format(name=folder),
                 )
             query = Query.process_input(
                 _dir, self.local_folder_current_path, search_subfolders=True
             )
-            await self._local_play_all(ctx, query, from_search=False if not folder else True)
+            await self._local_play_all(
+                ctx, query, from_search=False if not folder else True
+            )
 
     @command_local.command(name="play")
     async def command_local_play(self, ctx: commands.Context):
         """Play a local track."""
         if not await self.localtracks_folder_exists(ctx):
             return
-        localtracks_folders = await self.get_localtracks_folders(ctx, search_subfolders=True)
+        localtracks_folders = await self.get_localtracks_folders(
+            ctx, search_subfolders=True
+        )
         if not localtracks_folders:
             return await self.send_embed_msg(ctx, title=_("No album folders found."))
         async with ctx.typing():
             len_folder_pages = math.ceil(len(localtracks_folders) / 5)
             folder_page_list = []
             for page_num in range(1, len_folder_pages + 1):
-                embed = await self._build_search_page(ctx, localtracks_folders, page_num)
+                embed = await self._build_search_page(
+                    ctx, localtracks_folders, page_num
+                )
                 folder_page_list.append(embed)
 
         async def _local_folder_menu(

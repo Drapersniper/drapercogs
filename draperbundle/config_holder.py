@@ -24,7 +24,10 @@ class ConfigHolderClass(object):
         None, identifier=8205491788, force_registration=True, cog_name="PCSpecs"
     )
     PublisherManager = Config.get_conf(
-        None, identifier=2064553666, force_registration=True, cog_name="PublisherManager"
+        None,
+        identifier=2064553666,
+        force_registration=True,
+        cog_name="PublisherManager",
     )
     PlayerStatus = Config.get_conf(
         None, identifier=3584065639, force_registration=True, cog_name="PlayerStatus"
@@ -86,7 +89,11 @@ default_custom_PublisherManager = {
         "mixer": {"name": "Mixer", "identifier": "mixer", "games": []},
         "psn": {"name": "PlayStation Network", "identifier": "psn", "games": []},
         "reddit": {"name": "Reddit", "identifier": "reddit", "games": []},
-        "riot": {"name": "Riot Games", "identifier": "riot", "games": ["League of Legends"],},
+        "riot": {
+            "name": "Riot Games",
+            "identifier": "riot",
+            "games": ["League of Legends"],
+        },
         "spotify": {"name": "Spotify", "identifier": "spotify", "games": []},
         "steam": {"name": "Steam", "identifier": "steam", "games": []},
         "twitch": {"name": "Twitch", "identifier": "twitch", "games": []},
@@ -103,12 +110,28 @@ default_custom_PublisherManager = {
             "identifier": "origin",
             "games": ["Apex Legends", "Battlefield\u2122 V", "Anthem\u2122"],
         },
-        "facebook": {"name": "Facebook", "identifier": "facebook", "games": [],},
-        "instagram": {"name": "Instagram", "identifier": "instagram", "games": [],},
-        "snapchat": {"name": "Snapchat", "identifier": "snapchat", "games": [],},
+        "facebook": {
+            "name": "Facebook",
+            "identifier": "facebook",
+            "games": [],
+        },
+        "instagram": {
+            "name": "Instagram",
+            "identifier": "instagram",
+            "games": [],
+        },
+        "snapchat": {
+            "name": "Snapchat",
+            "identifier": "snapchat",
+            "games": [],
+        },
         "mojang": {"name": "Mojang", "identifier": "mojang", "games": []},
         "skype": {"name": "Skype", "identifier": "skype", "games": []},
-        "soundcloud": {"name": "SoundCloud", "identifier": "soundcloud", "games": [],},
+        "soundcloud": {
+            "name": "SoundCloud",
+            "identifier": "soundcloud",
+            "games": [],
+        },
         "nintendo": {"name": "Nintendo", "identifier": "nintendo", "games": []},
         "runescape": {
             "name": "Jagex",
@@ -166,13 +189,22 @@ default_guild_StatusManager = dict(
         "league-of-legends": ("League of Legends", ["League of Legends"]),
         "apex-legends": ("Apex Legends", ["Apex Legends"]),
         "minecraft": ("Minecraft", ["Minecraft"]),
-        "lfg-r6": ("Rainbow Six Siege", ["Tom Clancy's Rainbow Six Siege", "Rainbow Six Siege"]),
+        "lfg-r6": (
+            "Rainbow Six Siege",
+            ["Tom Clancy's Rainbow Six Siege", "Rainbow Six Siege"],
+        ),
         "rainbow-six-siege": (
             "Rainbow Six Siege",
             ["Tom Clancy's Rainbow Six Siege", "Rainbow Six Siege"],
         ),
-        "modern-warfare": ("Modern Warfare", ["Call of Duty: Modern Warfare", "Modern Warfare"]),
-        "lfg-mw": ("Modern Warfare", ["Call of Duty: Modern Warfare", "Modern Warfare"]),
+        "modern-warfare": (
+            "Modern Warfare",
+            ["Call of Duty: Modern Warfare", "Modern Warfare"],
+        ),
+        "lfg-mw": (
+            "Modern Warfare",
+            ["Call of Duty: Modern Warfare", "Modern Warfare"],
+        ),
     },
 )
 default_custom_Logos = dict(
@@ -206,7 +238,10 @@ default_guild_CustomChannels = dict(
 default_member_CustomChannels = dict(currentRooms={})
 
 default_guild_DynamicChannels = dict(
-    dynamic_channels={}, custom_channels={}, user_created_voice_channels={}, blacklist=[]
+    dynamic_channels={},
+    custom_channels={},
+    user_created_voice_channels={},
+    blacklist=[],
 )
 default_guild_RandomQuotes = {
     "enabled": False,

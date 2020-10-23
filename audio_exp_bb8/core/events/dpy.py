@@ -23,7 +23,9 @@ from ..cog_utils import HUMANIZED_PERM, CompositeMetaClass
 
 log = logging.getLogger("red.cogs.Audio.cog.Events.dpy")
 _ = Translator("Audio", Path(__file__))
-RE_CONVERSION: Final[Pattern] = re.compile('Converting to "(.*)" failed for parameter "(.*)".')
+RE_CONVERSION: Final[Pattern] = re.compile(
+    'Converting to "(.*)" failed for parameter "(.*)".'
+)
 
 
 class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
@@ -124,7 +126,9 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 self._dj_status_cache[ctx.guild.id] = None
                 await self.config.guild(ctx.guild).dj_role.set(None)
                 self._dj_role_cache[ctx.guild.id] = None
-                await self.send_embed_msg(ctx, title=_("No DJ role found. Disabling DJ mode."))
+                await self.send_embed_msg(
+                    ctx, title=_("No DJ role found. Disabling DJ mode.")
+                )
 
     async def cog_after_invoke(self, ctx: commands.Context) -> None:
         await self.maybe_run_pending_db_tasks(ctx)
@@ -170,7 +174,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 await ctx.send_help()
         elif isinstance(error, (IndexError, ClientConnectorError)) and any(
-            e in str(error).lower() for e in ["no nodes found.", "cannot connect to host"]
+            e in str(error).lower()
+            for e in ["no nodes found.", "cannot connect to host"]
         ):
             handled = True
             await self.send_embed_msg(
@@ -210,7 +215,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 error=True,
             )
             log.exception(
-                "This is not handled in the core Audio cog, please report it.", exc_info=error
+                "This is not handled in the core Audio cog, please report it.",
+                exc_info=error,
             )
 
         elif isinstance(error, PHNSFWError):
@@ -241,7 +247,8 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             if not handled:
                 message = "```py" + "\n"
                 message += (
-                    "Error in command '{}'\nType: {}\n" "The Bot owner has received your error."
+                    "Error in command '{}'\nType: {}\n"
+                    "The Bot owner has received your error."
                 ).format(ctx.command.qualified_name, error)
                 message += "```" + "\n"
                 message += (
@@ -275,7 +282,10 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
 
     @commands.Cog.listener()
     async def on_voice_state_update(
-        self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
+        self,
+        member: discord.Member,
+        before: discord.VoiceState,
+        after: discord.VoiceState,
     ) -> None:
         if await self.bot.cog_disabled_in_guild(self, member.guild):
             return

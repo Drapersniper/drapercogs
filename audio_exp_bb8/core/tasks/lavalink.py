@@ -19,7 +19,9 @@ class LavalinkTasks(MixinMeta, metaclass=CompositeMetaClass):
         if self.lavalink_connect_task:
             self.lavalink_connect_task.cancel()
 
-        self.lavalink_connect_task = self.bot.loop.create_task(self.lavalink_attempt_connect())
+        self.lavalink_connect_task = self.bot.loop.create_task(
+            self.lavalink_attempt_connect()
+        )
 
     async def lavalink_attempt_connect(self, timeout: int = 50) -> None:
         self.lavalink_connection_aborted = False
@@ -103,7 +105,8 @@ class LavalinkTasks(MixinMeta, metaclass=CompositeMetaClass):
                 await asyncio.sleep(1)  # prevent busylooping
             except Exception as exc:
                 log.exception(
-                    "Unhandled exception whilst connecting to Lavalink, aborting...", exc_info=exc
+                    "Unhandled exception whilst connecting to Lavalink, aborting...",
+                    exc_info=exc,
                 )
                 self.lavalink_connection_aborted = True
                 raise

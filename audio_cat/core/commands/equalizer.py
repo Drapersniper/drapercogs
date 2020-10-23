@@ -53,7 +53,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         if dj_enabled and not await self._can_instaskip(ctx, ctx.author):
             with contextlib.suppress(discord.HTTPException):
-                await eq_message.add_reaction("\N{INFORMATION SOURCE}\N{VARIATION SELECTOR-16}")
+                await eq_message.add_reaction(
+                    "\N{INFORMATION SOURCE}\N{VARIATION SELECTOR-16}"
+                )
         else:
             start_adding_reactions(eq_message, reactions)
 
@@ -64,7 +66,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_equalizer.command(name="delete", aliases=["del", "remove"])
     async def command_equalizer_delete(self, ctx: commands.Context, eq_preset: str):
         """Delete a saved eq preset."""
-        async with self.config.custom("EQUALIZER", ctx.guild.id).eq_presets() as eq_presets:
+        async with self.config.custom(
+            "EQUALIZER", ctx.guild.id
+        ).eq_presets() as eq_presets:
             eq_preset = eq_preset.lower()
             try:
                 if eq_presets[eq_preset][
@@ -97,7 +101,10 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
                     )
 
         await self.send_embed_msg(
-            ctx, title=_("The {preset_name} preset was deleted.".format(preset_name=eq_preset))
+            ctx,
+            title=_(
+                "The {preset_name} preset was deleted.".format(preset_name=eq_preset)
+            ),
         )
 
     @command_equalizer.command(name="list")
@@ -105,7 +112,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
         """List saved eq presets."""
         eq_presets = await self.config.custom("EQUALIZER", ctx.guild.id).eq_presets()
         if not eq_presets.keys():
-            return await self.send_embed_msg(ctx, title=_("No saved equalizer presets."))
+            return await self.send_embed_msg(
+                ctx, title=_("No saved equalizer presets.")
+            )
 
         space = "\N{EN SPACE}"
         header_name = _("Preset Name")
@@ -129,9 +138,13 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
         colour = await ctx.embed_colour()
         for page in pagify(preset_list, delims=[", "], page_length=1000):
             formatted_page = box(page, lang="ini")
-            embed = discord.Embed(colour=colour, description=f"{header}\n{formatted_page}")
+            embed = discord.Embed(
+                colour=colour, description=f"{header}\n{formatted_page}"
+            )
             embed.set_footer(
-                text=_("{num} preset(s)").format(num=humanize_number(len(list(eq_presets.keys()))))
+                text=_("{num} preset(s)").format(
+                    num=humanize_number(len(list(eq_presets.keys())))
+                )
             )
             page_list.append(embed)
         await menu(ctx, page_list, DEFAULT_CONTROLS)
@@ -148,7 +161,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ctx,
                 title=_("No Preset Found"),
                 description=_(
-                    "Preset named {eq_preset} does not exist.".format(eq_preset=eq_preset)
+                    "Preset named {eq_preset} does not exist.".format(
+                        eq_preset=eq_preset
+                    )
                 ),
             )
         except TypeError:
@@ -176,7 +191,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
             content=box(eq.visualise(), lang="ini"),
             embed=discord.Embed(
                 colour=await ctx.embed_colour(),
-                title=_("The {eq_preset} preset was loaded.".format(eq_preset=eq_preset)),
+                title=_(
+                    "The {eq_preset} preset was loaded.".format(eq_preset=eq_preset)
+                ),
             ),
         )
         player.store("eq_message", message)
@@ -208,14 +225,17 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
         message = await ctx.send(
             content=box(eq.visualise(), lang="ini"),
             embed=discord.Embed(
-                colour=await ctx.embed_colour(), title=_("Equalizer values have been reset.")
+                colour=await ctx.embed_colour(),
+                title=_("Equalizer values have been reset."),
             ),
         )
         player.store("eq_message", message)
 
     @command_equalizer.command(name="save")
     @commands.cooldown(1, 15, commands.BucketType.guild)
-    async def command_equalizer_save(self, ctx: commands.Context, eq_preset: str = None):
+    async def command_equalizer_save(
+        self, ctx: commands.Context, eq_preset: str = None
+    ):
         """Save the current eq settings to a preset."""
         if not self._player_check(ctx):
             return await self.send_embed_msg(ctx, title=_("Nothing playing."))
@@ -281,7 +301,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
         eq = player.fetch("eq", Equalizer())
         to_append = {eq_preset: {"author": ctx.author.id, "bands": eq.bands}}
         new_eq_presets = {**eq_presets, **to_append}
-        await self.config.custom("EQUALIZER", ctx.guild.id).eq_presets.set(new_eq_presets)
+        await self.config.custom("EQUALIZER", ctx.guild.id).eq_presets.set(
+            new_eq_presets
+        )
         embed3 = discord.Embed(
             colour=await ctx.embed_colour(),
             title=_("Current equalizer saved to the {preset_name} preset.").format(
@@ -351,7 +373,10 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
         except ValueError:
             band_number = 1000
 
-        if band_number not in range(0, bands_num) and band_name_or_position not in band_names:
+        if (
+            band_number not in range(0, bands_num)
+            and band_name_or_position not in band_names
+        ):
             return await self.send_embed_msg(
                 ctx,
                 title=_("Invalid Band"),
@@ -380,9 +405,9 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
             embed=discord.Embed(
                 colour=await ctx.embed_colour(),
                 title=_("Preset Modified"),
-                description=_("The {band_name}Hz band has been set to {band_value}.").format(
-                    band_name=band_name, band_value=band_value
-                ),
+                description=_(
+                    "The {band_name}Hz band has been set to {band_value}."
+                ).format(band_name=band_name, band_value=band_value),
             ),
         )
         player.store("eq_message", message)

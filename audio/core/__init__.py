@@ -137,7 +137,9 @@ class Audio(
             country_code="US",
             nsfw_queries=False,
         )
-        _playlist: Mapping = dict(id=None, author=None, name=None, playlist_url=None, tracks=[])
+        _playlist: Mapping = dict(
+            id=None, author=None, name=None, playlist_url=None, tracks=[]
+        )
 
         self.config.init_custom("EQUALIZER", 1)
         self.config.register_custom("EQUALIZER", eq_bands=[], eq_presets={})

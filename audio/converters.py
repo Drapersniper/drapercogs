@@ -113,7 +113,9 @@ async def global_unique_user_finder(
             return user
 
     maybe_matches = []
-    async for user in AsyncIter(bot.users).filter(lambda u: u.name == arg or f"{u}" == arg):
+    async for user in AsyncIter(bot.users).filter(
+        lambda u: u.name == arg or f"{u}" == arg
+    ):
         maybe_matches.append(user)
 
     if guild is not None:
@@ -173,7 +175,9 @@ class PlaylistConverter(commands.Converter):
                 author=ctx.author,
             )
         if not user_matches and not guild_matches and not global_matches:
-            raise commands.BadArgument(_("Could not match '{}' to a playlist.").format(arg))
+            raise commands.BadArgument(
+                _("Could not match '{}' to a playlist.").format(arg)
+            )
         return {
             PlaylistScope.GLOBAL.value: global_matches,
             PlaylistScope.GUILD.value: guild_matches,
@@ -235,10 +239,14 @@ class ScopeParser(commands.Converter):
                 "BOT",
             ]
             if scope not in valid_scopes:
-                raise commands.ArgParserFailure("--scope", scope_raw, custom_help=_(_SCOPE_HELP))
+                raise commands.ArgParserFailure(
+                    "--scope", scope_raw, custom_help=_(_SCOPE_HELP)
+                )
             target_scope = standardize_scope(scope)
         elif "--scope" in argument and not vals["scope"]:
-            raise commands.ArgParserFailure("--scope", _("Nothing"), custom_help=_(_SCOPE_HELP))
+            raise commands.ArgParserFailure(
+                "--scope", _("Nothing"), custom_help=_(_SCOPE_HELP)
+            )
 
         is_owner = await ctx.bot.is_owner(ctx.author)
         guild = vals.get("guild", None) or vals.get("server", None)
@@ -257,18 +265,28 @@ class ScopeParser(commands.Converter):
                     "--guild", guild_raw, custom_help=f"{server_error}{_(_GUILD_HELP)}"
                 )
 
-        elif not is_owner and (guild or any(x in argument for x in ["--guild", "--server"])):
+        elif not is_owner and (
+            guild or any(x in argument for x in ["--guild", "--server"])
+        ):
             raise commands.BadArgument(_("You cannot use `--guild`"))
         elif any(x in argument for x in ["--guild", "--server"]):
-            raise commands.ArgParserFailure("--guild", _("Nothing"), custom_help=_(_GUILD_HELP))
+            raise commands.ArgParserFailure(
+                "--guild", _("Nothing"), custom_help=_(_GUILD_HELP)
+            )
 
-        author = vals.get("author", None) or vals.get("user", None) or vals.get("member", None)
+        author = (
+            vals.get("author", None)
+            or vals.get("user", None)
+            or vals.get("member", None)
+        )
         if author:
             user_error = ""
             target_user = None
             user_raw = " ".join(author).strip()
             try:
-                target_user = await global_unique_user_finder(ctx, user_raw, guild=target_guild)
+                target_user = await global_unique_user_finder(
+                    ctx, user_raw, guild=target_guild
+                )
                 specified_user = True
             except TooManyMatches as err:
                 user_error = f"{err}\n"
@@ -280,7 +298,9 @@ class ScopeParser(commands.Converter):
                     "--author", user_raw, custom_help=f"{user_error}{_(_USER_HELP)}"
                 )
         elif any(x in argument for x in ["--author", "--user", "--member"]):
-            raise commands.ArgParserFailure("--scope", _("Nothing"), custom_help=_(_USER_HELP))
+            raise commands.ArgParserFailure(
+                "--scope", _("Nothing"), custom_help=_(_USER_HELP)
+            )
 
         target_scope: Optional[str] = target_scope or None
         target_user: Union[discord.Member, discord.User] = target_user or ctx.author
@@ -365,7 +385,9 @@ class ComplexScopeParser(commands.Converter):
                 )
             target_scope = standardize_scope(to_scope)
         elif "--to-scope" in argument and not vals["to_scope"]:
-            raise commands.ArgParserFailure("--to-scope", _("Nothing"), custom_help=_(_SCOPE_HELP))
+            raise commands.ArgParserFailure(
+                "--to-scope", _("Nothing"), custom_help=_(_SCOPE_HELP)
+            )
 
         if vals["from_scope"]:
             from_scope_raw = " ".join(vals["from_scope"]).strip()
@@ -377,7 +399,9 @@ class ComplexScopeParser(commands.Converter):
                 )
             source_scope = standardize_scope(from_scope)
         elif "--from-scope" in argument and not vals["to_scope"]:
-            raise commands.ArgParserFailure("--to-scope", _("Nothing"), custom_help=_(_SCOPE_HELP))
+            raise commands.ArgParserFailure(
+                "--to-scope", _("Nothing"), custom_help=_(_SCOPE_HELP)
+            )
 
         to_guild = vals.get("to_guild", None) or vals.get("to_server", None)
         if is_owner and to_guild:
@@ -432,14 +456,18 @@ class ComplexScopeParser(commands.Converter):
             )
 
         to_author = (
-            vals.get("to_author", None) or vals.get("to_user", None) or vals.get("to_member", None)
+            vals.get("to_author", None)
+            or vals.get("to_user", None)
+            or vals.get("to_member", None)
         )
         if to_author:
             target_user_error = ""
             target_user = None
             to_user_raw = " ".join(to_author).strip()
             try:
-                target_user = await global_unique_user_finder(ctx, to_user_raw, guild=target_guild)
+                target_user = await global_unique_user_finder(
+                    ctx, to_user_raw, guild=target_guild
+                )
                 specified_target_user = True
             except TooManyMatches as err:
                 target_user_error = f"{err}\n"
@@ -447,10 +475,14 @@ class ComplexScopeParser(commands.Converter):
                 target_user_error = f"{err}\n"
             if target_user is None:
                 raise commands.ArgParserFailure(
-                    "--to-author", to_user_raw, custom_help=f"{target_user_error}{_(_USER_HELP)}"
+                    "--to-author",
+                    to_user_raw,
+                    custom_help=f"{target_user_error}{_(_USER_HELP)}",
                 )
         elif any(x in argument for x in ["--to-author", "--to-user", "--to-member"]):
-            raise commands.ArgParserFailure("--to-user", _("Nothing"), custom_help=_(_USER_HELP))
+            raise commands.ArgParserFailure(
+                "--to-user", _("Nothing"), custom_help=_(_USER_HELP)
+            )
 
         from_author = (
             vals.get("from_author", None)
@@ -476,8 +508,12 @@ class ComplexScopeParser(commands.Converter):
                     from_user_raw,
                     custom_help=f"{source_user_error}{_(_USER_HELP)}",
                 )
-        elif any(x in argument for x in ["--from-author", "--from-user", "--from-member"]):
-            raise commands.ArgParserFailure("--from-user", _("Nothing"), custom_help=_(_USER_HELP))
+        elif any(
+            x in argument for x in ["--from-author", "--from-user", "--from-member"]
+        ):
+            raise commands.ArgParserFailure(
+                "--from-user", _("Nothing"), custom_help=_(_USER_HELP)
+            )
 
         target_scope = target_scope or PlaylistScope.GUILD.value
         target_user = target_user or ctx.author
@@ -507,11 +543,15 @@ class LazyGreedyConverter(commands.Converter):
         full_message = ctx.message.content.partition(f" {argument} ")
         if len(full_message) == 1:
             full_message = (
-                (argument if argument not in full_message else "") + " " + full_message[0]
+                (argument if argument not in full_message else "")
+                + " "
+                + full_message[0]
             )
         elif len(full_message) > 1:
             full_message = (
-                (argument if argument not in full_message else "") + " " + full_message[-1]
+                (argument if argument not in full_message else "")
+                + " "
+                + full_message[-1]
             )
         greedy_output = (" " + full_message.replace("—", "--")).partition(
             f" {self.splitter_Value}"

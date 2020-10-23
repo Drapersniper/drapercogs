@@ -58,7 +58,9 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 current_title = await self.get_track_description(
                     p.current, self.local_folder_current_path
                 )
-                msg += "{} [`{}`]: {}\n".format(p.channel.guild.name, connect_dur, current_title)
+                msg += "{} [`{}`]: {}\n".format(
+                    p.channel.guild.name, connect_dur, current_title
+                )
             except AttributeError:
                 msg += "{} [`{}`]: **{}**\n".format(
                     p.channel.guild.name, connect_dur, _("Nothing playing.")
@@ -78,7 +80,8 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
             em.set_footer(
                 text=_("Page {}/{}").format(
-                    humanize_number(pages), humanize_number((math.ceil(len(msg) / 1500)))
+                    humanize_number(pages),
+                    humanize_number((math.ceil(len(msg) / 1500))),
                 )
             )
             pages += 1
@@ -107,7 +110,9 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 requesters["total"] += 1
 
         async for track in AsyncIter(queue_tracks):
-            req_username = "{}#{}".format(track.requester.name, track.requester.discriminator)
+            req_username = "{}#{}".format(
+                track.requester.name, track.requester.discriminator
+            )
             await _usercount(req_username)
 
         try:
@@ -116,7 +121,9 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
             await _usercount(req_username)
         except AttributeError:
-            return await self.send_embed_msg(ctx, title=_("There's  nothing in the queue."))
+            return await self.send_embed_msg(
+                ctx, title=_("There's  nothing in the queue.")
+            )
 
         async for req_username in AsyncIter(requesters["users"]):
             percentage = float(requesters["users"][req_username]["songcount"]) / float(

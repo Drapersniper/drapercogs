@@ -53,7 +53,9 @@ class PermissionsChecker(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.config: Config = Config.get_conf(self, 208903205982044161, force_registration=True)
+        self.config: Config = Config.get_conf(
+            self, 208903205982044161, force_registration=True
+        )
         default_perms = {
             "send_messages": True,
             "read_messages": True,
@@ -77,7 +79,9 @@ class PermissionsChecker(commands.Cog):
         if surpass_ignore:
             return True
         if self.permission_cache is None:
-            self.permission_cache = discord.Permissions(**(await self.config.permissions.all()))
+            self.permission_cache = discord.Permissions(
+                **(await self.config.permissions.all())
+            )
         guild = ctx.guild
         if guild and not current_perms.is_superset(self.permission_cache):
             current_perms_set = set(iter(current_perms))
@@ -107,8 +111,12 @@ class PermissionsChecker(commands.Cog):
             return
         error = getattr(error, "original", error)
         if self.permission_cache is None:
-            self.permission_cache = discord.Permissions(**(await self.config.permissions.all()))
-        if isinstance(error, (discord.HTTPException,)) and getattr(error, "code", None) in [
+            self.permission_cache = discord.Permissions(
+                **(await self.config.permissions.all())
+            )
+        if isinstance(error, (discord.HTTPException,)) and getattr(
+            error, "code", None
+        ) in [
             50001,
             50013,
         ]:
@@ -128,7 +136,9 @@ class PermissionsChecker(commands.Cog):
                     "I need the following permissions which I currently lack:\n"
                 )
                 for perm, value in missing_perms.items():
-                    text += f"{HUMANIZED_PERM.get(perm)}: [{'On' if value else 'Off'}]\n"
+                    text += (
+                        f"{HUMANIZED_PERM.get(perm)}: [{'On' if value else 'Off'}]\n"
+                    )
                 text = text.strip()
                 async with self.config.guild(guild).all() as channel_data:
                     if channel_data["last_error"] > time.time() + 600:

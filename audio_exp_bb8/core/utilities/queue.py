@@ -37,7 +37,9 @@ class QueueUtilities(MixinMeta, metaclass=CompositeMetaClass):
         queue_idx_start = (page_num - 1) * 10
         queue_idx_end = queue_idx_start + 10
         if len(player.queue) > 500:
-            queue_list = _("__Too many songs in the queue, only showing the first 500__.\n\n")
+            queue_list = _(
+                "__Too many songs in the queue, only showing the first 500__.\n\n"
+            )
         else:
             queue_list = ""
 
@@ -56,12 +58,16 @@ class QueueUtilities(MixinMeta, metaclass=CompositeMetaClass):
         if query.is_stream:
             queue_list += _("**Currently livestreaming:**\n")
             queue_list += f"{current_track_description}\n"
-            queue_list += _("Requested by: **{user}**").format(user=player.current.requester)
+            queue_list += _("Requested by: **{user}**").format(
+                user=player.current.requester
+            )
             queue_list += f"\n\n{arrow}`{pos}`/`{dur}`\n\n"
         else:
             queue_list += _("Playing: ")
             queue_list += f"{current_track_description}\n"
-            queue_list += _("Requested by: **{user}**").format(user=player.current.requester)
+            queue_list += _("Requested by: **{user}**").format(
+                user=player.current.requester
+            )
             queue_list += f"\n\n{arrow}`{pos}`/`{dur}`\n\n"
 
         async for i, track in AsyncIter(queue[queue_idx_start:queue_idx_end]).enumerate(
@@ -148,17 +154,21 @@ class QueueUtilities(MixinMeta, metaclass=CompositeMetaClass):
         search_idx_start = (page_num - 1) * 10
         search_idx_end = search_idx_start + 10
         track_match = ""
-        async for i, track in AsyncIter(search_list[search_idx_start:search_idx_end]).enumerate(
-            start=search_idx_start
-        ):
+        async for i, track in AsyncIter(
+            search_list[search_idx_start:search_idx_end]
+        ).enumerate(start=search_idx_start):
             track_idx = i + 1
             if type(track) is str:
-                track_location = LocalPath(track, self.local_folder_current_path).to_string_user()
+                track_location = LocalPath(
+                    track, self.local_folder_current_path
+                ).to_string_user()
                 track_match += "`{}.` **{}**\n".format(track_idx, track_location)
             else:
                 track_match += "`{}.` **{}**\n".format(track[0], track[1])
         embed = discord.Embed(
-            colour=await ctx.embed_colour(), title=_("Matching Tracks:"), description=track_match
+            colour=await ctx.embed_colour(),
+            title=_("Matching Tracks:"),
+            description=track_match,
         )
         embed.set_footer(
             text=_("Page {page_num}/{total_pages} | {num_tracks} tracks").format(

@@ -43,7 +43,9 @@ class PublisherManager(commands.Cog):
 
     @commands.is_owner()
     @service.command(name="remove", aliases=["-", "delete"])
-    async def service_remove(self, ctx: commands.Context, *, message: str):  # @UnusedVariable
+    async def service_remove(
+        self, ctx: commands.Context, *, message: str
+    ):  # @UnusedVariable
         """Remove a service from the list of supported services"""
         service_group = self.config
         async with service_group.services() as services:
@@ -97,10 +99,14 @@ class PublisherManager(commands.Cog):
         config_data = await self.config.publisher()
         if checker == "all":
             existing_data = [
-                key for key, value in config_data.items() if value not in [None, True, False]
+                key
+                for key, value in config_data.items()
+                if value not in [None, True, False]
             ]
         else:
-            existing_data = [key for key, value in config_data.items() if value == checker]
+            existing_data = [
+                key for key, value in config_data.items() if value == checker
+            ]
         await self.parse_playing(ctx, existing_data)
 
     @_parse.command(name="game")
@@ -109,7 +115,9 @@ class PublisherManager(commands.Cog):
         checker = game.lower()
 
         config_data = await self.config.publisher()
-        existing_data = [key for key, _ in config_data.items() if checker in key.lower()]
+        existing_data = [
+            key for key, _ in config_data.items() if checker in key.lower()
+        ]
         if not existing_data:
             return await ctx.send("I've never seen anyone playing this game")
         await self.parse_playing(ctx, existing_data)
@@ -124,7 +132,9 @@ class PublisherManager(commands.Cog):
     async def parse_playing(self, ctx, existing_data):
         """Parsed game database"""
 
-        async def services_parser(game, author: discord.User, sender):  # @UnusedVariable
+        async def services_parser(
+            game, author: discord.User, sender
+        ):  # @UnusedVariable
             def check(m):
                 return m.author == author
 
@@ -161,7 +171,9 @@ class PublisherManager(commands.Cog):
 
             platforms = await get_supported_platforms()
             platform_prompt = [name for _, name in platforms]
-            platform_prompt = {str(counter): name for counter, name in enumerate(platform_prompt)}
+            platform_prompt = {
+                str(counter): name for counter, name in enumerate(platform_prompt)
+            }
             platform_prompt.update({str(len(platform_prompt)): "none"})
             platform_prompt.update({str(len(platform_prompt)): "delete"})
             return await smart_prompt(platform_prompt, platforms)

@@ -43,7 +43,9 @@ class Playlist:
         self.author = author
         self.author_id = getattr(self.author, "id", self.author)
         self.guild_id = (
-            getattr(guild, "id", guild) if self.scope == PlaylistScope.GLOBAL.value else None
+            getattr(guild, "id", guild)
+            if self.scope == PlaylistScope.GLOBAL.value
+            else None
         )
         self.id = playlist_id
         self.name = name
@@ -147,7 +149,9 @@ class Playlist:
         `MissingAuthor`
             Trying to access the User scope without an user id.
         """
-        guild = data.scope_id if scope == PlaylistScope.GUILD.value else kwargs.get("guild")
+        guild = (
+            data.scope_id if scope == PlaylistScope.GUILD.value else kwargs.get("guild")
+        )
         author = data.author_id
         playlist_id = data.playlist_id or playlist_number
         name = data.playlist_name
@@ -255,7 +259,9 @@ class PlaylistCompat23:
 
     async def save(self):
         """Saves a Playlist to SQL."""
-        scope, scope_id = prepare_config_scope(self.bot, self.scope, self.author, self.guild)
+        scope, scope_id = prepare_config_scope(
+            self.bot, self.scope, self.author, self.guild
+        )
         await self.playlist_api.upsert(
             scope,
             playlist_id=int(self.id),
@@ -388,7 +394,9 @@ async def get_playlist(
     playlist_data = await playlist_api.fetch(scope_standard, playlist_number, scope_id)
 
     if not (playlist_data and playlist_data.playlist_id):
-        raise RuntimeError(f"That playlist does not exist for the following scope: {scope}")
+        raise RuntimeError(
+            f"That playlist does not exist for the following scope: {scope}"
+        )
     return await Playlist.from_json(
         bot,
         playlist_api,
@@ -441,7 +449,9 @@ async def get_all_playlist(
 
     if specified_user:
         user_id = getattr(author, "id", author)
-        playlists = await playlist_api.fetch_all(scope_standard, scope_id, author_id=user_id)
+        playlists = await playlist_api.fetch_all(
+            scope_standard, scope_id, author_id=user_id
+        )
     else:
         playlists = await playlist_api.fetch_all(scope_standard, scope_id)
 

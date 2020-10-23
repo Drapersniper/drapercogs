@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Standard Library
 import contextlib
 import inspect
 import tarfile
@@ -7,7 +6,6 @@ import tarfile
 from pathlib import Path
 from typing import Optional
 
-# Cog Dependencies
 import discord
 
 from redbot.core import commands
@@ -71,7 +69,9 @@ class Zipper(commands.Cog):
     async def _pull_file(self, ctx, cog_name, filename) -> None:
         cog_obj = ctx.bot.get_cog(cog_name)
         if cog_obj is None:
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog_name))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog_name)
+            )
         path_to_cog = Path(inspect.getfile(type(cog_obj)))
 
         if filename:
@@ -106,7 +106,9 @@ class Zipper(commands.Cog):
         """Send the specified file or setting from the Cog data path to the current channel."""
         cog_obj = ctx.bot.get_cog(cog_name)
         if cog_obj is None:
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog_name))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog_name)
+            )
         data_path = cog_data_path(cog_instance=cog_obj)
         settings = data_path / ("settings.json" if file_name is None else file_name)
 
@@ -141,7 +143,9 @@ class Zipper(commands.Cog):
         """
         cog_obj = ctx.bot.get_cog(cog_name)
         if cog_obj is None:
-            return await ctx.send(_("Unable to find a cog called: {cog}").format(cog=cog_name))
+            return await ctx.send(
+                _("Unable to find a cog called: {cog}").format(cog=cog_name)
+            )
         path_to_cog = Path(inspect.getfile(type(cog_obj))).parent
         try:
             if not (path_to_cog.exists() and path_to_cog.is_dir()):

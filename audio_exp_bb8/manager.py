@@ -34,9 +34,13 @@ LAVALINK_DOWNLOAD_URL: Final[str] = (
     f"{JAR_VERSION}_{JAR_BUILD}/"
     "Lavalink.jar"
 )
-LAVALINK_DOWNLOAD_DIR: Final[pathlib.Path] = data_manager.cog_data_path(raw_name="Audio")
+LAVALINK_DOWNLOAD_DIR: Final[pathlib.Path] = data_manager.cog_data_path(
+    raw_name="Audio"
+)
 LAVALINK_JAR_FILE: Final[pathlib.Path] = LAVALINK_DOWNLOAD_DIR / "Lavalink.jar"
-BUNDLED_APP_YML: Final[pathlib.Path] = pathlib.Path(__file__).parent / "data" / "application.yml"
+BUNDLED_APP_YML: Final[pathlib.Path] = (
+    pathlib.Path(__file__).parent / "data" / "application.yml"
+)
 LAVALINK_APP_YML: Final[pathlib.Path] = LAVALINK_DOWNLOAD_DIR / "application.yml"
 
 _RE_READY_LINE: Final[Pattern] = re.compile(rb"Started Launcher in \S+ seconds")
@@ -49,8 +53,12 @@ _RE_JAVA_SHORT_VERSION: Final[Pattern] = re.compile(r'version "(?P<major>\d+)"')
 
 LAVALINK_BRANCH_LINE: Final[Pattern] = re.compile(rb"Branch\s+(?P<branch>[\w\-\d_.]+)")
 LAVALINK_JAVA_LINE: Final[Pattern] = re.compile(rb"JVM:\s+(?P<jvm>\d+[.\d+]*)")
-LAVALINK_LAVAPLAYER_LINE: Final[Pattern] = re.compile(rb"Lavaplayer\s+(?P<lavaplayer>\d+[.\d+]*)")
-LAVALINK_BUILD_TIME_LINE: Final[Pattern] = re.compile(rb"Build time:\s+(?P<build_time>\d+[.\d+]*)")
+LAVALINK_LAVAPLAYER_LINE: Final[Pattern] = re.compile(
+    rb"Lavaplayer\s+(?P<lavaplayer>\d+[.\d+]*)"
+)
+LAVALINK_BUILD_TIME_LINE: Final[Pattern] = re.compile(
+    rb"Build time:\s+(?P<build_time>\d+[.\d+]*)"
+)
 
 
 class ServerManager:
@@ -70,7 +78,9 @@ class ServerManager:
     def __init__(self) -> None:
         self.ready: asyncio.Event = asyncio.Event()
 
-        self._proc: Optional[asyncio.subprocess.Process] = None  # pylint:disable=no-member
+        self._proc: Optional[
+            asyncio.subprocess.Process
+        ] = None  # pylint:disable=no-member
         self._monitor_task: Optional[asyncio.Task] = None
         self._shutdown: bool = False
 
@@ -110,7 +120,9 @@ class ServerManager:
             if self._proc.returncode is None:
                 raise RuntimeError("Internal Lavalink server is already running")
             elif self._shutdown:
-                raise RuntimeError("Server manager has already been used - create another one")
+                raise RuntimeError(
+                    "Server manager has already been used - create another one"
+                )
 
         await self.maybe_download_jar()
 
@@ -120,11 +132,13 @@ class ServerManager:
         shutil.copyfile(BUNDLED_APP_YML, LAVALINK_APP_YML)
 
         args = await self._get_jar_args()
-        self._proc = await asyncio.subprocess.create_subprocess_exec(  # pylint:disable=no-member
-            *args,
-            cwd=str(LAVALINK_DOWNLOAD_DIR),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT,
+        self._proc = (
+            await asyncio.subprocess.create_subprocess_exec(  # pylint:disable=no-member
+                *args,
+                cwd=str(LAVALINK_DOWNLOAD_DIR),
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.STDOUT,
+            )
         )
 
         log.info("Internal Lavalink server started. PID: %s", self._proc.pid)
@@ -132,7 +146,9 @@ class ServerManager:
         try:
             await asyncio.wait_for(self._wait_for_launcher(), timeout=120)
         except asyncio.TimeoutError:
-            log.warning("Timeout occurred whilst waiting for internal Lavalink server to be ready")
+            log.warning(
+                "Timeout occurred whilst waiting for internal Lavalink server to be ready"
+            )
 
         self._monitor_task = asyncio.create_task(self._monitor())
         self._monitor_task.add_done_callback(task_callback)
@@ -232,7 +248,9 @@ class ServerManager:
             )
 
     def _has_java_error(self) -> bool:
-        poss_error_file = LAVALINK_DOWNLOAD_DIR / "hs_err_pid{}.log".format(self._proc.pid)
+        poss_error_file = LAVALINK_DOWNLOAD_DIR / "hs_err_pid{}.log".format(
+            self._proc.pid
+        )
         return poss_error_file.exists()
 
     async def shutdown(self) -> None:
@@ -289,7 +307,10 @@ class ServerManager:
 
                 shutil.move(path, str(LAVALINK_JAR_FILE), copy_function=shutil.copyfile)
 
-        log.info("Successfully downloaded Lavalink.jar (%s bytes written)", format(nbytes, ","))
+        log.info(
+            "Successfully downloaded Lavalink.jar (%s bytes written)",
+            format(nbytes, ","),
+        )
         await self._is_up_to_date()
 
     async def _is_up_to_date(self):
@@ -298,11 +319,13 @@ class ServerManager:
             return True
         args = await self._get_jar_args()
         args.append("--version")
-        _proc = await asyncio.subprocess.create_subprocess_exec(  # pylint:disable=no-member
-            *args,
-            cwd=str(LAVALINK_DOWNLOAD_DIR),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT,
+        _proc = (
+            await asyncio.subprocess.create_subprocess_exec(  # pylint:disable=no-member
+                *args,
+                cwd=str(LAVALINK_DOWNLOAD_DIR),
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.STDOUT,
+            )
         )
         stdout = (await _proc.communicate())[0]
         if (build := _RE_BUILD_LINE.search(stdout)) is None:

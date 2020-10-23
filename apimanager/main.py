@@ -11,7 +11,13 @@ from redbot.core.utils.chat_formatting import box
 from tabulate import tabulate
 
 from .api import API
-from .checks import is_api_admin, is_api_contributor, is_api_user, is_api_mod, is_not_api_user
+from .checks import (
+    is_api_admin,
+    is_api_contributor,
+    is_api_user,
+    is_api_mod,
+    is_not_api_user,
+)
 from .menus import LeaderboardSource, SimpleHybridMenu
 from .utils import User
 
@@ -30,8 +36,10 @@ class APIManager(commands.Cog):
         id_list = list(getattr(self.bot, "_true_owner_ids", self.bot.owner_ids))
         handshake = "||".join(map(str, id_list))
         self.headers = {
-            "Authorization": (await self.bot.get_shared_api_tokens("audiodb")).get("api_key"),
-            "X-Token": handshake
+            "Authorization": (await self.bot.get_shared_api_tokens("audiodb")).get(
+                "api_key"
+            ),
+            "X-Token": handshake,
         }
         self.cog_is_ready.set()
 
@@ -86,7 +94,9 @@ class APIManager(commands.Cog):
             return
         api_requester = ctx.audio_api_user
         if not api_requester:
-            return await ctx.send(f"You aren't registered with the API, run `{ctx.clean_prefix}{self.command_apiregister}` to register.")
+            return await ctx.send(
+                f"You aren't registered with the API, run `{ctx.clean_prefix}{self.command_apiregister}` to register."
+            )
         if int(api_requester.user_id) != ctx.author.id:
             return await ctx.send("Failed to get user info")
         try:
@@ -126,9 +136,7 @@ class APIManager(commands.Cog):
         if not users:
             return await ctx.send("Nothing found")
         data = [
-            (u.entries_submitted, int(u.user_id), u.name)
-            for u in users
-            if u.can_read
+            (u.entries_submitted, int(u.user_id), u.name) for u in users if u.can_read
         ]
         if not data:
             return await ctx.send("Nothing found")
@@ -143,7 +151,9 @@ class APIManager(commands.Cog):
     @command_audio_api.command(name="ban", cooldown_after_parsing=True)
     @commands.guild_only()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def command_apiban(self, ctx: commands.Context, *, user: Union[discord.User, int]):
+    async def command_apiban(
+        self, ctx: commands.Context, *, user: Union[discord.User, int]
+    ):
         """Ban people from API."""
         if not await is_api_admin(ctx):
             return
@@ -165,7 +175,9 @@ class APIManager(commands.Cog):
         if not banned_user:
             return await ctx.send("I couldn't ban the user.")
         else:
-            return await ctx.send(f"I have banned `{banned_user.name} ({banned_user.user_id})`.")
+            return await ctx.send(
+                f"I have banned `{banned_user.name} ({banned_user.user_id})`."
+            )
 
     @command_audio_api.command(name="massban", cooldown_after_parsing=True)
     @commands.guild_only()
@@ -179,7 +191,9 @@ class APIManager(commands.Cog):
 
     @command_audio_api.command(name="revoke")
     @commands.guild_only()
-    async def command_apirevoke(self, ctx: commands.Context, *, user: Union[discord.User, int]):
+    async def command_apirevoke(
+        self, ctx: commands.Context, *, user: Union[discord.User, int]
+    ):
         """Revoke people's API access."""
         if not await is_api_mod(ctx):
             return
@@ -212,7 +226,9 @@ class APIManager(commands.Cog):
         api_requester = ctx.audio_api_user
         if not await self.is_allowed_by_hierarchy(api_requester, user_id, strict=True):
             return await ctx.send("I can't allow you to do that.")
-        api_user = await API.update_user(cog=self, member=discord.Object(id=user_id), contrib=False, user=True)
+        api_user = await API.update_user(
+            cog=self, member=discord.Object(id=user_id), contrib=False, user=True
+        )
         if not api_user:
             return await ctx.send(f"Couldn't update user `{user_id}` at this time.")
         await ctx.send(f"`{api_user.name} ({api_user.user_id})` is now a contributor.")
@@ -226,7 +242,9 @@ class APIManager(commands.Cog):
         api_requester = ctx.audio_api_user
         if not await self.is_allowed_by_hierarchy(api_requester, user_id, strict=True):
             return await ctx.send("I can't allow you to do that.")
-        api_user = await API.update_user(cog=self, member=discord.Object(id=user_id), contrib=True)
+        api_user = await API.update_user(
+            cog=self, member=discord.Object(id=user_id), contrib=True
+        )
         if not api_user:
             return await ctx.send(f"Couldn't update user `{user_id}` at this time.")
         await ctx.send(f"`{api_user.name} ({api_user.user_id})` is now a contributor.")
@@ -240,7 +258,9 @@ class APIManager(commands.Cog):
         api_requester = ctx.audio_api_user
         if not await self.is_allowed_by_hierarchy(api_requester, user_id, strict=True):
             return await ctx.send("I can't allow you to do that.")
-        api_user = await API.update_user(cog=self, member=discord.Object(id=user_id), contrib=True)
+        api_user = await API.update_user(
+            cog=self, member=discord.Object(id=user_id), contrib=True
+        )
         if not api_user:
             return await ctx.send(f"Couldn't update user `{user_id}` at this time.")
         await ctx.send(f"`{api_user.name} ({api_user.user_id})` is now a moderator.")
@@ -290,7 +310,10 @@ class APIManager(commands.Cog):
         await ctx.invoke(self.command_mytoken)
 
     async def is_allowed_by_hierarchy(
-        self, mod: User, user: Union[discord.abc.User, discord.Object, int], strict: bool = False
+        self,
+        mod: User,
+        user: Union[discord.abc.User, discord.Object, int],
+        strict: bool = False,
     ):
         if isinstance(user, (discord.abc.User, discord.Object)):
             user_id = user.id
@@ -303,14 +326,48 @@ class APIManager(commands.Cog):
             return False
         if not strict:
             if (mod.is_admin or mod.is_superuser) and any(
-                s for s in [user.is_mod, user.is_contributor, user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]
+                s
+                for s in [
+                    user.is_mod,
+                    user.is_contributor,
+                    user.is_user,
+                    user.is_guest,
+                    user.is_unregistered,
+                    user.is_blacklisted,
+                ]
             ):
                 return True
-            if mod.is_mod and any(s for s in [user.is_contributor, user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]):
+            if mod.is_mod and any(
+                s
+                for s in [
+                    user.is_contributor,
+                    user.is_user,
+                    user.is_guest,
+                    user.is_unregistered,
+                    user.is_blacklisted,
+                ]
+            ):
                 return True
         else:
-            if (mod.is_admin or mod.is_superuser) and any(s for s in [user.is_contributor, user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]):
+            if (mod.is_admin or mod.is_superuser) and any(
+                s
+                for s in [
+                    user.is_contributor,
+                    user.is_user,
+                    user.is_guest,
+                    user.is_unregistered,
+                    user.is_blacklisted,
+                ]
+            ):
                 return True
-            if mod.is_mod and any(s for s in [user.is_user, user.is_guest, user.is_unregistered, user.is_blacklisted]):
+            if mod.is_mod and any(
+                s
+                for s in [
+                    user.is_user,
+                    user.is_guest,
+                    user.is_unregistered,
+                    user.is_blacklisted,
+                ]
+            ):
                 return True
         return False
