@@ -76,6 +76,7 @@ class PlayerControllerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 )
             await player.stop()
             await player.disconnect()
+            self._ll_guild_updates.discard(ctx.guild.id)
             await self.api_interface.persistent_queue_api.drop(ctx.guild.id)
 
     @commands.command(name="now")

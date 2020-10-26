@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 
 from collections import Counter
 from pathlib import Path
@@ -87,6 +88,8 @@ class Audio(
             "can_post": False,
             "can_delete": False,
         }
+        self._ll_guild_updates = set()
+        self._last_ll_update = datetime.datetime.now(datetime.timezone.utc)
 
         default_global = dict(
             schema_version=1,

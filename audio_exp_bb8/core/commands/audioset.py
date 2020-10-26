@@ -1,8 +1,9 @@
 import asyncio
 import contextlib
 import logging
+import os
+import tarfile
 from pathlib import Path
-
 from typing import Union
 
 import discord
@@ -18,7 +19,7 @@ from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 from ...audio_dataclasses import LocalPath
 from ...converters import ScopeParser
 from ...errors import MissingGuild, TooManyMatches
-from ...utils import CacheLevel, PlaylistScope
+from ...utils import CacheLevel, PlaylistScope, has_internal_server
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass, PlaylistConverter, __version__
 
@@ -1231,6 +1232,47 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
         await self.send_embed_msg(ctx, description=box(msg, lang="ini"))
 
+    @command_audioset.command(name="logs")
+    @commands.is_owner()
+    @has_internal_server()
+    @commands.guild_only()
+    async def command_audioset_logs(self, ctx: commands.Context):
+        """Sends the Lavalink server logs to your DMs."""
+        datapath = cog_data_path(raw_name="Audio")
+        logs = datapath / "logs" / "spring.log"
+        zip_name = None
+        try:
+            try:
+                if not (logs.exists() and logs.is_file()):
+                    return await ctx.send(_("No logs found in your data folder."))
+            except OSError:
+                return await ctx.send(_("No logs found in your data folder."))
+
+            def check(path):
+                return os.path.getsize(str(path)) > (8388608 - 1000)
+
+            if check(logs):
+                zip_name = logs.with_suffix(".tar.gz")
+                zip_name.unlink(missing_ok=True)
+                with tarfile.open(zip_name, "w:gz") as tar:
+                    tar.add(str(logs), arcname="spring.log", recursive=False)
+                if check(zip_name):
+                    await ctx.send(
+                        _("Logs are too large, you can find them in {path}").format(
+                            path=zip_name.absolute()
+                        )
+                    )
+                    zip_name = None
+                else:
+                    await ctx.author.send(file=discord.File(str(zip_name)))
+            else:
+                await ctx.author.send(file=discord.File(str(logs)))
+        except discord.HTTPException:
+            await ctx.send(_("I need to be able to DM you to send you the logs."))
+        finally:
+            if zip_name is not None:
+                zip_name.unlink(missing_ok=True)
+
     @command_audioset.command(name="status")
     @commands.is_owner()
     @commands.guild_only()
@@ -1548,12 +1590,15 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Restarts the lavalink connection."""
         async with ctx.typing():
             lavalink.unregister_event_listener(self.lavalink_event_handler)
+            lavalink.unregister_update_listener(self.lavalink_update_handler)
+
             await lavalink.close()
             if self.player_manager is not None:
                 await self.player_manager.shutdown()
 
             self.lavalink_restart_connect()
             lavalink.register_event_listener(self.lavalink_event_handler)
+            lavalink.register_update_listener(self.lavalink_update_handler)
             await self.restore_players()
             await self.send_embed_msg(
                 ctx,

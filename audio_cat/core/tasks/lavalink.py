@@ -89,14 +89,18 @@ class LavalinkTasks(MixinMeta, metaclass=CompositeMetaClass):
         retry_count = 0
         while retry_count < max_retries:
             try:
-                await lavalink.initialize(
-                    bot=self.bot,
-                    host=host,
-                    password=password,
-                    rest_port=rest_port,
-                    ws_port=ws_port,
-                    timeout=timeout,
-                )
+                args = {
+                    "bot": self.bot,
+                    "host": host,
+                    "password": password,
+                    "rest_port": rest_port,
+                    "ws_port": ws_port,
+                    "timeout": timeout,
+                    "resume_key": f"Red-Core-Audio-{self.bot.user.id}",
+                }
+                if lavalink.__version__ != "0.7.0":
+                    args.pop("resume_key", None)
+                await lavalink.initialize(**args)
             except asyncio.TimeoutError:
                 log.error("Connecting to Lavalink server timed out, retrying...")
                 if external is False and self.player_manager is not None:
