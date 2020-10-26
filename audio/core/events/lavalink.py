@@ -17,7 +17,7 @@ _ = Translator("Audio", Path(__file__))
 
 
 class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
-    async def lavalink_update_handler(self, **kwargs):
+    async def lavalink_update_handler(self, *args, **kwargs):
         pass
 
     async def lavalink_event_handler(

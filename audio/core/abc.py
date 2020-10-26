@@ -7,7 +7,8 @@ from abc import ABC, abstractmethod
 from collections import Counter
 from pathlib import Path
 from typing import (
-    Set, TYPE_CHECKING,
+    Set,
+    TYPE_CHECKING,
     Any,
     List,
     Mapping,
