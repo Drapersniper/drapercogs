@@ -170,3 +170,8 @@ To do so, run `[p]audioset cache 5`. This cache, which stores only metadata, wil
             )
             await send_to_owners_with_prefix_replaced(self.bot, msg)
             await self.config.owner_notification.set(1)
+        current_notification = await self.config.owner_notification()
+        if current_notification < 1.1 <= _OWNER_NOTIFICATION:
+            msg = "Draper's Audio Cog is no longer needed, please uninstall using `[p]cog uninstall audio`, Red's Core audio in version 3.4.1 has the same features as this, and this will no longer be maintained."
+            await send_to_owners_with_prefix_replaced(self.bot, msg)
+            await self.config.owner_notification.set(1.1)
