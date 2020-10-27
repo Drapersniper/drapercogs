@@ -13,7 +13,7 @@ __version__ = VersionInfo.from_json(
 __author__ = ["aikaterna", "Draper"]
 
 _SCHEMA_VERSION: Final[int] = 3
-_OWNER_NOTIFICATION: Final[int] = 1
+_OWNER_NOTIFICATION: Final[float] = 1.1
 
 LazyGreedyConverter = get_lazy_converter("--")
 PlaylistConverter = get_playlist_converter()
