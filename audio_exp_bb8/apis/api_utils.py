@@ -8,17 +8,13 @@ from typing import List, MutableMapping, Optional, Union
 import discord
 import lavalink
 
+from redbot import json
 from redbot.core.bot import Red
 from redbot.core.i18n import Translator
 from redbot.core.utils.chat_formatting import humanize_list
 
 from ..errors import InvalidPlaylistScope, MissingAuthor, MissingGuild
 from ..utils import PlaylistScope
-
-try:
-    from redbot import json
-except ImportError:
-    import json
 
 log = logging.getLogger("red.cogs.Audio.api.utils")
 _ = Translator("Audio", Path(__file__))
@@ -31,9 +27,7 @@ class YouTubeCacheFetchResult:
 
     def __post_init__(self):
         if isinstance(self.last_updated, int):
-            self.updated_on: datetime.datetime = datetime.datetime.fromtimestamp(
-                self.last_updated
-            )
+            self.updated_on: datetime.datetime = datetime.datetime.fromtimestamp(self.last_updated)
 
 
 @dataclass
@@ -43,9 +37,7 @@ class SpotifyCacheFetchResult:
 
     def __post_init__(self):
         if isinstance(self.last_updated, int):
-            self.updated_on: datetime.datetime = datetime.datetime.fromtimestamp(
-                self.last_updated
-            )
+            self.updated_on: datetime.datetime = datetime.datetime.fromtimestamp(self.last_updated)
 
 
 @dataclass
@@ -55,9 +47,7 @@ class LavalinkCacheFetchResult:
 
     def __post_init__(self):
         if isinstance(self.last_updated, int):
-            self.updated_on: datetime.datetime = datetime.datetime.fromtimestamp(
-                self.last_updated
-            )
+            self.updated_on: datetime.datetime = datetime.datetime.fromtimestamp(self.last_updated)
 
         if isinstance(self.query, str):
             self.query = json.loads(self.query)

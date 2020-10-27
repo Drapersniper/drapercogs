@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List, Mapping, MutableMapping, Optional, Tuple
 
 import aiohttp
 
+from redbot import json
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog, Context
@@ -15,12 +16,6 @@ from redbot.core.i18n import Translator
 from redbot.core.utils import AsyncIter
 
 from ..errors import SpotifyFetchError
-
-try:
-    from redbot import json
-except ImportError:
-    import json
-
 
 if TYPE_CHECKING:
     from .. import Audio
@@ -41,11 +36,7 @@ class SpotifyWrapper:
     """Wrapper for the Spotify API."""
 
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        session: aiohttp.ClientSession,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, session: aiohttp.ClientSession, cog: Union["Audio", Cog]
     ):
         self.bot = bot
         self.config = config
@@ -108,9 +99,7 @@ class SpotifyWrapper:
         """Make a GET request to the spotify API."""
         if params is None:
             params = {}
-        async with self.session.request(
-            "GET", url, params=params, headers=headers
-        ) as r:
+        async with self.session.request("GET", url, params=params, headers=headers) as r:
             data = await r.json(loads=json.loads)
             if r.status != 200:
                 log.debug(f"Issue making GET request to {url}: [{r.status}] {data}")
@@ -147,9 +136,7 @@ class SpotifyWrapper:
 
     async def get_access_token(self) -> Optional[str]:
         """Get the access_token."""
-        if self.spotify_token and not await self.is_access_token_valid(
-            self.spotify_token
-        ):
+        if self.spotify_token and not await self.is_access_token_valid(self.spotify_token):
             return self.spotify_token["access_token"]
         token = await self.request_access_token()
         if token is None:
@@ -175,9 +162,7 @@ class SpotifyWrapper:
     async def make_get_call(self, url: str, params: MutableMapping) -> MutableMapping:
         """Make a Get call to spotify."""
         token = await self.get_access_token()
-        return await self.get(
-            url, params=params, headers={"Authorization": f"Bearer {token}"}
-        )
+        return await self.get(url, params=params, headers={"Authorization": f"Bearer {token}"})
 
     async def get_categories(self, ctx: Context = None) -> List[MutableMapping]:
         """Get the spotify categories."""

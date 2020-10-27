@@ -12,6 +12,7 @@ import lavalink
 from redbot.core import bank, commands
 from redbot.core.data_manager import cog_data_path
 from redbot.core.i18n import Translator
+from redbot.core.utils._dpy_menus_utils import dpymenu
 from redbot.core.utils.chat_formatting import box, humanize_number
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
@@ -84,9 +85,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 whitelist.append(keyword)
         if exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword already in the whitelist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword already in the whitelist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -118,17 +117,13 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(
-                title=_("Global Whitelist"), description=page, colour=embed_colour
-            )
+            discord.Embed(title=_("Global Whitelist"), description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await dpymenu(ctx, pages, DEFAULT_CONTROLS)
 
     @command_audioset_perms_global_whitelist.command(name="clear")
-    async def command_audioset_perms_global_whitelist_clear(
-        self, ctx: commands.Context
-    ):
+    async def command_audioset_perms_global_whitelist_clear(self, ctx: commands.Context):
         """Clear all keywords from the whitelist."""
         whitelist = await self.config.url_keyword_whitelist()
         if not whitelist:
@@ -140,9 +135,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             description=_("All entries have been removed from the whitelist."),
         )
 
-    @command_audioset_perms_global_whitelist.command(
-        name="delete", aliases=["del", "remove"]
-    )
+    @command_audioset_perms_global_whitelist.command(name="delete", aliases=["del", "remove"])
     async def command_audioset_perms_global_whitelist_delete(
         self, ctx: commands.Context, *, keyword: str
     ):
@@ -157,9 +150,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 whitelist.remove(keyword)
         if not exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword already in the whitelist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword already in the whitelist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -188,9 +179,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 blacklist.append(keyword)
         if exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword already in the blacklist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword already in the blacklist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -222,17 +211,13 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 pages.append(box(text, lang="ini"))
         embed_colour = await ctx.embed_colour()
         pages = list(
-            discord.Embed(
-                title=_("Global Blacklist"), description=page, colour=embed_colour
-            )
+            discord.Embed(title=_("Global Blacklist"), description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await dpymenu(ctx, pages, DEFAULT_CONTROLS)
 
     @command_audioset_perms_global_blacklist.command(name="clear")
-    async def command_audioset_perms_global_blacklist_clear(
-        self, ctx: commands.Context
-    ):
+    async def command_audioset_perms_global_blacklist_clear(self, ctx: commands.Context):
         """Clear all keywords added to the blacklist."""
         blacklist = await self.config.url_keyword_blacklist()
         if not blacklist:
@@ -244,9 +229,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             description=_("All entries have been removed from the blacklist."),
         )
 
-    @command_audioset_perms_global_blacklist.command(
-        name="delete", aliases=["del", "remove"]
-    )
+    @command_audioset_perms_global_blacklist.command(name="delete", aliases=["del", "remove"])
     async def command_audioset_perms_global_blacklist_delete(
         self, ctx: commands.Context, *, keyword: str
     ):
@@ -261,9 +244,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 blacklist.remove(keyword)
         if not exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword is not in the blacklist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword is not in the blacklist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -279,9 +260,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Manages the keyword whitelist."""
 
     @command_audioset_perms_whitelist.command(name="add")
-    async def command_audioset_perms_whitelist_add(
-        self, ctx: commands.Context, *, keyword: str
-    ):
+    async def command_audioset_perms_whitelist_add(self, ctx: commands.Context, *, keyword: str):
         """Adds a keyword to the whitelist.
 
         If anything is added to whitelist, it will blacklist everything else.
@@ -296,9 +275,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 whitelist.append(keyword)
         if exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword already in the whitelist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword already in the whitelist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -333,7 +310,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             discord.Embed(title=_("Whitelist"), description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await dpymenu(ctx, pages, DEFAULT_CONTROLS)
 
     @command_audioset_perms_whitelist.command(name="clear")
     async def command_audioset_perms_whitelist_clear(self, ctx: commands.Context):
@@ -363,9 +340,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 whitelist.remove(keyword)
         if not exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword already in the whitelist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword already in the whitelist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -381,9 +356,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Manages the keyword blacklist."""
 
     @command_audioset_perms_blacklist.command(name="add")
-    async def command_audioset_perms_blacklist_add(
-        self, ctx: commands.Context, *, keyword: str
-    ):
+    async def command_audioset_perms_blacklist_add(self, ctx: commands.Context, *, keyword: str):
         """Adds a keyword to the blacklist."""
         keyword = keyword.lower().strip()
         if not keyword:
@@ -395,9 +368,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 blacklist.append(keyword)
         if exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword already in the blacklist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword already in the blacklist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -432,7 +403,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             discord.Embed(title=_("Blacklist"), description=page, colour=embed_colour)
             for page in pages
         )
-        await menu(ctx, pages, DEFAULT_CONTROLS)
+        await dpymenu(ctx, pages, DEFAULT_CONTROLS)
 
     @command_audioset_perms_blacklist.command(name="clear")
     async def command_audioset_perms_blacklist_clear(self, ctx: commands.Context):
@@ -462,9 +433,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 blacklist.remove(keyword)
         if not exists:
-            return await self.send_embed_msg(
-                ctx, title=_("Keyword is not in the blacklist.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Keyword is not in the blacklist."))
         else:
             return await self.send_embed_msg(
                 ctx,
@@ -501,9 +470,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         if self._player_check(ctx):
             await self.set_player_settings(ctx)
 
-    @command_audioset_autoplay.command(
-        name="playlist", usage="<playlist_name_OR_id> [args]"
-    )
+    @command_audioset_autoplay.command(name="playlist", usage="<playlist_name_OR_id> [args]")
     @commands.bot_has_permissions(add_reactions=True)
     async def command_audioset_autoplay_playlist(
         self,
@@ -565,9 +532,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(
                 ctx,
                 title=_("No Playlist Found"),
-                description=_("Could not match '{arg}' to a playlist").format(
-                    arg=playlist_arg
-                ),
+                description=_("Could not match '{arg}' to a playlist").format(arg=playlist_arg),
             )
         try:
             tracks = playlist.tracks
@@ -575,13 +540,9 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 return await self.send_embed_msg(
                     ctx,
                     title=_("No Tracks Found"),
-                    description=_("Playlist {name} has no tracks.").format(
-                        name=playlist.name
-                    ),
+                    description=_("Playlist {name} has no tracks.").format(name=playlist.name),
                 )
-            playlist_data = dict(
-                enabled=True, id=playlist.id, name=playlist.name, scope=scope
-            )
+            playlist_data = dict(enabled=True, id=playlist.id, name=playlist.name, scope=scope)
             await self.config.guild(ctx.guild).autoplaylist.set(playlist_data)
         except RuntimeError:
             return await self.send_embed_msg(
@@ -595,9 +556,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             return await self.send_embed_msg(
                 ctx,
                 title=_("Missing Arguments"),
-                description=_(
-                    "You need to specify the Guild ID for the guild to lookup."
-                ),
+                description=_("You need to specify the Guild ID for the guild to lookup."),
             )
         else:
             return await self.send_embed_msg(
@@ -609,8 +568,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                     name=playlist.name,
                     id=playlist.id,
                     scope=self.humanize_scope(
-                        scope,
-                        ctx=guild if scope == PlaylistScope.GUILD.value else author,
+                        scope, ctx=guild if scope == PlaylistScope.GUILD.value else author
                     ),
                 ),
             )
@@ -735,27 +693,21 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_audioset.command(name="emptydisconnect")
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
-    async def command_audioset_emptydisconnect(
-        self, ctx: commands.Context, seconds: int
-    ):
+    async def command_audioset_emptydisconnect(self, ctx: commands.Context, seconds: int):
         """Auto-disconnect from channel when bot is alone in it for x seconds, 0 to disable.
 
         `[p]audioset dc` takes precedence over this setting.
         """
         if seconds < 0:
             return await self.send_embed_msg(
-                ctx,
-                title=_("Invalid Time"),
-                description=_("Seconds can't be less than zero."),
+                ctx, title=_("Invalid Time"), description=_("Seconds can't be less than zero.")
             )
         if 10 > seconds > 0:
             seconds = 10
         if seconds == 0:
             enabled = False
             await self.send_embed_msg(
-                ctx,
-                title=_("Setting Changed"),
-                description=_("Empty disconnect disabled."),
+                ctx, title=_("Setting Changed"), description=_("Empty disconnect disabled.")
             )
         else:
             enabled = True
@@ -777,9 +729,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Auto-pause after x seconds when room is empty, 0 to disable."""
         if seconds < 0:
             return await self.send_embed_msg(
-                ctx,
-                title=_("Invalid Time"),
-                description=_("Seconds can't be less than zero."),
+                ctx, title=_("Invalid Time"), description=_("Seconds can't be less than zero.")
             )
         if 10 > seconds > 0:
             seconds = 10
@@ -822,9 +772,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Set a price for queueing tracks for non-mods, 0 to disable."""
         if price < 0:
             return await self.send_embed_msg(
-                ctx,
-                title=_("Invalid Price"),
-                description=_("Price can't be less than zero."),
+                ctx, title=_("Invalid Price"), description=_("Price can't be less than zero.")
             )
         if price == 0:
             jukebox = False
@@ -836,11 +784,8 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Setting Changed"),
-                description=_(
-                    "Track queueing command price set to {price} {currency}."
-                ).format(
-                    price=humanize_number(price),
-                    currency=await bank.get_currency_name(ctx.guild),
+                description=_("Track queueing command price set to {price} {currency}.").format(
+                    price=humanize_number(price), currency=await bank.get_currency_name(ctx.guild)
                 ),
             )
 
@@ -850,9 +795,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_audioset.command(name="localpath")
     @commands.is_owner()
     @commands.bot_has_permissions(add_reactions=True)
-    async def command_audioset_localpath(
-        self, ctx: commands.Context, *, local_path=None
-    ):
+    async def command_audioset_localpath(self, ctx: commands.Context, *, local_path=None):
         """Set the localtracks path if the Lavalink.jar is not run from the Audio data folder.
 
         Leave the path blank to reset the path to the default, the Audio data directory.
@@ -913,30 +856,23 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 "The path will still be saved, but please check the path and "
                 "create a localtracks folder in `{localfolder}` before attempting "
                 "to play local tracks."
-            ).format(
-                localfolder=temp.absolute(),
-                localtracks=temp.localtrack_folder.absolute(),
-            )
-            await self.send_embed_msg(
-                ctx, title=_("Invalid Environment"), description=warn_msg
-            )
+            ).format(localfolder=temp.absolute(), localtracks=temp.localtrack_folder.absolute())
+            await self.send_embed_msg(ctx, title=_("Invalid Environment"), description=warn_msg)
         local_path = str(temp.localtrack_folder.absolute())
         await self.config.localpath.set(local_path)
         self.local_folder_current_path = temp.localtrack_folder.absolute()
         return await self.send_embed_msg(
             ctx,
             title=_("Setting Changed"),
-            description=_(
-                "The localtracks path location has been set to {localpath}"
-            ).format(localpath=local_path),
+            description=_("The localtracks path location has been set to {localpath}").format(
+                localpath=local_path
+            ),
         )
 
     @command_audioset.command(name="maxlength")
     @commands.guild_only()
     @commands.mod_or_permissions(administrator=True)
-    async def command_audioset_maxlength(
-        self, ctx: commands.Context, seconds: Union[int, str]
-    ):
+    async def command_audioset_maxlength(self, ctx: commands.Context, seconds: Union[int, str]):
         """Max length of a track to queue in seconds, 0 to disable.
 
         Accepts seconds or a value formatted like 00:00:00 (`hh:mm:ss`) or 00:00 (`mm:ss`). Invalid
@@ -946,15 +882,11 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             seconds = self.time_convert(seconds)
         if seconds < 0:
             return await self.send_embed_msg(
-                ctx,
-                title=_("Invalid length"),
-                description=_("Length can't be less than zero."),
+                ctx, title=_("Invalid length"), description=_("Length can't be less than zero.")
             )
         if seconds == 0:
             await self.send_embed_msg(
-                ctx,
-                title=_("Setting Changed"),
-                description=_("Track max length disabled."),
+                ctx, title=_("Setting Changed"), description=_("Track max length disabled.")
             )
         else:
             await self.send_embed_msg(
@@ -1019,9 +951,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     @command_audioset.command(name="role")
     @commands.guild_only()
     @commands.admin_or_permissions(manage_roles=True)
-    async def command_audioset_role(
-        self, ctx: commands.Context, *, role_name: discord.Role
-    ):
+    async def command_audioset_role(self, ctx: commands.Context, *, role_name: discord.Role):
         """Set the role to use for DJ mode."""
         await self.config.guild(ctx.guild).dj_role.set(role_name.id)
         self._dj_role_cache[ctx.guild.id] = role_name.id
@@ -1077,9 +1007,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         autoplaylist = data["autoplaylist"]
         vote_enabled = data["vote_enabled"]
         msg = "----" + _("Server Settings") + "----        \n"
-        msg += _("Auto-disconnect:  [{dc}]\n").format(
-            dc=_("Enabled") if dc else _("Disabled")
-        )
+        msg += _("Auto-disconnect:  [{dc}]\n").format(dc=_("Enabled") if dc else _("Disabled"))
         msg += _("Auto-play:        [{autoplay}]\n").format(
             autoplay=_("Enabled") if autoplay else _("Disabled")
         )
@@ -1094,9 +1022,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         if dj_enabled and dj_role_obj:
             msg += _("DJ Role:          [{role.name}]\n").format(role=dj_role_obj)
         if jukebox:
-            msg += _("Jukebox:          [{jukebox_name}]\n").format(
-                jukebox_name=jukebox
-            )
+            msg += _("Jukebox:          [{jukebox_name}]\n").format(jukebox_name=jukebox)
             msg += _("Command price:    [{jukebox_price}]\n").format(
                 jukebox_price=humanize_number(jukebox_price)
             )
@@ -1181,9 +1107,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
                 spotify_status=_("Enabled") if has_spotify_cache else _("Disabled"),
                 youtube_status=_("Enabled") if has_youtube_cache else _("Disabled"),
                 lavalink_status=_("Enabled") if has_lavalink_cache else _("Disabled"),
-                global_cache=_("Enabled")
-                if global_data["global_db_enabled"]
-                else _("Disabled"),
+                global_cache=_("Enabled") if global_data["global_db_enabled"] else _("Disabled"),
                 num_seconds=self.get_time_string(global_data["global_db_get_timeout"]),
             )
         msg += (
@@ -1207,11 +1131,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             if global_data["use_external_lavalink"]
             else _("Disabled"),
         )
-        if (
-            is_owner
-            and not global_data["use_external_lavalink"]
-            and self.player_manager.ll_build
-        ):
+        if is_owner and not global_data["use_external_lavalink"] and self.player_manager.ll_build:
             msg += _(
                 "Lavalink build:         [{llbuild}]\n"
                 "Lavalink branch:        [{llbranch}]\n"
@@ -1310,9 +1230,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Percentage needed for non-mods to skip tracks, 0 to disable."""
         if percent < 0:
             return await self.send_embed_msg(
-                ctx,
-                title=_("Invalid Time"),
-                description=_("Seconds can't be less than zero."),
+                ctx, title=_("Invalid Time"), description=_("Seconds can't be less than zero.")
             )
         elif percent > 100:
             percent = 100
@@ -1321,18 +1239,14 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Setting Changed"),
-                description=_(
-                    "Voting disabled. All users can use queue management commands."
-                ),
+                description=_("Voting disabled. All users can use queue management commands."),
             )
         else:
             enabled = True
             await self.send_embed_msg(
                 ctx,
                 title=_("Setting Changed"),
-                description=_("Vote percentage set to {percent}%.").format(
-                    percent=percent
-                ),
+                description=_("Vote percentage set to {percent}%.").format(percent=percent),
             )
 
         await self.config.guild(ctx.guild).vote_percent.set(percent)
@@ -1399,9 +1313,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
 
     @command_audioset.command(name="mycountrycode")
     @commands.guild_only()
-    async def command_audioset_countrycode_user(
-        self, ctx: commands.Context, country: str
-    ):
+    async def command_audioset_countrycode_user(self, ctx: commands.Context, country: str):
         """Set the country code for Spotify searches."""
         if len(country) != 2:
             return await self.send_embed_msg(
@@ -1502,9 +1414,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
             lavalink_status=_("Enabled") if has_lavalink_cache else _("Disabled"),
         )
 
-        await self.send_embed_msg(
-            ctx, title=_("Cache Settings"), description=box(msg, lang="ini")
-        )
+        await self.send_embed_msg(ctx, title=_("Cache Settings"), description=box(msg, lang="ini"))
 
         await self.config.cache_level.set(newcache.value)
 
@@ -1540,14 +1450,10 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """
         state = await self.config.global_db_enabled()
         await self.config.global_db_enabled.set(not state)
-        if (
-            not state
-        ):  # Ensure a call is made if the API is enabled to update user perms
+        if not state:  # Ensure a call is made if the API is enabled to update user perms
             self.global_api_user = await self.api_interface.global_cache_api.get_perms()
         await ctx.send(
-            _("Global DB is {status}").format(
-                status=_("enabled") if not state else _("disabled")
-            )
+            _("Global DB is {status}").format(status=_("enabled") if not state else _("disabled"))
         )
 
     @command_audioset_audiodb.command(name="timeout")
@@ -1560,9 +1466,7 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
         """
 
         await self.config.global_db_get_timeout.set(timeout)
-        await ctx.send(
-            _("Request timeout set to {time} second(s)").format(time=timeout)
-        )
+        await ctx.send(_("Request timeout set to {time} second(s)").format(time=timeout))
 
     @command_audioset.command(name="persistqueue")
     @commands.admin()
@@ -1589,21 +1493,14 @@ class AudioSetCommands(MixinMeta, metaclass=CompositeMetaClass):
     async def command_audioset_restart(self, ctx: commands.Context):
         """Restarts the lavalink connection."""
         async with ctx.typing():
-            lavalink.unregister_event_listener(self.lavalink_event_handler)
-            lavalink.unregister_update_listener(self.lavalink_update_handler)
-
             await lavalink.close()
             if self.player_manager is not None:
                 await self.player_manager.shutdown()
 
             self.lavalink_restart_connect()
-            lavalink.register_event_listener(self.lavalink_event_handler)
-            lavalink.register_update_listener(self.lavalink_update_handler)
-            await self.restore_players()
+
             await self.send_embed_msg(
                 ctx,
                 title=_("Restarting Lavalink"),
-                description=_(
-                    "It can take a couple of minutes for Lavalink to fully start up."
-                ),
+                description=_("It can take a couple of minutes for Lavalink to fully start up."),
             )

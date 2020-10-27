@@ -23,9 +23,7 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
         """Lavalink server configuration options."""
 
     @command_llsetup.command(name="java")
-    async def command_llsetup_java(
-        self, ctx: commands.Context, *, java_path: str = None
-    ):
+    async def command_llsetup_java(self, ctx: commands.Context, *, java_path: str = None):
         """Change your Java executable path
 
         Enter nothing to reset to default.
@@ -62,9 +60,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
             await self.send_embed_msg(
                 ctx,
                 title=_("Java Executable Changed"),
-                description=_(
-                    "Audio will now use `{exc}` to run your Lavalink.jar"
-                ).format(exc=exc_absolute),
+                description=_("Audio will now use `{exc}` to run your Lavalink.jar").format(
+                    exc=exc_absolute
+                ),
             )
         try:
             if self.player_manager is not None:
@@ -74,8 +72,7 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
                 ctx,
                 title=_("Failed To Shutdown Lavalink"),
                 description=_(
-                    "For it to take effect please reload "
-                    "Audio (`{prefix}reload audio`)."
+                    "For it to take effect please reload Audio (`{prefix}reload audio`)."
                 ).format(
                     prefix=ctx.prefix,
                 ),
@@ -87,9 +84,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
                 await self.send_embed_msg(
                     ctx,
                     title=_("Failed To Shutdown Lavalink"),
-                    description=_(
-                        "Please reload Audio (`{prefix}reload audio`)."
-                    ).format(prefix=ctx.prefix),
+                    description=_("Please reload Audio (`{prefix}reload audio`).").format(
+                        prefix=ctx.prefix
+                    ),
                 )
 
     @command_llsetup.command(name="external")
@@ -176,34 +173,7 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
         await self.send_embed_msg(
             ctx,
             title=_("Setting Changed"),
-            description=_("Server password set to {password}.").format(
-                password=password
-            ),
-            footer=footer,
-        )
-
-        try:
-            self.lavalink_restart_connect()
-        except ProcessLookupError:
-            await self.send_embed_msg(
-                ctx,
-                title=_("Failed To Shutdown Lavalink"),
-                description=_("Please reload Audio (`{prefix}reload audio`).").format(
-                    prefix=ctx.prefix
-                ),
-            )
-
-    @command_llsetup.command(name="restport")
-    async def command_llsetup_restport(self, ctx: commands.Context, rest_port: int):
-        """Set the Lavalink REST server port."""
-        await self.config.rest_port.set(rest_port)
-        footer = None
-        if await self.update_external_status():
-            footer = _("External Lavalink server set to True.")
-        await self.send_embed_msg(
-            ctx,
-            title=_("Setting Changed"),
-            description=_("REST port set to {port}.").format(port=rest_port),
+            description=_("Server password set to {password}.").format(password=password),
             footer=footer,
         )
 
@@ -253,8 +223,9 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
         ws_port = configs["ws_port"]
         msg = "----" + _("Connection Settings") + "----        \n"
         msg += _("Host:             [{host}]\n").format(host=host)
-        msg += _("Rest Port:        [{port}]\n").format(port=rest_port)
         msg += _("WS Port:          [{port}]\n").format(port=ws_port)
+        if ws_port != rest_port:
+            msg += _("Rest Port:        [{port}]\n").format(port=rest_port)
         msg += _("Password:         [{password}]\n").format(password=password)
         try:
             await self.send_embed_msg(ctx.author, description=box(msg, lang="ini"))

@@ -56,9 +56,7 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         return True if url_domain in valid_tld else False
 
     def is_vc_full(self, channel: discord.VoiceChannel) -> bool:
-        return not (
-            channel.user_limit == 0 or channel.user_limit > len(channel.members)
-        )
+        return not (channel.user_limit == 0 or channel.user_limit > len(channel.members))
 
     async def is_query_allowed(
         self,
@@ -71,9 +69,7 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         if ctx_or_channel:
             guild = ctx_or_channel.guild
             channel = (
-                ctx_or_channel.channel
-                if isinstance(ctx_or_channel, Context)
-                else ctx_or_channel
+                ctx_or_channel.channel if isinstance(ctx_or_channel, Context) else ctx_or_channel
             )
             query = query.lower().strip()
             if query_obj.is_nsfw and (not channel.is_nsfw()):
@@ -97,15 +93,11 @@ class ValidationUtilities(MixinMeta, metaclass=CompositeMetaClass):
         if any(i in query for i in global_blacklist):
             return False
         if guild is not None:
-            whitelist_unique: Set[str] = set(
-                await config.guild(guild).url_keyword_whitelist()
-            )
+            whitelist_unique: Set[str] = set(await config.guild(guild).url_keyword_whitelist())
             whitelist: List[str] = [i.lower() for i in whitelist_unique]
             if whitelist:
                 return any(i in query for i in whitelist)
-            blacklist_unique: Set[str] = set(
-                await config.guild(guild).url_keyword_blacklist()
-            )
+            blacklist_unique: Set[str] = set(await config.guild(guild).url_keyword_blacklist())
             blacklist: List[str] = [i.lower() for i in blacklist_unique]
             return not any(i in query for i in blacklist)
         return True

@@ -67,11 +67,7 @@ _SCHEMA_VERSION = 3
 
 class BaseWrapper:
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        conn: APSWConnectionWrapper,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, conn: APSWConnectionWrapper, cog: Union["Audio", Cog]
     ):
         self.bot = bot
         self.config = config
@@ -88,15 +84,9 @@ class BaseWrapper:
     async def init(self) -> None:
         """Initialize the local cache"""
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(
-                self.database.cursor().execute, self.statement.pragma_temp_store
-            )
-            executor.submit(
-                self.database.cursor().execute, self.statement.pragma_journal_mode
-            )
-            executor.submit(
-                self.database.cursor().execute, self.statement.pragma_read_uncommitted
-            )
+            executor.submit(self.database.cursor().execute, self.statement.pragma_temp_store)
+            executor.submit(self.database.cursor().execute, self.statement.pragma_journal_mode)
+            executor.submit(self.database.cursor().execute, self.statement.pragma_read_uncommitted)
             executor.submit(self.maybe_migrate)
             executor.submit(self.database.cursor().execute, LAVALINK_CREATE_TABLE)
             executor.submit(self.database.cursor().execute, LAVALINK_CREATE_INDEX)
@@ -114,32 +104,20 @@ class BaseWrapper:
     async def clean_up_old_entries(self) -> None:
         """Delete entries older than x in the local cache tables"""
         max_age = await self.config.cache_age()
-        maxage = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(
-            days=max_age
-        )
+        maxage = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=max_age)
         maxage_int = int(time.mktime(maxage.timetuple()))
         values = {"maxage": maxage_int}
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(
-                self.database.cursor().execute, LAVALINK_DELETE_OLD_ENTRIES, values
-            )
-            executor.submit(
-                self.database.cursor().execute, YOUTUBE_DELETE_OLD_ENTRIES, values
-            )
-            executor.submit(
-                self.database.cursor().execute, SPOTIFY_DELETE_OLD_ENTRIES, values
-            )
+            executor.submit(self.database.cursor().execute, LAVALINK_DELETE_OLD_ENTRIES, values)
+            executor.submit(self.database.cursor().execute, YOUTUBE_DELETE_OLD_ENTRIES, values)
+            executor.submit(self.database.cursor().execute, SPOTIFY_DELETE_OLD_ENTRIES, values)
 
     def maybe_migrate(self) -> None:
         """Maybe migrate Database schema for the local cache"""
         current_version = 0
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             for future in concurrent.futures.as_completed(
-                [
-                    executor.submit(
-                        self.database.cursor().execute, self.statement.get_user_version
-                    )
-                ]
+                [executor.submit(self.database.cursor().execute, self.statement.get_user_version)]
             ):
                 try:
                     row_result = future.result()
@@ -172,34 +150,24 @@ class BaseWrapper:
             time_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
             values["last_fetched"] = time_now
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                executor.submit(
-                    self.database.cursor().execute, self.statement.update, values
-                )
+                executor.submit(self.database.cursor().execute, self.statement.update, values)
         except Exception as exc:
             debug_exc_log(log, exc, "Error during table update")
 
     async def _fetch_one(
         self, values: MutableMapping
     ) -> Optional[
-        Union[
-            LavalinkCacheFetchResult, SpotifyCacheFetchResult, YouTubeCacheFetchResult
-        ]
+        Union[LavalinkCacheFetchResult, SpotifyCacheFetchResult, YouTubeCacheFetchResult]
     ]:
         """Get an entry from the local cache"""
         max_age = await self.config.cache_age()
-        maxage = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(
-            days=max_age
-        )
+        maxage = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(days=max_age)
         maxage_int = int(time.mktime(maxage.timetuple()))
         values.update({"maxage": maxage_int})
         row = None
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             for future in concurrent.futures.as_completed(
-                [
-                    executor.submit(
-                        self.database.cursor().execute, self.statement.get_one, values
-                    )
-                ]
+                [executor.submit(self.database.cursor().execute, self.statement.get_one, values)]
             ):
                 try:
                     row_result = future.result()
@@ -214,11 +182,7 @@ class BaseWrapper:
 
     async def _fetch_all(
         self, values: MutableMapping
-    ) -> List[
-        Union[
-            LavalinkCacheFetchResult, SpotifyCacheFetchResult, YouTubeCacheFetchResult
-        ]
-    ]:
+    ) -> List[Union[LavalinkCacheFetchResult, SpotifyCacheFetchResult, YouTubeCacheFetchResult]]:
         """Get all entries from the local cache"""
         output = []
         row_result = []
@@ -226,11 +190,7 @@ class BaseWrapper:
             return []
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             for future in concurrent.futures.as_completed(
-                [
-                    executor.submit(
-                        self.database.cursor().execute, self.statement.get_all, values
-                    )
-                ]
+                [executor.submit(self.database.cursor().execute, self.statement.get_all, values)]
             ):
                 try:
                     row_result = future.result()
@@ -243,9 +203,7 @@ class BaseWrapper:
     async def _fetch_random(
         self, values: MutableMapping
     ) -> Optional[
-        Union[
-            LavalinkCacheFetchResult, SpotifyCacheFetchResult, YouTubeCacheFetchResult
-        ]
+        Union[LavalinkCacheFetchResult, SpotifyCacheFetchResult, YouTubeCacheFetchResult]
     ]:
         """Get a random entry from the local cache"""
         row = None
@@ -253,9 +211,7 @@ class BaseWrapper:
             for future in concurrent.futures.as_completed(
                 [
                     executor.submit(
-                        self.database.cursor().execute,
-                        self.statement.get_random,
-                        values,
+                        self.database.cursor().execute, self.statement.get_random, values
                     )
                 ]
             ):
@@ -267,9 +223,7 @@ class BaseWrapper:
                     else:
                         row = None
                 except Exception as exc:
-                    debug_exc_log(
-                        log, exc, "Failed to completed random fetch from database"
-                    )
+                    debug_exc_log(log, exc, "Failed to completed random fetch from database")
         if not row:
             return None
         if self.fetch_result is None:
@@ -279,11 +233,7 @@ class BaseWrapper:
 
 class YouTubeTableWrapper(BaseWrapper):
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        conn: APSWConnectionWrapper,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, conn: APSWConnectionWrapper, cog: Union["Audio", Cog]
     ):
         super().__init__(bot, config, conn, cog)
         self.statement.upsert = YOUTUBE_UPSERT
@@ -319,11 +269,7 @@ class YouTubeTableWrapper(BaseWrapper):
 
 class SpotifyTableWrapper(BaseWrapper):
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        conn: APSWConnectionWrapper,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, conn: APSWConnectionWrapper, cog: Union["Audio", Cog]
     ):
         super().__init__(bot, config, conn, cog)
         self.statement.upsert = SPOTIFY_UPSERT
@@ -359,11 +305,7 @@ class SpotifyTableWrapper(BaseWrapper):
 
 class LavalinkTableWrapper(BaseWrapper):
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        conn: APSWConnectionWrapper,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, conn: APSWConnectionWrapper, cog: Union["Audio", Cog]
     ):
         super().__init__(bot, config, conn, cog)
         self.statement.upsert = LAVALINK_UPSERT
@@ -406,11 +348,7 @@ class LavalinkTableWrapper(BaseWrapper):
             return []
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             for future in concurrent.futures.as_completed(
-                [
-                    executor.submit(
-                        self.database.cursor().execute, self.statement.get_all_global
-                    )
-                ]
+                [executor.submit(self.database.cursor().execute, self.statement.get_all_global)]
             ):
                 try:
                     row_result = future.result()
@@ -425,22 +363,12 @@ class LocalCacheWrapper:
     """Wraps all table apis into 1 object representing the local cache"""
 
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        conn: APSWConnectionWrapper,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, conn: APSWConnectionWrapper, cog: Union["Audio", Cog]
     ):
         self.bot = bot
         self.config = config
         self.database = conn
         self.cog = cog
-        self.lavalink: LavalinkTableWrapper = LavalinkTableWrapper(
-            bot, config, conn, self.cog
-        )
-        self.spotify: SpotifyTableWrapper = SpotifyTableWrapper(
-            bot, config, conn, self.cog
-        )
-        self.youtube: YouTubeTableWrapper = YouTubeTableWrapper(
-            bot, config, conn, self.cog
-        )
+        self.lavalink: LavalinkTableWrapper = LavalinkTableWrapper(bot, config, conn, self.cog)
+        self.spotify: SpotifyTableWrapper = SpotifyTableWrapper(bot, config, conn, self.cog)
+        self.youtube: YouTubeTableWrapper = YouTubeTableWrapper(bot, config, conn, self.cog)

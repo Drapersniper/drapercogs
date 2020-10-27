@@ -10,9 +10,10 @@ import lavalink
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
+from redbot.core.utils._dpy_menus_utils import dpymenu
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number, pagify
-from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
+from redbot.core.utils.menus import DEFAULT_CONTROLS
 
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
@@ -58,40 +59,33 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 current_title = await self.get_track_description(
                     p.current, self.local_folder_current_path
                 )
-                msg += "{} [`{}`]: {}\n".format(
-                    p.channel.guild.name, connect_dur, current_title
-                )
+                msg += "{} [`{}`]: {}\n".format(p.channel.guild.name, connect_dur, current_title)
             except AttributeError:
                 msg += "{} [`{}`]: **{}**\n".format(
-                    p.channel.guild.name, connect_dur, _("Not currently broadcasting.")
+                    p.channel.guild.name, connect_dur, _("Nothing playing.")
                 )
 
         if total_num == 0:
-            return await self.send_embed_msg(
-                ctx, title=_("Not currently broadcasting a rebellion message anywhere.")
-            )
+            return await self.send_embed_msg(ctx, title=_("Not connected anywhere."))
         servers_embed = []
         pages = 1
         for page in pagify(msg, delims=["\n"], page_length=1500):
             em = discord.Embed(
                 colour=await ctx.embed_colour(),
-                title=_(
-                    "Currently broadcasting the rebellion message in {num}/{total} servers:"
-                ).format(
+                title=_("Playing in {num}/{total} servers:").format(
                     num=humanize_number(server_num), total=humanize_number(total_num)
                 ),
                 description=page,
             )
             em.set_footer(
                 text=_("Page {}/{}").format(
-                    humanize_number(pages),
-                    humanize_number((math.ceil(len(msg) / 1500))),
+                    humanize_number(pages), humanize_number((math.ceil(len(msg) / 1500)))
                 )
             )
             pages += 1
             servers_embed.append(em)
 
-        await menu(ctx, servers_embed, DEFAULT_CONTROLS)
+        await dpymenu(ctx, servers_embed, DEFAULT_CONTROLS)
 
     @commands.command(name="percent")
     @commands.guild_only()
@@ -114,9 +108,7 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
                 requesters["total"] += 1
 
         async for track in AsyncIter(queue_tracks):
-            req_username = "{}#{}".format(
-                track.requester.name, track.requester.discriminator
-            )
+            req_username = "{}#{}".format(track.requester.name, track.requester.discriminator)
             await _usercount(req_username)
 
         try:
@@ -125,9 +117,7 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
             await _usercount(req_username)
         except AttributeError:
-            return await self.send_embed_msg(
-                ctx, title=_("There's  nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's  nothing in the queue."))
 
         async for req_username in AsyncIter(requesters["users"]):
             percentage = float(requesters["users"][req_username]["songcount"]) / float(

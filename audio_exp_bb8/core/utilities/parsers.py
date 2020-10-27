@@ -21,9 +21,7 @@ class ParsingUtilities(MixinMeta, metaclass=CompositeMetaClass):
                 metaint = int(resp.headers["icy-metaint"])
                 for _ in range(5):
                     await resp.content.readexactly(metaint)
-                    metadata_length = (
-                        struct.unpack("B", await resp.content.readexactly(1))[0] * 16
-                    )
+                    metadata_length = struct.unpack("B", await resp.content.readexactly(1))[0] * 16
                     metadata = await resp.content.readexactly(metadata_length)
                     m = re.search(STREAM_TITLE, metadata.rstrip(b"\0"))
                     if m:

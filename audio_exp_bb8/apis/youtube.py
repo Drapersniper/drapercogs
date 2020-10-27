@@ -5,18 +5,13 @@ from typing import TYPE_CHECKING, Mapping, Optional, Union
 
 import aiohttp
 
+from redbot import json
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
 from redbot.core.i18n import Translator
 
 from ..errors import YouTubeApiError
-
-try:
-    from redbot import json
-except ImportError:
-    import json
-
 
 if TYPE_CHECKING:
     from .. import Audio
@@ -30,11 +25,7 @@ class YouTubeWrapper:
     """Wrapper for the YouTube Data API."""
 
     def __init__(
-        self,
-        bot: Red,
-        config: Config,
-        session: aiohttp.ClientSession,
-        cog: Union["Audio", Cog],
+        self, bot: Red, config: Config, session: aiohttp.ClientSession, cog: Union["Audio", Cog]
     ):
         self.bot = bot
         self.config = config
@@ -92,8 +83,6 @@ class YouTubeWrapper:
                 search_response = await r.json(loads=json.loads)
         for search_result in search_response.get("items", []):
             if search_result["id"]["kind"] == "youtube#video":
-                return (
-                    f"https://www.youtube.com/watch?v={search_result['id']['videoId']}"
-                )
+                return f"https://www.youtube.com/watch?v={search_result['id']['videoId']}"
 
         return None

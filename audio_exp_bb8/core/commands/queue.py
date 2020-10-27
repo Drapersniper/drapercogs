@@ -12,6 +12,7 @@ import lavalink
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
+from redbot.core.utils._dpy_menus_utils import dpymenu
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import (
     DEFAULT_CONTROLS,
@@ -60,9 +61,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         }
 
         if not self._player_check(ctx):
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         player = lavalink.get_player(ctx.guild.id)
 
         if player.current and not player.queue:
@@ -73,16 +72,13 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 dur = self.format_time(player.current.length)
             song = (
-                await self.get_track_description(
-                    player.current, self.local_folder_current_path
-                )
+                await self.get_track_description(player.current, self.local_folder_current_path)
                 or ""
             )
             song += _("\n Requested by: **{track.requester}**").format(
                 track=player.current
             )
             song += f"\n\n{arrow}`{pos}`/`{dur}`"
-            embed = discord.Embed(title=_("Now Playing"), description=song)
             embed = discord.Embed(description=song)
             embed.set_author(
                 name=_("Now Playing"),
@@ -115,9 +111,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
             embed.set_footer(text=text)
             message = await self.send_embed_msg(ctx, embed=embed)
-            dj_enabled = self._dj_status_cache.setdefault(
-                ctx.guild.id, guild_data["dj_enabled"]
-            )
+            dj_enabled = self._dj_status_cache.setdefault(ctx.guild.id, guild_data["dj_enabled"])
             vote_enabled = guild_data["vote_enabled"]
             if (
                 (dj_enabled or vote_enabled)
@@ -137,9 +131,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
             if not player.queue and not autoplay:
                 expected = (emoji["stop"], emoji["pause"], emoji["close"])
             if player.current:
-                task: Optional[asyncio.Task] = start_adding_reactions(
-                    message, expected[:5]
-                )
+                task: Optional[asyncio.Task] = start_adding_reactions(message, expected[:5])
             else:
                 task: Optional[asyncio.Task] = None
 
@@ -172,20 +164,14 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
                 await message.delete()
             return
         elif not player.current and not player.queue:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
 
         async with ctx.typing():
-            limited_queue = player.queue[
-                :500
-            ]  # TODO: Improve when Toby menu's are merged
+            limited_queue = player.queue[:500]  # TODO: Improve when Toby menu's are merged
             len_queue_pages = math.ceil(len(limited_queue) / 10)
             queue_page_list = []
             async for page_num in AsyncIter(range(1, len_queue_pages + 1)):
-                embed = await self._build_queue_page(
-                    ctx, limited_queue, player, page_num
-                )
+                embed = await self._build_queue_page(ctx, limited_queue, player, page_num)
                 queue_page_list.append(embed)
             if page > len_queue_pages:
                 page = len_queue_pages
@@ -197,16 +183,12 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()
         )
         if not self._player_check(ctx) or not player.queue:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         if (
             dj_enabled
             and not await self._can_instaskip(ctx, ctx.author)
@@ -232,16 +214,12 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         dj_enabled = self._dj_status_cache.setdefault(
             ctx.guild.id, await self.config.guild(ctx.guild).dj_enabled()
         )
         if not self._player_check(ctx) or not player.queue:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         if (
             dj_enabled
             and not await self._can_instaskip(ctx, ctx.author)
@@ -283,13 +261,9 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         if not self._player_check(ctx) or not player.queue:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
 
         clean_tracks = []
         removed_tracks = 0
@@ -319,13 +293,9 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         try:
             player = lavalink.get_player(ctx.guild.id)
         except KeyError:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
         if not self._player_check(ctx) or not player.queue:
-            return await self.send_embed_msg(
-                ctx, title=_("There's nothing in the queue.")
-            )
+            return await self.send_embed_msg(ctx, title=_("There's nothing in the queue."))
 
         search_list = await self._build_queue_search_list(player.queue, search_words)
         if not search_list:
@@ -336,7 +306,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         async for page_num in AsyncIter(range(1, len_search_pages + 1)):
             embed = await self._build_queue_search_page(ctx, page_num, search_list)
             search_page_list.append(embed)
-        await menu(ctx, search_page_list, DEFAULT_CONTROLS)
+        await dpymenu(ctx, search_page_list, DEFAULT_CONTROLS)
 
     @command_queue.command(name="shuffle")
     @commands.cooldown(1, 30, commands.BucketType.guild)
@@ -373,9 +343,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
                 return await self.send_embed_msg(
                     ctx,
                     title=_("Unable To Shuffle Queue"),
-                    description=_(
-                        "I don't have permission to connect to your channel."
-                    ),
+                    description=_("I don't have permission to connect to your channel."),
                 )
             await lavalink.connect(ctx.author.voice.channel)
             player = lavalink.get_player(ctx.guild.id)
