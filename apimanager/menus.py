@@ -514,10 +514,11 @@ class LeaderboardSource(_dpy_menus.ListPageSource):
         bal_len = len(humanize_number(entries[0][0]))
 
         pound_len = len(str(position + 9))
-        header = "{pound:{pound_len}}{score:{bal_len}}{name:2}\n".format(
+        header = "{pound:{pound_len}}{score:{bal_len}}{queries:{bal_len}}{name:2}\n".format(
             pound="#",
             name=_("Name"),
             score=_("Entries"),
+            queries=_("Queries"),
             bal_len=bal_len + 6,
             pound_len=pound_len + 3,
         )
