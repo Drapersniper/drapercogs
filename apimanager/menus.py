@@ -505,7 +505,7 @@ class LeaderboardSource(_dpy_menus.ListPageSource):
         super().__init__(entries, per_page=10)
 
     async def format_page(
-        self, menu: SimpleHybridMenu, entries: List[Tuple[int, int, str]]
+        self, menu: SimpleHybridMenu, entries: List[Tuple[int, int, int, str]]
     ) -> Union[discord.Embed, str]:
         guild = menu.ctx.guild
         author = menu.ctx.author
@@ -529,21 +529,24 @@ class LeaderboardSource(_dpy_menus.ListPageSource):
                 user_id = ""
                 if await bot.is_owner(menu.ctx.author):
                     user_id = f"({acc[1]})"
-                name = f"{acc[2]} {user_id}"
+                name = f"{acc[3]} {user_id}"
             name = escape(name, formatting=True)
 
             balance = acc[0]
             balance = humanize_number(balance)
+            queries = humanize_number(acc[2])
             if acc[0] != author.id:
                 header += (
                     f"{f'{humanize_number(pos)}.': <{pound_len + 2}} "
                     f"{balance: <{bal_len + 5}} "
+                    f"{queries: <{bal_len + 5}} "
                     f"{name}\n"
                 )
             else:
                 header += (
                     f"{f'{humanize_number(pos)}.': <{pound_len + 2}} "
                     f"{balance: <{bal_len + 5}} "
+                    f"{queries: <{bal_len + 5}} "
                     f"<<{name}>>\n"
                 )
 

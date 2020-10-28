@@ -136,7 +136,7 @@ class APIManager(commands.Cog):
         if not users:
             return await ctx.send("Nothing found")
         data = [
-            (u.entries_submitted, int(u.user_id), u.name) for u in users if u.can_read
+            (u.entries_submitted, int(u.user_id), u.queries, u.name) for u in users if u.can_read
         ]
         if not data:
             return await ctx.send("Nothing found")

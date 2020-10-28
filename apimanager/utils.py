@@ -15,6 +15,7 @@ class User:
     is_unregistered: bool = False
     name: str = "Unauthenticated"
     entries_submitted: int = 0
+    queries: int = 0
     token: Optional[str] = None
     updated_on: str = None
     blacklisted_on: str = None
@@ -46,6 +47,7 @@ class User:
                 self.token = self.token.decode()
         self.user_id = str(self.user_id)
         self.entries_submitted = int(self.entries_submitted)
+        self.queries = int(self.queries)
         self.can_read = not self.is_blacklisted and any(
             [
                 self.is_user,
@@ -70,6 +72,7 @@ class User:
             is_superuser=self.is_superuser,
             is_blacklisted=self.is_blacklisted,
             name=self.name,
+            queries=self.queries or 0,
         )
 
     def to_json_full(self):
@@ -85,4 +88,5 @@ class User:
             is_blacklisted=self.is_blacklisted,
             name=self.name,
             token=self.token,
+            queries=self.queries or 0,
         )
