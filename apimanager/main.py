@@ -68,6 +68,7 @@ class APIManager(commands.Cog):
                 "Name": f"[{user.name}]",
                 "User ID": f"[{user.user_id}]",
                 "Entries Submitted": f"[{user.entries_submitted}]",
+                "Queries": f"[{user.queries}]",
                 "Can Read": f"[{user.can_read}]",
                 "Can Post": f"[{user.can_post}]",
                 "Can Delete": f"[{user.can_delete}]",
