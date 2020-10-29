@@ -269,7 +269,7 @@ class APIManager(commands.Cog):
     @command_audio_api.command(name="unban")
     @commands.guild_only()
     async def command_unban(self, ctx: commands.Context, user_id: int):
-        """Elevate a user to mod status."""
+        """Unban a previously banned user."""
         if not await is_api_admin(ctx):
             return
         api_requester = ctx.audio_api_user
