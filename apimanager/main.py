@@ -109,7 +109,7 @@ class APIManager(commands.Cog):
                 "Can Post": f"[{api_requester.can_post}]",
                 "Can Delete": f"[{api_requester.can_delete}]",
             }
-
+            await ctx.tick()
             await ctx.author.send(
                 box(
                     tabulate(
