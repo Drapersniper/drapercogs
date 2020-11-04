@@ -17,7 +17,6 @@ _ = Translator("Audio", Path(__file__))
 class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
     @commands.group(name="llsetup", aliases=["llset"])
     @commands.is_owner()
-    @commands.guild_only()
     @commands.bot_has_permissions(embed_links=True)
     async def command_llsetup(self, ctx: commands.Context):
         """Lavalink server configuration options."""
@@ -224,7 +223,7 @@ class LavalinkSetupCommands(MixinMeta, metaclass=CompositeMetaClass):
         msg = "----" + _("Connection Settings") + "----        \n"
         msg += _("Host:             [{host}]\n").format(host=host)
         msg += _("WS Port:          [{port}]\n").format(port=ws_port)
-        if ws_port != rest_port:
+        if ws_port != rest_port and rest_port != 2333:
             msg += _("Rest Port:        [{port}]\n").format(port=rest_port)
         msg += _("Password:         [{password}]\n").format(password=password)
         try:

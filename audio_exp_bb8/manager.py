@@ -14,21 +14,17 @@ from typing import ClassVar, Final, List, Optional, Pattern, Tuple
 import aiohttp
 from tqdm import tqdm
 
+from redbot import json
 from redbot.core import data_manager
 from redbot.core.i18n import Translator
 
 from .errors import LavalinkDownloadFailed
 from .utils import task_callback
 
-try:
-    from redbot import json
-except ImportError:
-    import json
-
 _ = Translator("Audio", pathlib.Path(__file__))
 log = logging.getLogger("red.audio.manager")
 JAR_VERSION: Final[str] = "3.3.1.4"
-JAR_BUILD: Final[int] = 1115
+JAR_BUILD: Final[int] = 1128
 LAVALINK_DOWNLOAD_URL: Final[str] = (
     "https://github.com/Cog-Creators/Lavalink-Jars/releases/download/"
     f"{JAR_VERSION}_{JAR_BUILD}/"

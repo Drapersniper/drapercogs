@@ -267,6 +267,9 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             if self.cog_init_task:
                 self.cog_init_task.cancel()
 
+            if self._restore_task:
+                self._restore_task.cancel()
+
             lavalink.unregister_event_listener(self.lavalink_event_handler)
             lavalink.unregister_update_listener(self.lavalink_update_handler)
             self.bot.loop.create_task(lavalink.close())
@@ -277,10 +280,7 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
 
     @commands.Cog.listener()
     async def on_voice_state_update(
-        self,
-        member: discord.Member,
-        before: discord.VoiceState,
-        after: discord.VoiceState,
+        self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState
     ) -> None:
         if await self.bot.cog_disabled_in_guild(self, member.guild):
             return
@@ -292,7 +292,11 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
                 pass
         channel = self.rgetattr(member, "voice.channel", None)
         bot_voice_state = self.rgetattr(member, "guild.me.voice.self_deaf", None)
-        if channel and bot_voice_state is False:
+        if (
+            channel
+            and bot_voice_state is False
+            and await self.config.guild(member.guild).auto_deafen()
+        ):
             try:
                 player = lavalink.get_player(channel.guild.id)
             except (KeyError, AttributeError):
@@ -300,3 +304,15 @@ class DpyEvents(MixinMeta, metaclass=CompositeMetaClass):
             else:
                 if player.channel.id == channel.id:
                     await self.self_deafen(player)
+
+    @commands.Cog.listener()
+    async def on_shard_disconnect(self, shard_id):
+        self._diconnected_shard.add(shard_id)
+
+    @commands.Cog.listener()
+    async def on_shard_ready(self, shard_id):
+        self._diconnected_shard.discard(shard_id)
+
+    @commands.Cog.listener()
+    async def on_shard_resumed(self, shard_id):
+        self._diconnected_shard.discard(shard_id)

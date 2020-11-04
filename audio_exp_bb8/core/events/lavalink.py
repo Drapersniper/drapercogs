@@ -3,9 +3,12 @@ import contextlib
 import datetime
 import logging
 from pathlib import Path
+from typing import Dict
 
 import discord
 import lavalink
+from discord.backoff import ExponentialBackoff
+from discord.gateway import DiscordWebSocket
 
 from redbot.core.i18n import Translator, set_contextual_locales_from_guild
 from ...errors import DatabaseError, TrackEnqueueError
@@ -13,6 +16,9 @@ from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
 
 log = logging.getLogger("red.cogs.Audio.cog.Events.lavalink")
+ws_audio_log = logging.getLogger("red.Audio.WS.Audio")
+ws_audio_log.setLevel(logging.WARNING)
+
 _ = Translator("Audio", Path(__file__))
 
 
@@ -28,27 +34,42 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
     ) -> None:
         current_track = player.current
         current_channel = player.channel
-        if not current_channel:
-            return
         guild = self.rgetattr(current_channel, "guild", None)
+        if not (current_channel and guild):
+            player.store("autoplay_notified", False)
+            await player.stop()
+            await player.disconnect()
+            return
         if await self.bot.cog_disabled_in_guild(self, guild):
             await player.stop()
             await player.disconnect()
+            if guild:
+                await self.config.guild_from_id(guild_id=guild.id).currently_auto_playing_in.set(
+                    []
+                )
             return
         guild_id = self.rgetattr(guild, "id", None)
         if not guild:
             return
+        guild_data = await self.config.guild(guild).all()
+        disconnect = guild_data["disconnect"]
+
+        if event_type == lavalink.LavalinkEvents.WEBSOCKET_CLOSED:
+            deafen = guild_data["auto_deafen"]
+            await self._websocket_closed_handler(
+                guild=guild, player=player, extra=extra, deafen=deafen, disconnect=disconnect
+            )
+            return
+
         await set_contextual_locales_from_guild(self.bot, guild)
         current_requester = self.rgetattr(current_track, "requester", None)
         current_stream = self.rgetattr(current_track, "is_stream", None)
         current_length = self.rgetattr(current_track, "length", None)
         current_thumbnail = self.rgetattr(current_track, "thumbnail", None)
-        current_extras = self.rgetattr(current_track, "extras", {})
         current_id = self.rgetattr(current_track, "_info", {}).get("identifier")
-        guild_data = await self.config.guild(guild).all()
+
         repeat = guild_data["repeat"]
         notify = guild_data["notify"]
-        disconnect = guild_data["disconnect"]
         autoplay = guild_data["auto_play"]
         description = await self.get_track_description(
             current_track, self.local_folder_current_path
@@ -71,25 +92,35 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                 await self.api_interface.persistent_queue_api.played(
                     guild_id=guild_id, track_id=current_track.track_identifier
                 )
+            notify_channel = player.fetch("channel")
+            if notify_channel:
+                await self.config.guild_from_id(guild_id=guild_id).currently_auto_playing_in.set(
+                    [notify_channel, player.channel.id]
+                )
+            else:
+                await self.config.guild_from_id(guild_id=guild_id).currently_auto_playing_in.set(
+                    []
+                )
         if event_type == lavalink.LavalinkEvents.TRACK_END:
             prev_requester = player.fetch("prev_requester")
             self.bot.dispatch("red_audio_track_end", guild, prev_song, prev_requester)
+            player.store("resume_attempts", 0)
         if event_type == lavalink.LavalinkEvents.QUEUE_END:
             prev_requester = player.fetch("prev_requester")
             self.bot.dispatch("red_audio_queue_end", guild, prev_song, prev_requester)
             if guild_id:
                 await self.api_interface.persistent_queue_api.drop(guild_id)
-            if (
+            if player.is_auto_playing or (
                 autoplay
                 and not player.queue
                 and player.fetch("playing_song") is not None
                 and self.playlist_api is not None
                 and self.api_interface is not None
             ):
+                notify_channel = player.fetch("channel")
                 try:
                     await self.api_interface.autoplay(player, self.playlist_api)
                 except DatabaseError:
-                    notify_channel = player.fetch("channel")
                     notify_channel = self.bot.get_channel(notify_channel)
                     if notify_channel:
                         await self.send_embed_msg(
@@ -97,7 +128,6 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                         )
                     return
                 except TrackEnqueueError:
-                    notify_channel = player.fetch("channel")
                     notify_channel = self.bot.get_channel(notify_channel)
                     if notify_channel:
                         await self.send_embed_msg(
@@ -116,18 +146,7 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                 if player.fetch("notify_message") is not None:
                     with contextlib.suppress(discord.HTTPException):
                         await player.fetch("notify_message").delete()
-
-                if (
-                    autoplay
-                    and current_extras.get("autoplay")
-                    and (
-                        prev_song is None
-                        or (hasattr(prev_song, "extras") and not prev_song.extras.get("autoplay"))
-                    )
-                ):
-                    await self.send_embed_msg(notify_channel, title=_("Auto Play started."))
-
-                if not description:
+                if not (description and notify_channel):
                     return
                 if current_stream:
                     dur = "LIVE"
@@ -169,6 +188,9 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                     await self.send_embed_msg(notify_channel, title=_("Queue ended."))
                 if disconnect:
                     self.bot.dispatch("red_audio_audio_disconnect", guild)
+                    await self.config.guild_from_id(
+                        guild_id=guild_id
+                    ).currently_auto_playing_in.set([])
                     await player.disconnect()
                     self._ll_guild_updates.discard(guild.id)
             if status:
@@ -200,10 +222,14 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                 eq = player.fetch("eq")
                 player.queue = []
                 player.store("playing_song", None)
+                player.store("autoplay_notified", False)
                 if eq:
                     await self.config.custom("EQUALIZER", guild_id).eq_bands.set(eq.bands)
                 await player.stop()
                 await player.disconnect()
+                await self.config.guild_from_id(guild_id=guild_id).currently_auto_playing_in.set(
+                    []
+                )
                 self._ll_guild_updates.discard(guild_id)
                 self.bot.dispatch("red_audio_audio_disconnect", guild)
             if message_channel:
@@ -243,3 +269,192 @@ class LavalinkEvents(MixinMeta, metaclass=CompositeMetaClass):
                             )
                     await message_channel.send(embed=embed)
             await player.skip()
+
+    async def _websocket_closed_handler(
+        self,
+        guild: discord.Guild,
+        player: lavalink.Player,
+        extra: Dict,
+        deafen: bool,
+        disconnect: bool,
+    ) -> None:
+        guild_id = guild.id
+        node = player.node
+        voice_ws: DiscordWebSocket = node.get_voice_ws(guild_id)
+        code = extra.get("code")
+        by_remote = extra.get("byRemote", "")
+        reason = extra.get("reason", "").strip()
+        if self._ws_resume[guild_id].is_set():
+            ws_audio_log.debug(
+                f"WS EVENT | Discarding WS Closed event for guild {guild_id} -> "
+                f"Socket Closed {voice_ws.socket._closing or voice_ws.socket.closed}.  "
+                f"Code: {code} -- Remote: {by_remote} -- {reason}"
+            )
+            return
+        self._ws_resume[guild_id].set()
+        if player.channel:
+            current_perms = player.channel.permissions_for(player.channel.guild.me)
+            has_perm = current_perms.speak and current_perms.connect
+        else:
+            has_perm = False
+        channel_id = player.channel.id
+        if voice_ws.socket._closing or voice_ws.socket.closed or not voice_ws.open:
+            if player._con_delay:
+                delay = player._con_delay.delay()
+            else:
+                player._con_delay = ExponentialBackoff(base=1)
+                delay = player._con_delay.delay()
+            ws_audio_log.warning(
+                "YOU CAN IGNORE THIS UNLESS IT'S CONSISTENTLY REPEATING FOR THE SAME GUILD - "
+                f"Voice websocket closed for guild {guild_id} -> "
+                f"Socket Closed {voice_ws.socket._closing or voice_ws.socket.closed}.  "
+                f"Code: {code} -- Remote: {by_remote} -- {reason}"
+            )
+            ws_audio_log.debug(
+                f"Reconnecting to channel {channel_id} in guild: {guild_id} | {delay:.2f}s"
+            )
+            await asyncio.sleep(delay)
+            while voice_ws.socket._closing or voice_ws.socket.closed or not voice_ws.open:
+                voice_ws = node.get_voice_ws(guild_id)
+                await asyncio.sleep(0.1)
+
+            if has_perm and player.current and player.is_playing:
+                player.store("resumes", player.fetch("resumes", 0) + 1)
+                await player.connect(deafen=deafen)
+                await player.resume(player.current, start=player.position)
+                ws_audio_log.info(
+                    "Voice websocket reconnected "
+                    f"to channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Currently playing."
+                )
+            elif has_perm and player.paused and player.current:
+                player.store("resumes", player.fetch("resumes", 0) + 1)
+                await player.connect(deafen=deafen)
+                await player.pause(pause=True)
+                ws_audio_log.info(
+                    "Voice websocket reconnected "
+                    f"to channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Currently Paused."
+                )
+            elif has_perm and (not disconnect) and (not player.is_playing):
+                player.store("resumes", player.fetch("resumes", 0) + 1)
+                await player.connect(deafen=deafen)
+                ws_audio_log.info(
+                    "Voice websocket reconnected "
+                    f"to channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Not playing, but auto disconnect disabled."
+                )
+                self._ll_guild_updates.discard(guild_id)
+            elif not has_perm:
+                self.bot.dispatch("red_audio_audio_disconnect", guild)
+                ws_audio_log.info(
+                    "Voice websocket disconnected "
+                    f"from channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Missing permissions."
+                )
+                self._ll_guild_updates.discard(guild_id)
+                player.store("autoplay_notified", False)
+                await player.stop()
+                await player.disconnect()
+                await self.config.guild_from_id(guild_id=guild_id).currently_auto_playing_in.set(
+                    []
+                )
+            else:
+                self.bot.dispatch("red_audio_audio_disconnect", guild)
+                ws_audio_log.info(
+                    "Voice websocket disconnected "
+                    f"from channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Unknown."
+                )
+                self._ll_guild_updates.discard(guild_id)
+                player.store("autoplay_notified", False)
+                await player.stop()
+                await player.disconnect()
+                await self.config.guild_from_id(guild_id=guild_id).currently_auto_playing_in.set(
+                    []
+                )
+        elif code in (42069,):
+            player.store("resumes", player.fetch("resumes", 0) + 1)
+            await player.connect(deafen=deafen)
+            await player.resume(player.current, start=player.position)
+            ws_audio_log.info(
+                f"Player resumed in channel {channel_id} in guild: {guild_id} | "
+                f"Reason: Error code {code} & {reason}."
+            )
+        elif code in (4015, 4014, 4009, 4006, 1006):
+            if (
+                code == 4006
+                and has_perm
+                and player._last_resume
+                and player._last_resume + datetime.timedelta(seconds=5)
+                > datetime.datetime.now(tz=datetime.timezone.utc)
+            ):
+                attempts = player.fetch("resume_attempts", 0)
+                player.store("resume_attempts", attempts + 1)
+                channel = self.bot.get_channel(player.channel.id)
+                should_skip = not channel.members or all(m.bot for m in channel.members)
+                if should_skip:
+                    ws_audio_log.info(
+                        "Voice websocket reconnected skipped "
+                        f"for channel {channel_id} in guild: {guild_id} | "
+                        f"Reason: Error code {code} & "
+                        "Player resumed too recently and no human members connected."
+                    )
+                    return
+
+            if player._con_delay:
+                delay = player._con_delay.delay()
+            else:
+                player._con_delay = ExponentialBackoff(base=1)
+                delay = player._con_delay.delay()
+            ws_audio_log.debug(
+                f"Reconnecting to channel {channel_id} in guild: {guild_id} | {delay:.2f}s"
+            )
+            await asyncio.sleep(delay)
+            if has_perm and player.current and player.is_playing:
+                await player.connect(deafen=deafen)
+                await player.resume(player.current, start=player.position)
+                ws_audio_log.info(
+                    "Voice websocket reconnected "
+                    f"to channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Player is active."
+                )
+            elif has_perm and player.paused and player.current:
+                player.store("resumes", player.fetch("resumes", 0) + 1)
+                await player.connect(deafen=deafen)
+                await player.pause(pause=True)
+                ws_audio_log.info(
+                    "Voice websocket reconnected "
+                    f"to channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Player is paused."
+                )
+            elif has_perm and (not disconnect) and (not player.is_playing):
+                player.store("resumes", player.fetch("resumes", 0) + 1)
+                await player.connect(deafen=deafen)
+                ws_audio_log.info(
+                    "Voice websocket reconnected "
+                    f"to channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Not playing."
+                )
+                self._ll_guild_updates.discard(guild_id)
+            elif not has_perm:
+                self.bot.dispatch("red_audio_audio_disconnect", guild)
+                ws_audio_log.info(
+                    "Voice websocket disconnected "
+                    f"from channel {channel_id} in guild: {guild_id} | "
+                    f"Reason: Error code {code} & Missing permissions."
+                )
+                self._ll_guild_updates.discard(guild_id)
+                player.store("autoplay_notified", False)
+                await player.stop()
+                await player.disconnect()
+                await self.config.guild_from_id(guild_id=guild_id).currently_auto_playing_in.set(
+                    []
+                )
+        else:
+            ws_audio_log.info(
+                "WS EVENT - IGNORED (Healthy Socket) | "
+                f"Voice websocket closed event for guild {guild_id} -> "
+                f"Code: {code} -- Remote: {by_remote} -- {reason}"
+            )
+        self._ws_resume[guild_id].clear()

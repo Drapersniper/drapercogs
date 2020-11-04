@@ -54,8 +54,12 @@ class PlayerTasks(MixinMeta, metaclass=CompositeMetaClass):
                         try:
                             player = lavalink.get_player(sid)
                             await self.api_interface.persistent_queue_api.drop(sid)
+                            player.store("autoplay_notified", False)
                             await player.stop()
                             await player.disconnect()
+                            await self.config.guild_from_id(
+                                guild_id=sid
+                            ).currently_auto_playing_in.set([])
                         except Exception as err:
                             if "No such player for that guild" in str(err):
                                 stop_times.pop(sid, None)

@@ -12,7 +12,6 @@ import lavalink
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from redbot.core.utils._dpy_menus_utils import dpymenu
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.menus import (
     DEFAULT_CONTROLS,
@@ -306,7 +305,7 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
         async for page_num in AsyncIter(range(1, len_search_pages + 1)):
             embed = await self._build_queue_search_page(ctx, page_num, search_list)
             search_page_list.append(embed)
-        await dpymenu(ctx, search_page_list, DEFAULT_CONTROLS)
+        await menu(ctx, search_page_list, DEFAULT_CONTROLS)
 
     @command_queue.command(name="shuffle")
     @commands.cooldown(1, 30, commands.BucketType.guild)
@@ -345,10 +344,14 @@ class QueueCommands(MixinMeta, metaclass=CompositeMetaClass):
                     title=_("Unable To Shuffle Queue"),
                     description=_("I don't have permission to connect to your channel."),
                 )
-            await lavalink.connect(ctx.author.voice.channel)
+            await lavalink.connect(
+                ctx.author.voice.channel,
+                deafen=await self.config.guild_from_id(ctx.guild.id).auto_deafen(),
+            )
             player = lavalink.get_player(ctx.guild.id)
             player.store("connect", datetime.datetime.utcnow())
-            await self.self_deafen(player)
+            player.store("channel", ctx.channel.id)
+            player.store("guild", ctx.guild.id)
         except AttributeError:
             ctx.command.reset_cooldown(ctx)
             return await self.send_embed_msg(

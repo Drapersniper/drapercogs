@@ -9,9 +9,8 @@ import lavalink
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from redbot.core.utils._dpy_menus_utils import dpymenu
 from redbot.core.utils.chat_formatting import box, humanize_number, pagify
-from redbot.core.utils.menus import DEFAULT_CONTROLS, start_adding_reactions
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu, start_adding_reactions
 from redbot.core.utils.predicates import MessagePredicate, ReactionPredicate
 
 from ...equalizer import Equalizer
@@ -135,7 +134,7 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 text=_("{num} preset(s)").format(num=humanize_number(len(list(eq_presets.keys()))))
             )
             page_list.append(embed)
-        await dpymenu(ctx, page_list, DEFAULT_CONTROLS)
+        await menu(ctx, page_list, DEFAULT_CONTROLS)
 
     @command_equalizer.command(name="load")
     async def command_equalizer_load(self, ctx: commands.Context, eq_preset: str):
@@ -168,7 +167,8 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 title=_("Unable To Load Preset"),
                 description=_("You need the DJ role to load equalizer presets."),
             )
-
+        player.store("channel", ctx.channel.id)
+        player.store("guild", ctx.guild.id)
         await self.config.custom("EQUALIZER", ctx.guild.id).eq_bands.set(eq_values)
         await self._eq_check(ctx, player)
         eq = player.fetch("eq", Equalizer())
@@ -197,6 +197,8 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 description=_("You need the DJ role to reset the equalizer."),
             )
         player = lavalink.get_player(ctx.guild.id)
+        player.store("channel", ctx.channel.id)
+        player.store("guild", ctx.guild.id)
         eq = player.fetch("eq", Equalizer())
 
         for band in range(eq.band_count):
@@ -279,6 +281,8 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
                 return await eq_exists_msg.edit(embed=embed2)
 
         player = lavalink.get_player(ctx.guild.id)
+        player.store("channel", ctx.channel.id)
+        player.store("guild", ctx.guild.id)
         eq = player.fetch("eq", Equalizer())
         to_append = {eq_preset: {"author": ctx.author.id, "bands": eq.bands}}
         new_eq_presets = {**eq_presets, **to_append}
@@ -320,6 +324,8 @@ class EqualizerCommands(MixinMeta, metaclass=CompositeMetaClass):
             )
 
         player = lavalink.get_player(ctx.guild.id)
+        player.store("channel", ctx.channel.id)
+        player.store("guild", ctx.guild.id)
         band_names = [
             "25",
             "40",

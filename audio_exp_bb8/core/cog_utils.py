@@ -7,7 +7,7 @@ from redbot.core import commands
 from ..converters import get_lazy_converter, get_playlist_converter
 
 __version__ = VersionInfo.from_json(
-    {"major": 2, "minor": 3, "micro": 1, "dev_release": 1, "releaselevel": "final"}
+    {"major": 2, "minor": 4, "micro": 0, "dev_release": 1, "releaselevel": "final"}
 )
 
 __author__ = ["aikaterna", "Draper"]

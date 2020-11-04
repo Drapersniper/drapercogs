@@ -10,10 +10,9 @@ import lavalink
 
 from redbot.core import commands
 from redbot.core.i18n import Translator
-from redbot.core.utils._dpy_menus_utils import dpymenu
 from redbot.core.utils import AsyncIter
 from redbot.core.utils.chat_formatting import humanize_number, pagify
-from redbot.core.utils.menus import DEFAULT_CONTROLS
+from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 
 from ..abc import MixinMeta
 from ..cog_utils import CompositeMetaClass
@@ -85,7 +84,7 @@ class MiscellaneousCommands(MixinMeta, metaclass=CompositeMetaClass):
             pages += 1
             servers_embed.append(em)
 
-        await dpymenu(ctx, servers_embed, DEFAULT_CONTROLS)
+        await menu(ctx, servers_embed, DEFAULT_CONTROLS)
 
     @commands.command(name="percent")
     @commands.guild_only()

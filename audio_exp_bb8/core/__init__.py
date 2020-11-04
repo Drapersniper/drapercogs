@@ -1,13 +1,14 @@
 import asyncio
 import datetime
 
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Mapping
 
 import aiohttp
 import discord
 
+from redbot import json
 from redbot.core import Config
 from redbot.core.bot import Red
 from redbot.core.commands import Cog
@@ -17,11 +18,6 @@ from redbot.core.i18n import Translator, cog_i18n
 from ..utils import PlaylistScope
 from . import abc, cog_utils, commands, events, tasks, utilities
 from .cog_utils import CompositeMetaClass
-
-try:
-    from redbot import json
-except ImportError:
-    import json
 
 _ = Translator("Audio", Path(__file__))
 
@@ -83,6 +79,8 @@ class Audio(
 
         self.session = aiohttp.ClientSession(json_serialize=json.dumps)
         self.cog_ready_event = asyncio.Event()
+        self._ws_resume = defaultdict(asyncio.Event)
+
         self.cog_init_task = None
         self.global_api_user = {
             "fetched": False,
@@ -91,6 +89,7 @@ class Audio(
             "can_delete": False,
         }
         self._ll_guild_updates = set()
+        self._diconnected_shard = set()
         self._last_ll_update = datetime.datetime.now(datetime.timezone.utc)
 
         default_global = dict(
@@ -113,6 +112,7 @@ class Audio(
 
         default_guild = dict(
             auto_play=False,
+            currently_auto_playing_in=None,
             auto_deafen=True,
             autoplaylist={"enabled": False, "id": None, "name": None, "scope": None},
             persist_queue=True,
