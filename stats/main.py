@@ -50,11 +50,7 @@ class Stats(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     @commands.max_concurrency(1, commands.BucketType.guild, wait=False)
     async def botinfo(self, ctx: commands.Context):
-        """Show bot information.
-
-        `details`: Shows more information when set to `True`.
-        Default to False.
-        """
+        """Show bot information."""
         async with ctx.typing():
             vc_regions = {
                 "eu-west": _("EU West ") + "\U0001F1EA\U0001F1FA",
