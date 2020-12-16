@@ -33,7 +33,7 @@ class Brainz(commands.Cog):
         if self._message_cache and self._list_trainer:
             message_cache = self._message_cache.copy()
             self._message_cache.clear()
-            self._list_trainer.traine(message_cache)
+            self._list_trainer.train(message_cache)
             del message_cache
 
     def cog_unload(self):
