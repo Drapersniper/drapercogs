@@ -1,0 +1,24 @@
+{
+    "author" : [
+        "Draper"
+    ],
+    "description" : "Teach your bot about the world.",
+    "disabled" : false,
+    "end_user_data_statement" : "This Cog uses historical messages for its learning algorithm.",
+    "hidden" : false,
+    "install_msg" : "Thanks for improving my brain, I promise not to take over the world and nuke you puny humans out of existence.",
+    "max_bot_version" : "0.0.0",
+    "min_bot_version" : "3.4.3",
+    "min_python_version" : [3, 8, 1],
+    "name" : "Brainz",
+    "permissions" : [],
+    "required_cogs" : {},
+    "requirements" : ["chatterbot", "chatterbot-corpus"],
+    "short" : "Give your bot more neurons.",
+    "tags" : [
+        "Machine Learning",
+        "Chatter",
+        "Talking"
+    ],
+    "type" : "COG"
+}
